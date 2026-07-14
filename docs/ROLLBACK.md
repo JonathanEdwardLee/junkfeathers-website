@@ -6,29 +6,41 @@ This document defines the rollback and recovery steps for this development phase
 
 ## 1. Local Code Rollback (Repository)
 
-Because we are working in a standalone repository outside the Local server workspace, rollback is simple and has zero risk of site damage:
+To roll back code changes in the standalone repository, prefer safe, non-destructive Git operations over commands that erase uncommitted work:
 
-1. **Abandon Repository**: 
-   Delete the local `C:\Users\joned\Documents\Git\junkfeathers-website` directory or move it to an archive folder.
-2. **Revert Git Commits**:
-   If a commit in the repository needs to be reverted:
+### Recommended Git Rollback Methods
+1. **Inspect Commit History**:
+   Find the hash of the commit you want to revert:
    ```bash
-   git reset --hard HEAD~1
+   git log --oneline
    ```
+2. **Revert a Specific Commit**:
+   To create a new corrective commit that reverses the changes of an existing commit (safest for history):
+   ```bash
+   git revert <commit-hash>
+   ```
+3. **Restore an Individual File**:
+   To restore a single file to its state at a specific commit:
+   ```bash
+   git checkout <commit-hash> -- path/to/file
+   ```
+
+> [!WARNING]
+> Avoid running `git reset --hard HEAD~1` as a default rollback command. Destructive reset commands will permanently erase all uncommitted local modifications and unstaged work in your workspace.
 
 ---
 
 ## 2. Local Site Rollback (Local Server)
 
-If an applied sync script (`scripts/sync-to-local.ps1 -Apply`) was executed and caused styling or layout errors on the Local runtime site:
+If an applied sync script (`scripts/sync-to-local.ps1 -Apply`) was executed and caused styling errors on the Local development/QA site:
 
 1. **Locate Backup**:
-   The sync script automatically saves a timestamped copy of the Local child theme to a backup folder outside the repository.
-2. **Restore Files**:
-   Copy the files from the backup folder back into the Local server's theme directory:
-   `C:\Users\joned\Local Sites\junkfeatherscom\app\public\wp-content\themes\junkfeathers-machine`
-3. **Reactivate Parent**:
-   If the child theme causes a fatal PHP error, reactivate the parent dependency via WP-CLI or the WordPress admin panel:
+   The sync script saves a timestamped copy of the Local child theme to the configured `$LocalBackupRootPath` directory (which resides outside the repository and Local site folders).
+2. **Restore Child Theme**:
+   Copy the files from the backup directory back into the Local site's theme directory:
+   `<LocalSiteRootPath>\app\public\wp-content\themes\junkfeathers-machine`
+3. **Reactivate Parent Dependency**:
+   If the child theme code causes a PHP error, reactivate the parent GeneratePress dependency via WP-CLI:
    ```bash
    wp theme activate generatepress
    ```
@@ -37,4 +49,4 @@ If an applied sync script (`scripts/sync-to-local.ps1 -Apply`) was executed and 
 
 ## 3. Live Site Rollback
 
-The live site (`junkfeathers.com` on Hostinger) requires no rollback protocol because **no live changes or connections are authorized in this phase**. The live production environment remains completely untouched.
+A rollback protocol for the live website (`junkfeathers.com` on Hostinger) is **not yet designed or authorized**. No deployment systems or staging connections have been established or approved. The live website is completely untouched in this phase.

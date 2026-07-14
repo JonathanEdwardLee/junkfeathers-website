@@ -1,4 +1,4 @@
-# Current State of the Project
+# Current State of the Project (v2)
 
 * **Last Updated**: July 13, 2026
 * **WordPress Version**: 7.0.1
@@ -10,15 +10,24 @@
 
 ---
 
-## 1. Local Baseline Backup Confirmation
+## 1. Local Baseline Backup Status
 
-Before executing this repository bootstrap:
-1. **Local Site State**: The local WordPress site was confirmed to open successfully in the Local GUI client, and the primary paths (`/`, `/music/`, `/tech/`, and `/orpheus-deck/`) are functional.
-2. **Founder Confirmation**: Jonathan Lee has confirmed that a fresh Local site export and equivalent database backup (including the recovered Hostinger-specific plugins) have been saved to a secure backup directory outside the version-controlled codebase.
+* **Local Site State**: The local WordPress site was confirmed to open successfully in the Local GUI client, and the primary paths (`/`, `/music/`, `/tech/`, and `/orpheus-deck/`) are functional.
+* **Sync Execution**: Applied sync (`sync-to-local.ps1 -Apply`) was NOT run in Task 04; only dry-run checks have been completed.
+* **Founder Backup Status**: The saving of a fresh Local site export and database backup still requires final founder confirmation.
 
 ---
 
-## 2. Active Technical Inventory
+## 2. Environment & Tooling Boundaries
+
+* **QA & Development Environment**: Local by WP Engine is the active local environment.
+* **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole development and QA site.
+* **Production Deployment Status**: No production deployment pipeline or method is designed or authorized.
+* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved locally inside the Local backups but excluded from Git tracking. No custom plugins exist, and no plugin state changed during this task.
+
+---
+
+## 3. Active Technical Inventory
 
 ### Active Plugins
 1. **GenerateBlocks** (Visual Layout)
@@ -39,7 +48,7 @@ Before executing this repository bootstrap:
 
 ---
 
-## 3. Site Navigation & Page Map
+## 4. Site Navigation & Page Map
 
 The active site pages are:
 * `/` (Home): Split portal portal linking to Music and Tech.

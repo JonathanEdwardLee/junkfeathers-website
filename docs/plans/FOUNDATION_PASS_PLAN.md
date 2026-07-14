@@ -1,41 +1,40 @@
-# Foundation Pass Plan
+# Foundation Pass Plan (Future Reference)
 
-This document outlines the proposed implementation plan for the next phase of development: cleaning up the local environment, refactoring database snippets, and establishing staging synchronization.
+This document outlines a neutral roadmap of decision gates for future project phases. All steps remain subject to explicit review and approval by Jonathan Lee and the Website 01Council.
 
-* **Current Status**: **PENDING REVIEW** (No implementation is authorized in this phase)
+* **Current Status**: **UNDER REVIEW** (No implementation, deletion, or deployment tasks are authorized)
 
 ---
 
 ## 1. Objectives
 
-1. **Local Plugin Cleanup**:
-   Remove the deliberately disabled Hostinger helper folders (`.disabled`) to declutter the plugins directory, and archive them in backups.
-2. **Snippet Migration**:
-   Establish a custom site utility plugin (`junkfeathers-core`) to replace the **Code Snippets** plugin.
-3. **Staging Pipeline**:
-   Prepare a staging subdomain to test deployments and search-and-replace scripts.
+The primary goal of future phases will be to clean up local configurations, align analytical utilities, and prepare a stable development-to-production workflow locally before designing any deployment mechanisms.
 
 ---
 
-## 2. Proposed Implementation Steps
+## 2. Future Decision Gates
 
-### Phase 1: Local Cleanup
-* **Task 1.1**: Archive the deactivated Hostinger plugins (`hostinger.disabled`, `hostinger-affiliate-plugin.disabled`, `hostinger-easy-onboarding.disabled`, `hostinger-reach.disabled`) into a local backup zip outside of Git.
-* **Task 1.2**: Remove these `.disabled` folders from the local workspace.
-* **Task 1.3**: Deactivate the unused `AI Provider for OpenAI` plugin in the Local site dashboard if its utility remains unverified.
+### Gate 1: Determine AI Provider Utility
+* **Question**: Is the active `AI Provider for OpenAI` plugin required for any block generators, translation widgets, or text assistants used by the founder?
+* **Evidence Required**: Verification of active custom client handlers or dependencies inside the database.
+* **Outcome**: Decide whether to retain the plugin or mark it for deactivation.
 
-### Phase 2: Create Custom Site Plugin (`junkfeathers-core`)
-* **Task 2.1**: Create `plugins/junkfeathers-core/` inside the repository.
-* **Task 2.2**: Write the main plugin header `junkfeathers-core/junkfeathers-core.php`.
-* **Task 2.3**: Move the footer copyright override code from the Code Snippets database into a theme-specific or plugin-based function:
-  ```php
-  add_filter( 'generate_copyright', function() {
-      return '© ' . date('Y') . ' Junkfeathers. Pet the <a href="https://snorkleprawn.com" target="_blank" rel="noopener noreferrer">SnorklePrawn</a>.';
-  } );
-  ```
-* **Task 2.4**: Deactivate and delete the **Code Snippets** plugin from the WordPress local site.
+### Gate 2: Copyright Hook Location
+* **Question**: Should the active footer copyright filter (`generate_copyright`) remain inside the **Code Snippets** database list, or should it move to the active child theme's `functions.php`?
+* **Context**: Since it is a theme-specific filter, keeping it in the child theme keeps files unified. No plugin creation is planned yet.
 
-### Phase 3: Staging Setup & Verification
-* **Task 3.1**: Request Jonathan to configure a temporary staging subdomain on Hostinger (e.g., `staging.junkfeathers.com`).
-* **Task 3.2**: Develop a deploy script to zip the repository's custom theme and plugin, upload it, and execute a safe domain search-replace.
-* **Task 3.3**: Verify event measurement flows on staging.
+### Gate 3: Jetpack Module Audit
+* **Question**: Which of the 11 active Jetpack modules can be deactivated locally to reduce script size and load times?
+* **Tasks**: Perform local profiling with query monitors to verify the load overhead of Jetpack modules like Stats, Blaze, and blocks.
+
+### Gate 4: Email Marketing Provider Selection
+* **Question**: Which service (Hostinger Reach, Substack, Brevo, or Mailchimp) best meets our criteria for contact ownership, API access, portabilty, and GIF support?
+* **Outcome**: Formal selection of provider and sign-up form design.
+
+### Gate 5: Visual Foundations & Component Architecture
+* **Question**: What font delivery model and style palettes are selected?
+* **Outcome**: Approval of the CSS variables and grandfather-clock coordinates inside `style.css`.
+
+### Gate 6: Deployment Workflow Design
+* **Question**: How will code updates be deployed to Hostinger production without exposing SQL dumps, credentials, or local configs, given that no paid staging environment is planned?
+* **Outcome**: Design a secure, manual or reviewed deployment pipeline (e.g. via SFTP or plugin upload) once local QA is complete.

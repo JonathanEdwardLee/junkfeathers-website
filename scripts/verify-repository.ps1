@@ -20,9 +20,14 @@ $AllowedRootPaths = @(
     "plugins"
 )
 
-# Forbidden extensions and files
-$ForbiddenExtensions = @(".sql", ".zip", ".tar", ".gz", ".db", ".sqlite", ".log", ".bak", ".backup")
-$ForbiddenNames = @("wp-config.php", ".env")
+# Forbidden extensions and files (including keys, credentials, and backups)
+$ForbiddenExtensions = @(
+    ".sql", ".zip", ".tar", ".gz", ".db", ".sqlite", ".log", ".bak", ".backup",
+    ".pem", ".key", ".p12", ".pfx", ".crt", ".cer", ".jks"
+)
+$ForbiddenNames = @(
+    "wp-config.php", ".env", "credentials.json", ".env.local", "sync-config.local.ps1"
+)
 
 $RepoRoot = Resolve-Path (Join-Path (Split-Path $MyInvocation.MyCommand.Definition) "..")
 $AllFiles = Get-ChildItem -Path $RepoRoot -Recurse -File
@@ -35,28 +40,45 @@ Write-Host "Checking repository structure and file suffixes..." -ForegroundColor
 
 foreach ($f in $AllFiles) {
     $RelativePath = $f.FullName.Substring($RepoRoot.Path.Length + 1)
+
+    # Skip checking git metadata folder
+    if ($RelativePath -like ".git\*") {
+        continue
+    }
+
     $RootFolder = ($RelativePath -split "\\")[0]
-    
+
     # Check root structures
     if ($AllowedRootPaths -notcontains $RootFolder -and $AllowedRootPaths -notcontains $RelativePath) {
         Write-Host "  [FAIL] Unrecognized root file/folder detected: $RelativePath" -ForegroundColor Red
         $VerificationPassed = $false
     }
-    
+
     # Check forbidden extensions
     $Ext = [System.IO.Path]::GetExtension($f.Name).ToLower()
     if ($ForbiddenExtensions -contains $Ext) {
         Write-Host "  [FAIL] Forbidden file type extension detected: $RelativePath ($Ext)" -ForegroundColor Red
         $VerificationPassed = $false
     }
-    
-    # Check forbidden filenames
+
+    # Check forbidden filenames (e.g. credentials.json, sync-config.local.ps1)
     if ($ForbiddenNames -contains $f.Name.ToLower()) {
-        Write-Host "  [FAIL] Forbidden environment file detected: $RelativePath" -ForegroundColor Red
-        $VerificationPassed = $false
+        # Check if the file is tracked in Git or just present
+        $IsTracked = & git -C $RepoRoot.Path ls-files $RelativePath 2>$null
+        if ($IsTracked) {
+            Write-Host "  [FAIL] Forbidden file is tracked in Git: $RelativePath" -ForegroundColor Red
+            $VerificationPassed = $false
+        } else {
+            # File exists but is ignored (like sync-config.local.ps1)
+            Write-Host "  [INFO] Ignored local file present but not tracked: $RelativePath" -ForegroundColor Gray
+        }
     }
-    
-    $TrackedTree += $RelativePath
+
+    # Only collect tracked/intended files for the ledger
+    $IsGitTracked = & git -C $RepoRoot.Path ls-files $RelativePath 2>$null
+    if ($IsGitTracked) {
+        $TrackedTree += $RelativePath
+    }
 }
 
 # 2. Secret Scanning (Text Search for Keys/Credentials)
@@ -73,6 +95,11 @@ $SecretPatterns = @{
 
 $ScannedCount = 0
 foreach ($f in $AllFiles) {
+    $RelativePath = $f.FullName.Substring($RepoRoot.Path.Length + 1)
+    if ($RelativePath -like ".git\*") {
+        continue
+    }
+
     # Only scan readable text formats
     $Ext = [System.IO.Path]::GetExtension($f.Name).ToLower()
     if ($Ext -in @(".txt", ".md", ".php", ".css", ".js", ".json", ".ps1", "")) {
@@ -82,7 +109,6 @@ foreach ($f in $AllFiles) {
             foreach ($key in $SecretPatterns.Keys) {
                 $Pattern = $SecretPatterns[$key]
                 if ($FileContent -match $Pattern) {
-                    $RelativePath = $f.FullName.Substring($RepoRoot.Path.Length + 1)
                     Write-Host "  [FAIL] Secret leak pattern matched ($key) in file: $RelativePath" -ForegroundColor Red
                     $VerificationPassed = $false
                 }
@@ -94,6 +120,8 @@ Write-Host "Scanned $ScannedCount text-based files." -ForegroundColor Gray
 
 # 3. External Secret Scan Verification
 $GitleaksExists = Get-Command gitleaks -ErrorAction SilentlyContinue
+$GitleaksPassed = $false
+
 if ($GitleaksExists) {
     Write-Host "`nRunning Gitleaks audit..." -ForegroundColor Yellow
     $GitleaksOutput = & gitleaks detect --source=$RepoRoot.Path --verbose 2>&1
@@ -102,17 +130,22 @@ if ($GitleaksExists) {
         $VerificationPassed = $false
     } else {
         Write-Host "  [PASS] Gitleaks scan passed." -ForegroundColor Green
+        $GitleaksPassed = $true
     }
-} else {
-    Write-Host "`n[NOTE] Gitleaks is not installed on the system. Local script secret scans have completed, but an external binary scanner remains required before pushing to a remote repository." -ForegroundColor Yellow
 }
 
 # 4. Final Verdict and File Ledger
 Write-Host "`n======================================================================" -ForegroundColor Cyan
 if ($VerificationPassed) {
-    Write-Host "  VERIFICATION SUCCESS: Repository is clean and ready for commit.      " -ForegroundColor Green
+    if (-not $GitleaksExists) {
+        Write-Host "  VERIFICATION RESULT: Passes built-in local checks.                  " -ForegroundColor Green
+        Write-Host "  [WARNING] Remote publication remains BLOCKED pending an external     " -ForegroundColor Yellow
+        Write-Host "            secret scan (Gitleaks is currently not installed).        " -ForegroundColor Yellow
+    } else {
+        Write-Host "  VERIFICATION SUCCESS: Repository passes all checks.                 " -ForegroundColor Green
+    }
     Write-Host "======================================================================" -ForegroundColor Cyan
-    Write-Host "`nSafe File Ledger:" -ForegroundColor Green
+    Write-Host "`nStaged/Tracked File Ledger:" -ForegroundColor Green
     foreach ($path in $TrackedTree) {
         Write-Host "  - $path" -ForegroundColor Gray
     }

@@ -12,9 +12,14 @@ Junkfeathers is a growing museum/workshop of strange, tactile, and musical retro
 
 ---
 
-## 2. Repository Scope
+## 2. Environment & Repository Scope
 
 This repository follows **Option B: Standalone Custom-Code Repository**. To prevent database credential leaks, core conflicts, and file bloat, this directory tracks **only custom assets** and documentation.
+
+* **Development & QA Environment**: Local by WP Engine is the active local environment.
+* **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole staging/QA location.
+* **Production Deployment Status**: No production deployment pipeline or method is designed or authorized.
+* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved locally inside the Local backups but excluded from Git tracking. No custom plugins or database state changes have been created.
 
 ### Tracked Folders
 * `docs/`: Technical audits, plans, architecture schemas, and guidelines.
@@ -33,18 +38,19 @@ This repository follows **Option B: Standalone Custom-Code Repository**. To prev
 
 ## 3. Local Sync Process
 
-Since this repository is standalone, code edits are written here and copied to the local runtime path for testing. 
+Since this repository is standalone, code edits are written here and copied to the local runtime path for testing.
 
 1. Copy `scripts/sync-config.example.ps1` to `scripts/sync-config.local.ps1`.
-2. Edit `sync-config.local.ps1` to point to the actual Local `wp-content` path (e.g. `C:\Users\joned\Local Sites\junkfeatherscom\app\public\wp-content`). This file is ignored by Git.
+2. Edit `sync-config.local.ps1` to set `$LocalSiteRootPath` and `$LocalBackupRootPath`. This file is ignored by Git.
 3. Run the synchronization helper:
    ```powershell
-   # Dry run (verify paths)
+   # Dry run (verify paths - default)
    .\scripts\sync-to-local.ps1
-   
+
    # Apply changes (performs a dry run, backs up local theme, then copies theme files)
    .\scripts\sync-to-local.ps1 -Apply
    ```
+*(Note: Applied sync was not run in Task 04; only dry-run checks have been completed).*
 
 ---
 
@@ -60,6 +66,6 @@ This script checks for forbidden file extensions (like `.sql`, `.zip`, `.config`
 
 ## 5. Antigravity Agent Authorization & Prohibitions
 
-* **Read-Only Local Baseline**: Antigravity is authorized to inspect local directories and write files to this repository.
+* **Task-Bound Permissions**: Antigravity may modify only the files and environments explicitly named in the current founder-issued, Council-reviewed task. No standing authorization exists for design changes, applied sync, plugin changes, database changes, or deployment.
 * **Database & Plugin Blocks**: Antigravity is NOT authorized to activate, deactivate, or modify WordPress database values or live plugins.
-* **LIVE DEPLOYMENT PROHIBITION**: Live site deployment is strictly prohibited during this phase. No changes may be pushed to production until a dedicated implementation plan is approved by the founder.
+* **LIVE DEPLOYMENT PROHIBITION**: Live site deployment is strictly prohibited during this phase.
