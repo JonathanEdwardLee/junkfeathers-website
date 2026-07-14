@@ -1,0 +1,60 @@
+# ==============================================================================
+# JUNKFEATHERS.COM - STANDALONE CODE REPOSITORY GITIGNORE
+# ==============================================================================
+
+# Local-only sync configuration
+scripts/sync-config.local.ps1
+*.local.ps1
+.local/
+tmp/
+temp/
+
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jks
+
+# WordPress and database material that must never enter this repository
+wp-config.php
+**/wp-config.php
+*.sql
+*.sql.gz
+*.sqlite
+*.db
+*.dump
+
+# Backups and archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+*.bak
+*.backup
+
+# Generated and runtime material
+*.log
+logs/
+cache/
+uploads/
+node_modules/
+vendor/
+
+# Editor and operating-system clutter
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary secret-scan output
+gitleaks-report.*
+secret-scan-report.*
