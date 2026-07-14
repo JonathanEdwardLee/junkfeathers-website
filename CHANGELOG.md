@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-07-14
+
+### Added
+- Centralized monochrome OLED custom properties (variables) inside [themes/junkfeathers-machine/style.css](themes/junkfeathers-machine/style.css).
+- Standardized site-wide generic `monospace` typography, black background, white text, and square geometry (zero rounded corners).
+- Configured clean accessibility styles: explicit high-contrast keyboard focus outlines (`:focus-visible` and `*-visible`) and `prefers-reduced-motion` timing overrides.
+- Implemented a small CSS class system for future retro machines: `.jf-machine-shell`, `.jf-panel`, `.jf-screen`, `.jf-btn`, `.jf-btn--primary`, `.jf-btn--secondary`, `.jf-label`, `.jf-meta`, `.jf-divider`, `.jf-stack`, `.jf-row`.
+- Added a subtle monochrome horizontal scanline gradient background to the body and screen classes.
+- Updated the child theme version to `0.2.0`.
+
+### Changed
+- Updated the Local homepage content (post ID 5) to display a framed monochrome machine front panel prototype (includes site title, supporting status string, and square buttons for MUSIC, TECH, and ORPHEUS DECK).
+
+---
+
 ## [0.4.0] - 2026-07-13
 
 ### Changed

@@ -1,11 +1,11 @@
-# Current State of the Project (v4)
+# Current State of the Project (v5)
 
-* **Last Updated**: July 13, 2026
+* **Last Updated**: July 14, 2026
 * **WordPress Version**: 7.0.1
 * **Local App version**: 10.1.1
 * **Database Target**: `local` (MySQL 8.4.0)
 * **Local Server**: Nginx, PHP 8.2.29
-* **Active Child Theme**: Junkfeathers Machine (v0.1.0)
+* **Active Child Theme**: Junkfeathers Machine (v0.2.0)
 * **Parent dependency**: GeneratePress
 
 ---
@@ -13,7 +13,7 @@
 ## 1. Local Baseline Backup Status
 
 * **Local Site State**: The local WordPress site was confirmed to open successfully in the Local GUI client, and the primary paths (`/`, `/music/`, `/tech/`, and `/orpheus-deck/`) are functional.
-* **Sync Execution**: Applied sync (`sync-to-local.ps1 -Apply`) was run in Task 06, copying the child-theme `functions.php` updates to the Local site directory and creating a safe pre-sync backup under the `Junkfeathers Website Backups` folder.
+* **Sync Execution**: Applied sync (`sync-to-local.ps1 -Apply`) was run in Task 07, copying the child-theme `style.css` updates (version 0.2.0) and creating a safe pre-sync backup under the `Junkfeathers Website Backups` folder.
 * **Founder Backup Status**: Jonathan Lee has confirmed that a fresh Local site export and database backup have been saved securely outside the repository and Local site directories.
 
 ---
@@ -55,7 +55,17 @@
 
 ---
 
-## 5. Site Navigation & Page Map
+## 5. Visual Foundation & Homepage Prototype
+
+* **Visual System**: Monochrome OLED (black site background, white primary text, gray details, restrained link green).
+* **Typography**: Default generic `monospace` family, no remote/Google fonts are loaded.
+* **Layout Structure**: Flat square geometry (zero rounded corners, zero drop shadows). Depth is supplied by border weights, grid spacing, and line dividers.
+* **Scanlines**: A subtle repeating linear gradient background simulates a retro CRT/OLED screen.
+* **Homepage Prototype**: Page ID 5 has been updated locally with a clean HTML structure wrapped in `.jf-machine-shell` and `.jf-screen`. It displays the site title, supporting text line (`Songs. Small tech. Junk Notes.`), and prominent square action buttons for **MUSIC**, **TECH**, and **ORPHEUS DECK**.
+
+---
+
+## 6. Site Navigation & Page Map
 
 The active site pages are:
 * `/` (Home): Split portal portal linking to Music and Tech.

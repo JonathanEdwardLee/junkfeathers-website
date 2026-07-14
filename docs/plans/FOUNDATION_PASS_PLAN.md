@@ -28,9 +28,8 @@ The primary goal of future phases will be to clean up local configurations, alig
 * **Question**: Which service (Hostinger Reach, Substack, Brevo, or Mailchimp) best meets our criteria for contact ownership, API access, portabilty, and GIF support?
 * **Outcome**: Formal selection of provider and sign-up form design.
 
-### Gate 5: Visual Foundations & Component Architecture
-* **Question**: What font delivery model and style palettes are selected?
-* **Outcome**: Approval of the CSS variables and grandfather-clock coordinates inside `style.css`.
+### Gate 5: Visual Foundations & Component Architecture [RESOLVED]
+* **Outcome**: The visual foundation pass 1 (monochrome OLED visual system, generic monospace typography, square borders) and a simple framed homepage prototype were successfully implemented on July 14, 2026, bumping the child theme version to `0.2.0`.
 
 ### Gate 6: Deployment Workflow Design
 * **Question**: How will code updates be deployed to Hostinger production without exposing SQL dumps, credentials, or local configs, given that no paid staging environment is planned?

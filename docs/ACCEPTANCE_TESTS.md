@@ -1,6 +1,6 @@
-# Acceptance Tests Checklist (v3)
+# Acceptance Tests Checklist (v4)
 
-This document contains the checklist required to verify the successful completion of the repository bootstrap, local workflow hardening, and footer copyright migration.
+This document contains the checklist required to verify the successful completion of the repository bootstrap, local workflow hardening, footer copyright migration, and visual foundation pass.
 
 ---
 
@@ -12,7 +12,7 @@ This document contains the checklist required to verify the successful completio
 ## 2. Environment & Tooling Boundaries
 * [ ] Local by WP Engine is identified as the active development and QA environment.
 * [ ] No paid Hostinger staging upgrade is planned, and no production deployment method is authorized.
-* [ ] Applied sync was run in Task 06 for theme files only.
+* [ ] Applied sync was run in Task 07 for child-theme style sheet and functions updates.
 * [ ] The four `.disabled` Hostinger folders remain preserved locally.
 * [ ] Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugin exists.
 
@@ -32,7 +32,17 @@ This document contains the checklist required to verify the successful completio
 * [ ] The backup directory resolves outside the repository, local site, app, and wp-content folders.
 * [ ] The repository verification script (`scripts/verify-repository.ps1`) executes successfully and flags any forbidden files or staged configurations.
 
-## 5. Child-Theme Copyright Migration Checks
+## 5. Visual Foundation & Homepage Prototype Checks
+* [ ] The style sheet is updated to version `0.2.0`.
+* [ ] Grayscale, border-weight, and spacing custom variables (tokens) are centralized in `style.css`.
+* [ ] Site-wide overrides enforce `font-family: monospace;`, black background, white text, and square buttons.
+* [ ] Restrained green color is only applied to links (`#7cff7c`) and warning/error focus indicators.
+* [ ] Focus outlines (`:focus-visible`) are styled clearly as square boxes.
+* [ ] A subtle repeating horizontal scanline background is implemented.
+* [ ] The local homepage (ID 5) displays a framed prototype including JUNKFEATHERS, the status line, and large square buttons for MUSIC, TECH, and ORPHEUS DECK.
+* [ ] Reduced-motion queries are handled appropriately.
+
+## 6. Child-Theme Copyright Migration Checks
 * [ ] The footer copyright filter exists in the tracked child-theme codebase [themes/junkfeathers-machine/functions.php](themes/junkfeathers-machine/functions.php).
 * [ ] The callback is a named function `junkfeathers_machine_footer_copyright` (no anonymous callback).
 * [ ] It fetches the dynamic year using `wp_date('Y')`.
@@ -44,7 +54,7 @@ This document contains the checklist required to verify the successful completio
 * [ ] The Code Snippets plugin is inactive locally but remains installed.
 * [ ] The database contains all 5 original snippet records.
 
-## 6. Git Initialization Verification
+## 7. Git Verification
 * [ ] Git is initialized locally in the repository folder.
 * [ ] The default branch is set to `main`.
 * [ ] The `.gitignore` and `.gitattributes` files are present and match their specifications.

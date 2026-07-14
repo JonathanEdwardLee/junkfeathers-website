@@ -4,60 +4,224 @@ Theme URI: https://junkfeathers.com
 Description: A lightweight GeneratePress child theme for Junkfeathers music, Orpheus Deck, O-FX, and retro OLED-style website experiments.
 Author: Jonathan Lee / Junkfeathers Tech
 Template: generatepress
-Version: 0.1.0
+Version: 0.2.0
 Text Domain: junkfeathers-machine
 */
 
-/* 
-  Junkfeathers Machine v0.1.0
+/*
+  Junkfeathers Machine v0.2.0
   Keep this file for child-theme CSS only.
   Do not edit the parent GeneratePress theme directly.
 */
 
 :root {
-  --jf-bg: #050505;
-  --jf-panel: #0d0d0d;
-  --jf-text: #f4f4f4;
-  --jf-muted: #b9b9b9;
-  --jf-glow: #9cffd0;
-  --jf-border: rgba(156, 255, 208, 0.45);
+  /* Colors - Monochrome OLED system */
+  --jf-bg: #000000;
+  --jf-fg: #ffffff;
+  --jf-gray-strong: #bfbfbf;
+  --jf-gray-mid: #8a8a8a;
+  --jf-gray-soft: #4d4d4d;
+  --jf-border-color: #ffffff;
+  --jf-link: #7cff7c;
+  --jf-link-hover: #aaffaa;
+
+  /* Borders */
+  --jf-border-major: 3px;
+  --jf-border-standard: 2px;
+  --jf-border-minor: 1px;
+
+  /* Spacing */
+  --jf-space-1: 4px;
+  --jf-space-2: 8px;
+  --jf-space-3: 12px;
+  --jf-space-4: 16px;
+  --jf-space-5: 24px;
+  --jf-space-6: 32px;
+
+  /* Sizing */
+  --jf-max-width: 800px;
+
+  /* Animation */
+  --jf-transition: 0.15s ease-in-out;
+}
+
+/* Base resets & typography */
+html, body {
+  background-color: var(--jf-bg) !important;
+  color: var(--jf-fg) !important;
+  font-family: monospace !important;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
-  background: var(--jf-bg);
-  color: var(--jf-text);
+  /* Subtle monochrome scanline effect */
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.015) 50%,
+    rgba(0, 0, 0, 0.15) 50%
+  );
+  background-size: 100% 4px;
+}
+
+/* Global Typography Elements */
+h1, h2, h3, h4, h5, h6 {
+  font-family: monospace !important;
+  color: var(--jf-fg) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.05em;
+}
+
+p, li, span, code, pre {
+  font-family: monospace !important;
 }
 
 a {
-  text-underline-offset: 0.18em;
-}
-
-.jf-machine-panel {
-  border: 1px solid var(--jf-border);
-  background: var(--jf-panel);
-  padding: clamp(1rem, 3vw, 2rem);
-  border-radius: 14px;
-  box-shadow: 0 0 24px rgba(156, 255, 208, 0.08);
-}
-
-.jf-oled-label {
-  color: var(--jf-glow);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.82rem;
-}
-
-.jf-button-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.jf-button {
-  display: inline-block;
-  border: 1px solid var(--jf-border);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
+  color: var(--jf-link) !important;
   text-decoration: none;
+  border-bottom: 1px dashed var(--jf-link);
+  transition: color var(--jf-transition), border-color var(--jf-transition);
+}
+
+a:hover, a:focus {
+  color: var(--jf-link-hover) !important;
+  border-bottom-style: solid;
+  outline: none;
+}
+
+a:focus-visible {
+  outline: var(--jf-border-standard) solid var(--jf-link) !important;
+  outline-offset: 4px;
+}
+
+/* Square focus outline for accessibility */
+*:focus-visible {
+  outline: var(--jf-border-standard) solid var(--jf-fg);
+  outline-offset: 2px;
+}
+
+/* GeneratePress & layout containers overrides */
+#page, #content, .site-content, .inside-article {
+  background-color: var(--jf-bg) !important;
+  color: var(--jf-fg) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.site-header, .site-footer, .footer-widgets, .main-navigation {
+  background-color: var(--jf-bg) !important;
+  border-color: var(--jf-border-color) !important;
+  border-radius: 0 !important;
+}
+
+/* Reusable Component Classes */
+
+/* 1. Shells and Containers */
+.jf-machine-shell {
+  max-width: var(--jf-max-width);
+  margin: var(--jf-space-5) auto;
+  padding: var(--jf-space-4);
+  border: var(--jf-border-major) solid var(--jf-border-color);
+  background-color: var(--jf-bg);
+  box-sizing: border-box;
+}
+
+.jf-panel {
+  border: var(--jf-border-standard) solid var(--jf-border-color);
+  padding: var(--jf-space-4);
+  margin-bottom: var(--jf-space-4);
+  background-color: var(--jf-bg);
+}
+
+.jf-screen {
+  background-color: #050505;
+  border: var(--jf-border-minor) solid var(--jf-gray-soft);
+  padding: var(--jf-space-3);
+  margin-bottom: var(--jf-space-4);
+  /* Retro horizontal scanlines */
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.005) 50%,
+    rgba(0, 0, 0, 0.2) 50%
+  );
+  background-size: 100% 4px;
+}
+
+/* 2. Controls and Buttons */
+.jf-btn {
+  display: inline-block;
+  font-family: monospace !important;
   font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none !important;
+  padding: var(--jf-space-3) var(--jf-space-5);
+  border-radius: 0 !important; /* Square corners forced */
+  border: var(--jf-border-standard) solid var(--jf-border-color) !important;
+  background-color: var(--jf-bg) !important;
+  color: var(--jf-fg) !important;
+  cursor: pointer;
+  transition: background-color var(--jf-transition), color var(--jf-transition);
+}
+
+.jf-btn:hover, .jf-btn:focus {
+  background-color: var(--jf-fg) !important;
+  color: var(--jf-bg) !important;
+}
+
+.jf-btn--primary {
+  border-width: var(--jf-border-major) !important;
+}
+
+.jf-btn--secondary {
+  border-width: var(--jf-border-minor) !important;
+  color: var(--jf-gray-strong) !important;
+  border-color: var(--jf-gray-strong) !important;
+}
+
+/* 3. Text & Layout helpers */
+.jf-label {
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--jf-gray-strong);
+  margin-bottom: var(--jf-space-1);
+  display: block;
+}
+
+.jf-meta {
+  font-size: 0.75em;
+  color: var(--jf-gray-mid);
+  text-transform: uppercase;
+}
+
+.jf-divider {
+  border: 0;
+  height: 0;
+  border-top: var(--jf-border-minor) dashed var(--jf-border-color);
+  margin: var(--jf-space-4) 0;
+}
+
+.jf-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jf-space-3);
+}
+
+.jf-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--jf-space-3);
+}
+
+/* Prefers-reduced-motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
 }
