@@ -13,7 +13,8 @@ This document records the official decisions, requirements, and revisions approv
 * **SEO Management**: **All in One SEO Pack** stays.
 * **Separate App Boundary**: The *Local Agora* remains a separate, standalone Flutter web application. WordPress provides only the landing/policy assets and launch redirections. Future substantial tools (like a web-based version of Orpheus Deck) will follow a separate application model.
 * **Repository Architecture**: Standalone, custom-code-only repository (Option B).
-* **Environment Change Freeze**: No changes to the live site, Local database, or plugin activation states are permitted during this phase.
+* **AI Provider for OpenAI**: The founder decided that this plugin is not needed. It was deactivated in the Local environment on July 13, 2026. The plugin remains installed locally; its live state remains unverified/unchanged, and deletion remains unauthorized.
+* **Environment Change Freeze**: No changes to the live site, Local database, or plugin activation states (except the authorized local deactivation of AI Provider) are permitted during this phase.
 * **Tactile Creative Directive**: Visual aesthetics are supplied/approved by Jonathan. The design must be mobile-first, prioritize accessibility, support user-triggered sound, and respect reduced-motion requests.
 
 ---
@@ -23,7 +24,6 @@ This document records the official decisions, requirements, and revisions approv
 * **Jetpack Module Configurations**: Optional modules (such as WooCommerce analytics, Blaze, JSON-API) are candidates for deactivation to improve speed, pending a local verification of dependencies.
 * **Hostinger Plugins**: Affiliate Marketing Tools and Easy Onboarding are removal candidates, but no action is authorized. Hostinger Reach is under review.
 * **Hostinger Reach**: Maintained as an open option. Reach supports external signup forms, CSV exports, public APIs, and integrations with systems like n8n. It is NOT host-locked. A final choice between Reach, Substack, Brevo, or Mailchimp remains open.
-* **AI Provider for OpenAI**: Under investigation. The actual usage of the registered OpenAI client provider is unverified.
 * **Akismet**: Remains active under review. If comments remain closed and WPForms uses other spam controls, it may be deactivated.
 * **LiteSpeed Cache**: Kept for production optimization. Caching remains disabled locally to prevent layout caching conflicts during development.
 

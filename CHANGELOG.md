@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-07-13
+
+### Changed
+- Recorded the local-only deactivation test of the **AI Provider for OpenAI** plugin (version 1.0.3, slug `ai-provider-for-openai`) on July 13, 2026, following the founder's decision that it is not needed.
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) to record the local deactivation, backup preconditions, and updated local technical plugin inventory.
+- Updated [docs/COUNCIL_DECISIONS.md](docs/COUNCIL_DECISIONS.md) to lock the AI Provider deactivation decision.
+- Updated [docs/plans/FOUNDATION_PASS_PLAN.md](docs/plans/FOUNDATION_PASS_PLAN.md) to mark the AI Provider utility decision gate as resolved.
+
+---
+
 ## [0.2.0] - 2026-07-13
 
 ### Changed

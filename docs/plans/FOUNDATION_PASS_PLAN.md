@@ -14,10 +14,8 @@ The primary goal of future phases will be to clean up local configurations, alig
 
 ## 2. Future Decision Gates
 
-### Gate 1: Determine AI Provider Utility
-* **Question**: Is the active `AI Provider for OpenAI` plugin required for any block generators, translation widgets, or text assistants used by the founder?
-* **Evidence Required**: Verification of active custom client handlers or dependencies inside the database.
-* **Outcome**: Decide whether to retain the plugin or mark it for deactivation.
+### Gate 1: Determine AI Provider Utility [RESOLVED]
+* **Outcome**: The founder decided that this plugin is not needed. It was successfully deactivated locally on July 13, 2026, as a reversible test. The plugin folder remains installed locally; its live state is unverified and unchanged, and deletion is unauthorized.
 
 ### Gate 2: Copyright Hook Location
 * **Question**: Should the active footer copyright filter (`generate_copyright`) remain inside the **Code Snippets** database list, or should it move to the active child theme's `functions.php`?
