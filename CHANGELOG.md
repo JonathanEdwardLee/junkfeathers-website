@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-07-14
+
+### Added
+- Created the database reproducibility record [docs/content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md](docs/content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md) to track visitor-facing Tech page layout content, asset IDs, CTAs, and recovery steps.
+
+### Changed
+- Bounded child-theme version to `0.3.0` inside enqueues, comments, and stylesheets.
+- Corrected child-theme styling rules inside [themes/junkfeathers-machine/style.css](themes/junkfeathers-machine/style.css):
+  - Changed global body background to solid black.
+  - Confined repeating scanlines strictly to display screens (`.jf-screen`).
+  - Restored browser default outlines for generic link focus while optimizing `:focus-visible` keyboard outlines.
+  - Added a baseline box-sizing wrapper and forced 44px tap target heights.
+- Updated the Local Tech page (ID 10) to display the concise monochrome machine prototype featuring `JUNKFEATHERS TECH`, subtitle, and the featured `ORPHEUS DECK` module with relative paths.
+- Updated the Local Orpheus Deck page (ID 12) with clean relative links and a return navigation path link (`< Return to Tech Workshop`).
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) to correct contradictions regarding LiteSpeed Cache (production-only caching) and Hostinger disabled plugins, and fix relative child-theme documentation paths.
+
+---
+
 ## [0.5.0] - 2026-07-14
 
 ### Added

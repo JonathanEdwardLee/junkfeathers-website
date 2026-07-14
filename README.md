@@ -19,7 +19,7 @@ This repository follows **Option B: Standalone Custom-Code Repository**. To prev
 * **Development & QA Environment**: Local by WP Engine is the active local environment.
 * **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole staging/QA location.
 * **Production Deployment Status**: No production deployment pipeline or method is designed or authorized.
-* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved locally inside the Local backups but excluded from Git tracking.
+* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved in the Local site's active plugin directory `wp-content/plugins/` (with a `.disabled` suffix to prevent activation) but excluded from Git tracking.
 * **Plugin State Status**: Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugins exist.
 
 ### Tracked Folders
@@ -51,7 +51,7 @@ Since this repository is standalone, code edits are written here and copied to t
    # Apply changes (performs a dry run, backs up local theme, then copies theme files)
    .\scripts\sync-to-local.ps1 -Apply
    ```
-*(Note: Applied sync was run in Task 06 to update child-theme functions.php copyright hooks).*
+*(Note: Applied sync was run in Task 08 to update child-theme functions.php version comments and style.css monochrome styling rules).*
 
 ---
 

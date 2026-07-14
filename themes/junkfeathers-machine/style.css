@@ -4,15 +4,20 @@ Theme URI: https://junkfeathers.com
 Description: A lightweight GeneratePress child theme for Junkfeathers music, Orpheus Deck, O-FX, and retro OLED-style website experiments.
 Author: Jonathan Lee / Junkfeathers Tech
 Template: generatepress
-Version: 0.2.0
+Version: 0.3.0
 Text Domain: junkfeathers-machine
 */
 
 /*
-  Junkfeathers Machine v0.2.0
+  Junkfeathers Machine v0.3.0
   Keep this file for child-theme CSS only.
   Do not edit the parent GeneratePress theme directly.
 */
+
+/* Box-sizing baseline */
+*, *:before, *:after {
+  box-sizing: border-box;
+}
 
 :root {
   /* Colors - Monochrome OLED system */
@@ -56,15 +61,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-body {
-  /* Subtle monochrome scanline effect */
-  background-image: linear-gradient(
-    rgba(255, 255, 255, 0.015) 50%,
-    rgba(0, 0, 0, 0.15) 50%
-  );
-  background-size: 100% 4px;
-}
-
 /* Global Typography Elements */
 h1, h2, h3, h4, h5, h6 {
   font-family: monospace !important;
@@ -74,10 +70,14 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 1.5em;
   margin-bottom: 0.5em;
   letter-spacing: 0.05em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 p, li, span, code, pre {
   font-family: monospace !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 a {
@@ -90,17 +90,22 @@ a {
 a:hover, a:focus {
   color: var(--jf-link-hover) !important;
   border-bottom-style: solid;
-  outline: none;
 }
 
+/* Clear fallback outline for pointer/keyboard focus */
+a:focus {
+  outline: 2px solid var(--jf-link);
+  outline-offset: 4px;
+}
+
+/* Custom focus indicator for keyboard users */
 a:focus-visible {
   outline: var(--jf-border-standard) solid var(--jf-link) !important;
   outline-offset: 4px;
 }
 
-/* Square focus outline for accessibility */
 *:focus-visible {
-  outline: var(--jf-border-standard) solid var(--jf-fg);
+  outline: var(--jf-border-standard) solid var(--jf-fg) !important;
   outline-offset: 2px;
 }
 
@@ -123,11 +128,11 @@ a:focus-visible {
 /* 1. Shells and Containers */
 .jf-machine-shell {
   max-width: var(--jf-max-width);
+  width: 100%;
   margin: var(--jf-space-5) auto;
   padding: var(--jf-space-4);
   border: var(--jf-border-major) solid var(--jf-border-color);
   background-color: var(--jf-bg);
-  box-sizing: border-box;
 }
 
 .jf-panel {
@@ -142,7 +147,7 @@ a:focus-visible {
   border: var(--jf-border-minor) solid var(--jf-gray-soft);
   padding: var(--jf-space-3);
   margin-bottom: var(--jf-space-4);
-  /* Retro horizontal scanlines */
+  /* Retro horizontal scanlines confined to display screens only */
   background-image: linear-gradient(
     rgba(255, 255, 255, 0.005) 50%,
     rgba(0, 0, 0, 0.2) 50%
@@ -153,23 +158,28 @@ a:focus-visible {
 /* 2. Controls and Buttons */
 .jf-btn {
   display: inline-block;
+  min-height: 44px; /* Ensure 44px tap target height baseline */
+  line-height: 1.2;
   font-family: monospace !important;
   font-weight: 700;
   text-transform: uppercase;
   text-align: center;
   text-decoration: none !important;
-  padding: var(--jf-space-3) var(--jf-space-5);
+  padding: 12px 24px;
   border-radius: 0 !important; /* Square corners forced */
   border: var(--jf-border-standard) solid var(--jf-border-color) !important;
   background-color: var(--jf-bg) !important;
   color: var(--jf-fg) !important;
   cursor: pointer;
   transition: background-color var(--jf-transition), color var(--jf-transition);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .jf-btn:hover, .jf-btn:focus {
   background-color: var(--jf-fg) !important;
   color: var(--jf-bg) !important;
+  outline: none;
 }
 
 .jf-btn--primary {
@@ -216,6 +226,22 @@ a:focus-visible {
   flex-direction: row;
   flex-wrap: wrap;
   gap: var(--jf-space-3);
+}
+
+/* Responsive Overrides */
+@media (max-width: 480px) {
+  .jf-machine-shell {
+    margin: var(--jf-space-3) auto;
+    padding: var(--jf-space-3);
+  }
+  .jf-btn {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .jf-row {
+    flex-direction: column !important;
+  }
 }
 
 /* Prefers-reduced-motion overrides */
