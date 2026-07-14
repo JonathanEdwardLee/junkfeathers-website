@@ -4,12 +4,12 @@ Theme URI: https://junkfeathers.com
 Description: A lightweight GeneratePress child theme for Junkfeathers music, Orpheus Deck, O-FX, and retro OLED-style website experiments.
 Author: Jonathan Lee / Junkfeathers Tech
 Template: generatepress
-Version: 0.4.0
+Version: 0.5.0
 Text Domain: junkfeathers-machine
 */
 
 /*
-  Junkfeathers Machine v0.4.0
+  Junkfeathers Machine v0.5.0
   Keep this file for child-theme CSS only.
   Do not edit the parent GeneratePress theme directly.
 */
@@ -305,6 +305,105 @@ a:focus-visible {
   color: var(--jf-gray-strong);
   margin-bottom: var(--jf-space-1);
   display: block;
+}
+
+/* 5. Signup Form Prototype Classes */
+.jf-signup-panel {
+  border: var(--jf-border-standard) solid var(--jf-border-color);
+  padding: var(--jf-space-4);
+  background-color: var(--jf-bg);
+}
+
+.jf-signup-form {
+  margin: var(--jf-space-4) 0;
+}
+
+.jf-form-field {
+  margin-bottom: var(--jf-space-3);
+}
+
+.jf-field-label {
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--jf-fg);
+  margin-bottom: var(--jf-space-1);
+  display: block;
+}
+
+.jf-email-input {
+  width: 100%;
+  height: 44px; /* Ensured 44px minimum target height */
+  background-color: var(--jf-bg);
+  color: var(--jf-fg);
+  border: var(--jf-border-minor) solid var(--jf-border-color);
+  padding: 0 var(--jf-space-2);
+  font-family: monospace !important;
+  font-size: 1em;
+  border-radius: 0;
+}
+
+.jf-email-input:focus {
+  outline: var(--jf-border-standard) solid var(--jf-link);
+  outline-offset: 2px;
+}
+
+.jf-consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--jf-space-2);
+  margin-bottom: var(--jf-space-4);
+  text-align: left;
+}
+
+.jf-consent-copy {
+  font-size: 0.8em;
+  color: var(--jf-gray-strong);
+  line-height: 1.4;
+  user-select: none;
+}
+
+/* Checkbox alignment and size */
+.jf-consent-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  margin-top: 2px;
+  accent-color: var(--jf-link);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.jf-btn--inactive {
+  background-color: var(--jf-bg) !important;
+  color: var(--jf-gray-mid) !important;
+  border-color: var(--jf-gray-soft) !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+.jf-btn--inactive:hover, .jf-btn--inactive:focus {
+  background-color: var(--jf-bg) !important;
+  color: var(--jf-gray-mid) !important;
+}
+
+.jf-privacy-note {
+  font-size: 0.75em;
+  color: var(--jf-gray-mid);
+  text-transform: uppercase;
+}
+
+.jf-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 /* Responsive Overrides */

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] - 2026-07-14
+
+### Added
+- Created the database content record [docs/content/EMAIL_SIGNUP_LOCAL_PROTOTYPE_V1.md](docs/content/EMAIL_SIGNUP_LOCAL_PROTOTYPE_V1.md) detailing the nonfunctional signup form prototype markup, placements, styling classes, and recovery snapshots.
+- Created the future privacy requirements guide [docs/legal/EMAIL_SIGNUP_PRIVACY_REQUIREMENTS_V1.md](docs/legal/EMAIL_SIGNUP_PRIVACY_REQUIREMENTS_V1.md) defining the policies, consent frameworks, data minimization principles, and data processor disclosures needed before activating the signup form.
+- Created the activation gates checklist [docs/integrations/HOSTINGER_REACH_ACTIVATION_CHECKLIST.md](docs/integrations/HOSTINGER_REACH_ACTIVATION_CHECKLIST.md) mapping all 16 technical milestones required to activate the campaign system.
+
+### Changed
+- Bounded child-theme version to `0.5.0` inside enqueues, comments, and stylesheets.
+- Appended signup form layout and design classes to [themes/junkfeathers-machine/style.css](themes/junkfeathers-machine/style.css): `.jf-signup-panel`, `.jf-signup-form`, `.jf-form-field`, `.jf-field-label`, `.jf-email-input`, `.jf-consent-row`, `.jf-consent-copy`, `.jf-btn--inactive`, `.jf-privacy-note`, and `.jf-visually-hidden`.
+- Cleaned up two unnecessary metadata rows (Release Date and Engine) from the Local Orpheus Deck page (ID 12) and the content record [docs/content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md](docs/content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md).
+- Updated the Local homepage (post ID 5) to display the nonfunctional signup panel prototype at the bottom of the machine panel shell.
+- Updated the Local Orpheus Deck page (ID 12) to display the nonfunctional signup panel prototype after the Local-First Privacy panel.
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) to reflect child-theme version `0.5.0` and the signup form prototype placements.
+- Updated [docs/ACCEPTANCE_TESTS.md](docs/ACCEPTANCE_TESTS.md) to include verification checklist items for signup layouts, focus order, checkbox behavior, and data suppression.
+
+---
+
 ## [0.7.0] - 2026-07-14
 
 ### Added

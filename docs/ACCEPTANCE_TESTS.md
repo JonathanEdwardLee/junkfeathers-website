@@ -1,4 +1,4 @@
-# Acceptance Tests Checklist (v6)
+# Acceptance Tests Checklist (v7)
 
 This document contains the checklist required to verify the successful completion of the repository bootstrap, local workflow hardening, footer copyright migration, and visual foundation pass.
 
@@ -12,7 +12,7 @@ This document contains the checklist required to verify the successful completio
 ## 2. Environment & Tooling Boundaries
 * [ ] Local by WP Engine is identified as the active development and QA environment.
 * [ ] No paid Hostinger staging upgrade is planned, and no production deployment method is authorized.
-* [ ] Applied sync was run in Task 09 for child-theme style sheet and functions updates.
+* [ ] Applied sync was run in Task 10 for child-theme style sheet and functions updates.
 * [ ] The four `.disabled` Hostinger folders remain preserved locally.
 * [ ] Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugin exists.
 
@@ -33,7 +33,7 @@ This document contains the checklist required to verify the successful completio
 * [ ] The repository verification script (`scripts/verify-repository.ps1`) executes successfully and flags any forbidden files or staged configurations.
 
 ## 5. Visual Foundation & Homepage Prototype Checks
-* [ ] The style sheet is updated to version `0.4.0`.
+* [ ] The style sheet is updated to version `0.5.0`.
 * [ ] Grayscale, border-weight, and spacing custom variables (tokens) are centralized in `style.css`.
 * [ ] Site-wide overrides enforce `font-family: monospace;`, solid black background, white text, and square buttons.
 * [ ] Restrained green color is only applied to links (`#7cff7c`) and warning/error focus indicators.
@@ -67,7 +67,20 @@ This document contains the checklist required to verify the successful completio
 * [ ] The Code Snippets plugin is inactive locally but remains installed.
 * [ ] The database contains all 5 original snippet records.
 
-## 8. Git Verification
+## 8. Nonfunctional Email Signup Checks
+* [ ] The signup form prototype uses the exact required copy and consent wording.
+* [ ] The signup form resides only on the homepage (ID 5) and the Orpheus Deck page (ID 12).
+* [ ] On the homepage, the signup form is compact and placed below the main navigation controls.
+* [ ] On the Orpheus Deck page, the signup form is placed after the Local-First Privacy panel and before the return link.
+* [ ] The Hostinger Reach plugin remains inactive and unconnected.
+* [ ] The form contains no action/method endpoint, and the submit button is a nonfunctional `<button type="button">` with `aria-disabled="true"`.
+* [ ] No subscriber data is transmitted or stored, and no cookies are written.
+* [ ] Checkbox and email inputs start disabled and unchecked.
+* [ ] No suitable site-wide privacy policy was fabricated; the prototype shows the required blocker disclaimer.
+* [ ] The email signup privacy requirements and Hostinger Reach activation gates are fully documented.
+* [ ] Responsive check: the signup panel fits 320px mobile width without overflow.
+
+## 9. Git Verification
 * [ ] Git is initialized locally in the repository folder.
 * [ ] The default branch is set to `main`.
 * [ ] The `.gitignore` and `.gitattributes` files are present and match their specifications.

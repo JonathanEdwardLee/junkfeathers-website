@@ -24,9 +24,8 @@ The primary goal of future phases will be to clean up local configurations, alig
 * **Question**: Which of the 11 active Jetpack modules can be deactivated locally to reduce script size and load times?
 * **Tasks**: Perform local profiling with query monitors to verify the load overhead of Jetpack modules like Stats, Blaze, and blocks.
 
-### Gate 4: Email Marketing Provider Selection
-* **Question**: Which service (Hostinger Reach, Substack, Brevo, or Mailchimp) best meets our criteria for contact ownership, API access, portabilty, and GIF support?
-* **Outcome**: Formal selection of provider and sign-up form design.
+### Gate 4: Email Marketing Provider Selection [RESOLVED]
+* **Outcome**: The founder approved the Hostinger Reach pilot as the first-year provider. In Task 10, a visually complete but nonfunctional signup prototype was placed on the Local homepage and Orpheus Deck page, child-theme version was bumped to `0.5.0`, and consent and activation checklists were documented. Actual integration and activation remain inactive.
 
 ### Gate 5: Visual Foundations & Component Architecture [RESOLVED]
 * **Outcome**: The visual foundation pass 1 (monochrome OLED visual system, generic monospace typography, square borders, solid black body background, scanlines restricted to screens), the Tech landing page prototype (featuring Orpheus Deck), and the Orpheus Deck conversion page prototype (ID 12) were successfully implemented on July 14, 2026, bumping the child theme version to `0.4.0`.
