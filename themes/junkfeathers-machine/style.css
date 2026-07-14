@@ -4,12 +4,12 @@ Theme URI: https://junkfeathers.com
 Description: A lightweight GeneratePress child theme for Junkfeathers music, Orpheus Deck, O-FX, and retro OLED-style website experiments.
 Author: Jonathan Lee / Junkfeathers Tech
 Template: generatepress
-Version: 0.3.0
+Version: 0.4.0
 Text Domain: junkfeathers-machine
 */
 
 /*
-  Junkfeathers Machine v0.3.0
+  Junkfeathers Machine v0.4.0
   Keep this file for child-theme CSS only.
   Do not edit the parent GeneratePress theme directly.
 */
@@ -176,10 +176,28 @@ a:focus-visible {
   overflow-wrap: break-word;
 }
 
-.jf-btn:hover, .jf-btn:focus {
+.jf-btn:hover {
   background-color: var(--jf-fg) !important;
   color: var(--jf-bg) !important;
+}
+
+/* Fallback outline for pointer/keyboard focus in older browsers */
+.jf-btn:focus {
+  background-color: var(--jf-fg) !important;
+  color: var(--jf-bg) !important;
+  outline: var(--jf-border-standard) solid var(--jf-fg);
+  outline-offset: 2px;
+}
+
+/* Suppress outlines on pointer click focus in modern browsers supporting focus-visible */
+.jf-btn:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* Custom focus outlines on keyboard navigation */
+.jf-btn:focus-visible {
+  outline: var(--jf-border-standard) solid var(--jf-fg) !important;
+  outline-offset: 4px !important;
 }
 
 .jf-btn--primary {
@@ -226,6 +244,67 @@ a:focus-visible {
   flex-direction: row;
   flex-wrap: wrap;
   gap: var(--jf-space-3);
+}
+
+/* 4. Tech/Orpheus Helper Classes */
+.jf-text-center {
+  text-align: center;
+}
+
+.jf-machine-header {
+  text-align: center;
+  padding: var(--jf-space-3) 0;
+}
+
+.jf-machine-title {
+  font-size: 2.2em;
+  margin: 0;
+  letter-spacing: 0.15em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.jf-machine-subtitle {
+  font-size: 1em;
+  letter-spacing: 0.05em;
+  margin: var(--jf-space-2) 0 0 0;
+}
+
+.jf-feature-media {
+  max-width: 100%;
+  height: auto;
+  border: var(--jf-border-minor) solid var(--jf-gray-soft);
+  display: block;
+  margin: 0 auto;
+}
+
+.jf-action-panel {
+  text-align: center;
+  padding: var(--jf-space-5) var(--jf-space-4);
+  background-color: var(--jf-bg);
+}
+
+.jf-info-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--jf-space-2) var(--jf-space-4);
+  margin: var(--jf-space-4) 0;
+}
+
+@media (max-width: 480px) {
+  .jf-info-grid {
+    grid-template-columns: 1fr;
+    gap: var(--jf-space-1);
+  }
+}
+
+.jf-status-strip {
+  font-size: 0.8em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--jf-gray-strong);
+  margin-bottom: var(--jf-space-1);
+  display: block;
 }
 
 /* Responsive Overrides */

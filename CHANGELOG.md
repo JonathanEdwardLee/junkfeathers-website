@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - 2026-07-14
+
+### Added
+- Created the database reproducibility record [docs/content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md](docs/content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md) to track visitor-facing Orpheus Deck page layout content, asset IDs, CTAs, and recovery steps.
+
+### Changed
+- Bounded child-theme version to `0.4.0` inside enqueues, comments, and stylesheets.
+- Corrected button focus outline specification in [themes/junkfeathers-machine/style.css](themes/junkfeathers-machine/style.css) to support high-contrast keyboard outlines (`:focus-visible` / `*-visible`) while keeping clean clicks for pointer navigation.
+- Added reusable layout and design utility helper classes: `.jf-machine-header`, `.jf-machine-title`, `.jf-machine-subtitle`, `.jf-feature-media`, `.jf-action-panel`, `.jf-info-grid`, `.jf-status-strip`, `.jf-text-center`.
+- Updated the Local Orpheus Deck page (ID 12) to display the conversion page prototype with header, dynamic download button, descriptive purpose block, local-first privacy statement, and screenshots.
+- Updated [docs/content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md](docs/content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md) to replace executable shell commands with descriptive snapshots and relative paths.
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) to reflect child-theme version `0.4.0` enqueues and stylesheets, describe the Orpheus Deck page prototype, and clarify local caching (LiteSpeed Cache) and Hostinger deactivations.
+
+---
+
 ## [0.6.0] - 2026-07-14
 
 ### Added

@@ -1,11 +1,11 @@
-# Current State of the Project (v6)
+# Current State of the Project (v7)
 
 * **Last Updated**: July 14, 2026
 * **WordPress Version**: 7.0.1
 * **Local App version**: 10.1.1
 * **Database Target**: `local` (MySQL 8.4.0)
 * **Local Server**: Nginx, PHP 8.2.29
-* **Active Child Theme**: Junkfeathers Machine (v0.3.0)
+* **Active Child Theme**: Junkfeathers Machine (v0.4.0)
 * **Parent dependency**: GeneratePress
 
 ---
@@ -13,7 +13,7 @@
 ## 1. Local Baseline Backup Status
 
 * **Local Site State**: The local WordPress site is running. The primary paths (`/`, `/music/`, `/tech/`, and `/orpheus-deck/`) are functional.
-* **Sync Execution**: Applied sync (`sync-to-local.ps1 -Apply`) was run in Task 08, copying the child-theme `style.css` and `functions.php` updates (version 0.3.0) and creating a safe pre-sync backup under the `Junkfeathers Website Backups` folder.
+* **Sync Execution**: Applied sync (`sync-to-local.ps1 -Apply`) was run in Task 09, copying the child-theme `style.css` and `functions.php` updates (version 0.4.0) and creating a safe pre-sync backup under the `Junkfeathers Website Backups` folder.
 * **Founder Backup Status**: Jonathan Lee has confirmed that a fresh Local site export and database backup have been saved securely outside the repository and Local site directories.
 
 ---
@@ -62,7 +62,8 @@
 * **Layout Structure**: Flat square geometry (zero rounded corners, zero drop shadows). Depth is supplied by border weights, grid spacing, and line dividers.
 * **Scanlines**: Confined strictly to screen display classes (such as `.jf-screen`). The global body background is set to solid black.
 * **Homepage**: ID 5 is updated locally to display a framed monochrome machine front panel prototype (includes site title, status string, and square navigation buttons).
-* **Tech Landing Page**: ID 10 is updated locally as a concise monochrome machine directory featuring Orpheus Deck (ID 12) with a custom CTA and return path.
+* **Tech Landing Page**: ID 10 is updated locally as a concise monochrome machine directory featuring Orpheus Deck (ID 12) with a custom CTA and relative paths.
+* **Orpheus Deck Page**: ID 12 is updated locally as a high-conversion landing page containing a dynamic download button, descriptive purpose block, local-first privacy statement, and a clear return navigation link to `/tech/`. Unreleased branch features (V34/CUT) and O-FX/LIMIT panels are omitted.
 
 ---
 
@@ -72,7 +73,7 @@ The active site pages are:
 * `/` (Home): A monochrome OLED machine front panel prototype.
 * `/music/`: A list of YouTube, Bandcamp, and Spotify embeds.
 * `/tech/`: A concise monochrome machine directory featuring Orpheus Deck.
-* `/orpheus-deck/`: Android recorder app info, Play Store outbound link, and a return link to `/tech/`.
+* `/orpheus-deck/`: Android recorder app info, Play Store outbound link, screenshots, local-first privacy panel, and a return link to `/tech/`.
 * `/orpheus-deck-privacy-policy/`: Compliant App privacy policy.
 * `/chronos/`: Empty draft placeholder.
 
@@ -81,6 +82,6 @@ The active site pages are:
 ## 7. Versioning Conventions
 
 To maintain clear and accurate history tracking, we apply two separate versioning pathways:
-1. **Root Repository Changelog**: Tracks workspace setup, script configurations, database reproducibility records, and workflow milestones (e.g. `0.5.0`, `0.6.0`).
-2. **Child-Theme Version**: Tracks visitor-facing child theme code, styles, and template assets loaded by WordPress (e.g. `0.2.0`, `0.3.0`).
+1. **Root Repository Changelog**: Tracks workspace setup, script configurations, database reproducibility records, and workflow milestones (e.g. `0.5.0`, `0.6.0`, `0.7.0`).
+2. **Child-Theme Version**: Tracks visitor-facing child theme code, styles, and template assets loaded by WordPress (e.g. `0.2.0`, `0.3.0`, `0.4.0`).
 *They serve distinct purposes and do not need to share identical version numbers.*

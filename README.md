@@ -51,7 +51,7 @@ Since this repository is standalone, code edits are written here and copied to t
    # Apply changes (performs a dry run, backs up local theme, then copies theme files)
    .\scripts\sync-to-local.ps1 -Apply
    ```
-*(Note: Applied sync was run in Task 08 to update child-theme functions.php version comments and style.css monochrome styling rules).*
+*(Note: Applied sync was run in Task 09 to update child-theme functions.php version comments and style.css focus accessibility rules).*
 
 ---
 

@@ -64,8 +64,10 @@ The Tech landing page utilizes the monochrome OLED design tokens defined in the 
 
 ## 4. Rollback Protocol
 
-To restore the original page content (which consisted only of the hyperlinked Orpheus Deck feature graphic), execute the following WP-CLI command locally:
+To restore the original Tech page content (which consisted only of the hyperlinked Orpheus Deck feature graphic), update the post content in WordPress using the editor or run a reviewed database update command using this snapshot of the prior HTML content:
 
-```powershell
-& "wp-cli" post update 10 --post_content='<!-- wp:image {"lightbox":{"enabled":false},"id":98,"linkDestination":"custom"} --><figure class="wp-block-image"><a href="https://junkfeatherscom.local/orpheus-deck/"><img src="https://junkfeatherscom.local/wp-content/uploads/2026/07/OrpheusDeck_GooglePlay_FeatureGraphic_1024x500.png" alt="" class="wp-image-98"/></a></figure><!-- /wp:image -->'
+```html
+<!-- wp:image {"lightbox":{"enabled":false},"id":98,"linkDestination":"custom"} -->
+<figure class="wp-block-image"><a href="/orpheus-deck/"><img src="/wp-content/uploads/2026/07/OrpheusDeck_GooglePlay_FeatureGraphic_1024x500.png" alt="" class="wp-image-98"/></a></figure>
+<!-- /wp:image -->
 ```

@@ -1,4 +1,4 @@
-# Acceptance Tests Checklist (v5)
+# Acceptance Tests Checklist (v6)
 
 This document contains the checklist required to verify the successful completion of the repository bootstrap, local workflow hardening, footer copyright migration, and visual foundation pass.
 
@@ -12,7 +12,7 @@ This document contains the checklist required to verify the successful completio
 ## 2. Environment & Tooling Boundaries
 * [ ] Local by WP Engine is identified as the active development and QA environment.
 * [ ] No paid Hostinger staging upgrade is planned, and no production deployment method is authorized.
-* [ ] Applied sync was run in Task 08 for child-theme style sheet and functions updates.
+* [ ] Applied sync was run in Task 09 for child-theme style sheet and functions updates.
 * [ ] The four `.disabled` Hostinger folders remain preserved locally.
 * [ ] Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugin exists.
 
@@ -33,7 +33,7 @@ This document contains the checklist required to verify the successful completio
 * [ ] The repository verification script (`scripts/verify-repository.ps1`) executes successfully and flags any forbidden files or staged configurations.
 
 ## 5. Visual Foundation & Homepage Prototype Checks
-* [ ] The style sheet is updated to version `0.3.0`.
+* [ ] The style sheet is updated to version `0.4.0`.
 * [ ] Grayscale, border-weight, and spacing custom variables (tokens) are centralized in `style.css`.
 * [ ] Site-wide overrides enforce `font-family: monospace;`, solid black background, white text, and square buttons.
 * [ ] Restrained green color is only applied to links (`#7cff7c`) and warning/error focus indicators.
@@ -41,6 +41,7 @@ This document contains the checklist required to verify the successful completio
 * [ ] Repeating horizontal scanline backgrounds are confined strictly to screen classes (e.g. `.jf-screen`) and not applied globally.
 * [ ] The local homepage (ID 5) displays a framed prototype including JUNKFEATHERS, the status line, and large square buttons for MUSIC, TECH, and ORPHEUS DECK.
 * [ ] Reduced-motion queries are handled appropriately.
+* [ ] Focus regression is resolved: keyboard focus displays high-contrast outlines for all buttons and links, while pointer clicks do not trigger outlines.
 
 ## 6. Tech Landing Page & Orpheus Checks
 * [ ] The local Tech page (ID 10) displays the framed prototype featuring `JUNKFEATHERS TECH`, subtitle, and the featured `ORPHEUS DECK` module.
@@ -48,7 +49,11 @@ This document contains the checklist required to verify the successful completio
 * [ ] The future machine banner `MORE MACHINES IN DEVELOPMENT` is present as a dashed-border panel.
 * [ ] The Orpheus Deck page (ID 12) contains a clear return path link `< Return to Tech Workshop` routing back to `/tech/`.
 * [ ] Page links and media assets utilize relative paths (no hardcoded domain prefixes).
-* [ ] The exact implementation details are captured in the tracked database reproducibility record [docs/content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md](content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md).
+* [ ] The exact Tech page implementation details are captured in the database reproducibility record [docs/content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md](content/TECH_PAGE_LOCAL_PROTOTYPE_V1.md).
+* [ ] The local Orpheus Deck page (ID 12) displays the conversion page prototype with header, dynamic download button, descriptive purpose block, local-first privacy statement, and screenshots.
+* [ ] Unreleased work (V34/CUT) is omitted from public copy.
+* [ ] O-FX/LIMIT is omitted since no verified visitor claims existed in the baseline content.
+* [ ] The exact Orpheus page implementation details are captured in the database reproducibility record [docs/content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md](content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md).
 
 ## 7. Child-Theme Copyright Migration Checks
 * [ ] The footer copyright filter exists in the tracked child-theme codebase [themes/junkfeathers-machine/functions.php](themes/junkfeathers-machine/functions.php).

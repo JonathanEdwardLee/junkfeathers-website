@@ -3,7 +3,7 @@
  * Junkfeathers Machine child theme functions.
  *
  * Parent theme: GeneratePress
- * Version: 0.3.0
+ * Version: 0.4.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
