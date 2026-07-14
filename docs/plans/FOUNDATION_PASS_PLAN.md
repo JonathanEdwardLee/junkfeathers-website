@@ -1,6 +1,6 @@
 # Foundation Pass Plan (Future Reference)
 
-This document outlines a neutral roadmap of decision gates for future project phases. All steps remain subject to explicit review and approval by Jonathan Lee and the Website 01Council.
+This document outlines a neutral roadmap of decision gates for future project phases. All steps remain subject to explicit review and approval by Jonathan Lee and the Website Council.
 
 * **Current Status**: **UNDER REVIEW** (No implementation, deletion, or deployment tasks are authorized)
 
@@ -17,9 +17,8 @@ The primary goal of future phases will be to clean up local configurations, alig
 ### Gate 1: Determine AI Provider Utility [RESOLVED]
 * **Outcome**: The founder decided that this plugin is not needed. It was successfully deactivated locally on July 13, 2026, as a reversible test. The plugin folder remains installed locally; its live state is unverified and unchanged, and deletion is unauthorized.
 
-### Gate 2: Copyright Hook Location
-* **Question**: Should the active footer copyright filter (`generate_copyright`) remain inside the **Code Snippets** database list, or should it move to the active child theme's `functions.php`?
-* **Context**: Since it is a theme-specific filter, keeping it in the child theme keeps files unified. No plugin creation is planned yet.
+### Gate 2: Copyright Hook Location [RESOLVED]
+* **Outcome**: The GeneratePress footer copyright filter was successfully migrated from the database Snippets list to the child theme `functions.php` on July 13, 2026, as a version-controlled callback function `junkfeathers_machine_footer_copyright`. The Code Snippets plugin was deactivated locally as a reversible test; its five snippet records remain stored in the database, and deletion of the plugin is unauthorized.
 
 ### Gate 3: Jetpack Module Audit
 * **Question**: Which of the 11 active Jetpack modules can be deactivated locally to reduce script size and load times?

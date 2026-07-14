@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-07-13
+
+### Changed
+- Migrated the GeneratePress footer copyright filter from the Code Snippets database to the child theme [themes/junkfeathers-machine/functions.php](themes/junkfeathers-machine/functions.php) as a named, documented callback `junkfeathers_machine_footer_copyright`.
+- Deactivated the **Code Snippets** plugin locally (version 3.9.6, slug `code-snippets`) following the successful callback verification. The plugin remains installed locally, and its 5 snippet records remain stored in the database.
+- Corrected all authority references in the repository from `Website 01Council` to `Website Council`.
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) and [docs/COUNCIL_DECISIONS.md](docs/COUNCIL_DECISIONS.md) to record the local deactivation, backup status, and updated local technical plugin inventory.
+- Updated [docs/plans/FOUNDATION_PASS_PLAN.md](docs/plans/FOUNDATION_PASS_PLAN.md) to mark the copyright hook location decision gate as resolved.
+
+---
+
 ## [0.3.0] - 2026-07-13
 
 ### Changed

@@ -4,8 +4,9 @@
 * **Active Development/QA Environment**: Local by WP Engine (no staging subdomain or server exists)
 * **Production Deployment Status**: Not designed or authorized
 * **Staging Upgrade Status**: No paid Hostinger staging upgrade is planned
-* **Task 04 Operations**: Applied sync (`sync-to-local.ps1 -Apply`) was NOT run in Task 04; only dry-run checks have been completed. The local site, database, and plugins remain completely unchanged.
-* **Hostinger Plugin Status**: The four `.disabled` Hostinger folders are preserved locally inside the Local site backups but excluded from Git. No custom plugin exists, and no plugin state changed.
+* **Task 06 Operations**: Applied sync (`sync-to-local.ps1 -Apply`) was run in Task 06 to sync the child-theme `functions.php` copyright hook. No databases, uploads, core files, or plugins were synced.
+* **Hostinger Plugin Status**: The four `.disabled` Hostinger folders are preserved locally inside the Local site backups but excluded from Git.
+* **Plugin State Status**: Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugin exists.
 
 ---
 
@@ -21,4 +22,4 @@ No deployment scripts (such as Webhooks, GitHub Actions, custom FTP deployments,
 
 This codebase is in the repository bootstrapping and alignment phase. We are verifying local configurations and establishing clean Git files.
 
-Any deployment to staging or production is blocked until a dedicated **Deployment and Staging Implementation Plan** is approved by Jonathan Lee and the Website 01Council.
+Any deployment to staging or production is blocked until a dedicated **Deployment and Staging Implementation Plan** is approved by Jonathan Lee and the Website Council.

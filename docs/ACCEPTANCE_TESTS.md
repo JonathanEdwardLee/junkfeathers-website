@@ -1,20 +1,20 @@
-# Acceptance Tests Checklist (v2)
+# Acceptance Tests Checklist (v3)
 
-This document contains the checklist required to verify the successful completion of the repository bootstrap and local workflow hardening.
+This document contains the checklist required to verify the successful completion of the repository bootstrap, local workflow hardening, and footer copyright migration.
 
 ---
 
 ## 1. Pre-condition Verification
-* [ ] The database backup status is reported by Antigravity but still requires founder confirmation.
+* [ ] The database backup status is reported by Antigravity and confirmed by the founder.
 * [ ] The local WordPress site was confirmed to open successfully in the Local GUI client before bootstrapping.
 * [ ] The primary site pages (`/`, `/music/`, `/tech/`, and `/orpheus-deck/`) remain functional.
 
 ## 2. Environment & Tooling Boundaries
 * [ ] Local by WP Engine is identified as the active development and QA environment.
 * [ ] No paid Hostinger staging upgrade is planned, and no production deployment method is authorized.
-* [ ] Applied sync was NOT run in Task 04; only dry-run checks have been completed.
+* [ ] Applied sync was run in Task 06 for theme files only.
 * [ ] The four `.disabled` Hostinger folders remain preserved locally.
-* [ ] No custom plugin exists, and no plugin state changed.
+* [ ] Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugin exists.
 
 ## 3. Directory Structure Checks
 * [ ] The standalone repository exists outside the Local server tree and backup directories.
@@ -32,7 +32,19 @@ This document contains the checklist required to verify the successful completio
 * [ ] The backup directory resolves outside the repository, local site, app, and wp-content folders.
 * [ ] The repository verification script (`scripts/verify-repository.ps1`) executes successfully and flags any forbidden files or staged configurations.
 
-## 5. Git Initialization Verification
+## 5. Child-Theme Copyright Migration Checks
+* [ ] The footer copyright filter exists in the tracked child-theme codebase [themes/junkfeathers-machine/functions.php](themes/junkfeathers-machine/functions.php).
+* [ ] The callback is a named function `junkfeathers_machine_footer_copyright` (no anonymous callback).
+* [ ] It fetches the dynamic year using `wp_date('Y')`.
+* [ ] It escapes the external URL using `esc_url('https://snorkleprawn.com')`.
+* [ ] It preserves target attributes (`target="_blank"`, `rel="noopener noreferrer"`).
+* [ ] PHP lint check passes cleanly on the modified theme file.
+* [ ] The applied sync copies only the child-theme files and creates a backup outside of Git.
+* [ ] The footer output displays the expected text exactly once.
+* [ ] The Code Snippets plugin is inactive locally but remains installed.
+* [ ] The database contains all 5 original snippet records.
+
+## 6. Git Initialization Verification
 * [ ] Git is initialized locally in the repository folder.
 * [ ] The default branch is set to `main`.
 * [ ] The `.gitignore` and `.gitattributes` files are present and match their specifications.

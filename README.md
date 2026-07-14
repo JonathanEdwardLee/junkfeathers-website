@@ -19,7 +19,8 @@ This repository follows **Option B: Standalone Custom-Code Repository**. To prev
 * **Development & QA Environment**: Local by WP Engine is the active local environment.
 * **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole staging/QA location.
 * **Production Deployment Status**: No production deployment pipeline or method is designed or authorized.
-* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved locally inside the Local backups but excluded from Git tracking. No custom plugins or database state changes have been created.
+* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved locally inside the Local backups but excluded from Git tracking.
+* **Plugin State Status**: Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugins exist.
 
 ### Tracked Folders
 * `docs/`: Technical audits, plans, architecture schemas, and guidelines.
@@ -50,7 +51,7 @@ Since this repository is standalone, code edits are written here and copied to t
    # Apply changes (performs a dry run, backs up local theme, then copies theme files)
    .\scripts\sync-to-local.ps1 -Apply
    ```
-*(Note: Applied sync was not run in Task 04; only dry-run checks have been completed).*
+*(Note: Applied sync was run in Task 06 to update child-theme functions.php copyright hooks).*
 
 ---
 
@@ -67,5 +68,5 @@ This script checks for forbidden file extensions (like `.sql`, `.zip`, `.config`
 ## 5. Antigravity Agent Authorization & Prohibitions
 
 * **Task-Bound Permissions**: Antigravity may modify only the files and environments explicitly named in the current founder-issued, Council-reviewed task. No standing authorization exists for design changes, applied sync, plugin changes, database changes, or deployment.
-* **Database & Plugin Blocks**: Antigravity is NOT authorized to activate, deactivate, or modify WordPress database values or live plugins.
+* **Database & Plugin Blocks**: Antigravity is NOT authorized to activate, deactivate, or modify WordPress database values or live plugins (except for the local plugin deactivation tests explicitly authorized by current tasks).
 * **LIVE DEPLOYMENT PROHIBITION**: Live site deployment is strictly prohibited during this phase.
