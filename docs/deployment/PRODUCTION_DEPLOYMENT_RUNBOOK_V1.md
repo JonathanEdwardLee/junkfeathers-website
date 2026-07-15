@@ -11,7 +11,7 @@ This runbook describes the manual step-by-step procedure to deploy the Junkfeath
 ## Phase 0 — Authorization Pre-Checks
 
 1. **Stop & Wait**: Do not proceed unless Jonathan Lee has explicitly authorized live production updates.
-2. **Repository Alignment**: Verify that the local Git repository is clean on the ending commit of Task 11 (`cf5c23a` or later) and contains no uncommitted files:
+2. **Repository Alignment**: Verify that the local Git repository is clean on the locked `LAUNCH_PAYLOAD_COMMIT` and contains no uncommitted files:
    ```powershell
    git status --short
    ```
@@ -62,13 +62,12 @@ Do not proceed to file copies unless both file and database backups are download
 
 ## Phase 3 — Theme Files Deployment
 
-Only copy the three tracked child-theme files. Do not copy repository documentation, Git files, or configuration backups.
-1. **Prepare Theme Files**: Collect these three files from your Git repository:
+Only copy the two tracked child-theme runtime files. Do not copy repository documentation, child-theme README, Git files, or configuration backups.
+1. **Prepare Theme Files**: Collect these two files from your Git repository:
    - `themes/junkfeathers-machine/style.css`
    - `themes/junkfeathers-machine/functions.php`
-   - `themes/junkfeathers-machine/README.md`
 2. **Upload & Overwrite**:
-   - Using Hostinger File Manager or SFTP, upload these three files into `wp-content/themes/junkfeathers-machine/`, overwriting the existing ones.
+   - Using Hostinger File Manager or SFTP, upload these two files into `wp-content/themes/junkfeathers-machine/`, overwriting the existing ones.
    - Confirm file permissions match the parent folder (typically `0644` for files).
 3. **Immediate Front-End Check**:
    - Load `https://junkfeathers.com/` in a browser.

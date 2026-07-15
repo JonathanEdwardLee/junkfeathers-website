@@ -16,7 +16,7 @@ The Tech landing page utilizes the monochrome OLED design tokens defined in the 
 <div class="jf-machine-shell">
   <div class="jf-screen">
     <div style="text-align: center; padding: 15px 0;">
-      <span class="jf-label" style="font-size: 0.8em; letter-spacing: 0.2em;">WORKSHOP INDEX // LOCAL BUILD</span>
+      <span class="jf-label" style="font-size: 0.8em; letter-spacing: 0.2em;">WORKSHOP INDEX</span>
       <h1 style="font-size: 2em; margin: 5px 0 0 0; letter-spacing: 0.1em;">JUNKFEATHERS TECH</h1>
       <hr class="jf-divider" />
       <p class="jf-meta" style="font-size: 0.95em; letter-spacing: 0.05em; margin: 10px 0 0 0;">Retro music tools and strange machines.</p>

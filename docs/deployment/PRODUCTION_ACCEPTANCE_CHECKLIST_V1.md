@@ -11,7 +11,7 @@ This checklist defines the validation criteria that must be satisfied on the liv
 - [ ] **Fresh Database Backup**: A fresh SQL database backup is downloaded and stored outside the site.
 - [ ] **Fresh Files Backup**: A fresh files backup ZIP is downloaded and stored outside the site.
 - [ ] **Child-Theme Directory Backup**: A copy of the old theme directory is saved locally.
-- [ ] **Exact Approved Commit**: Tracked child-theme files match commit `cf5c23a` or later.
+- [ ] **Exact Approved Commit**: Tracked child-theme files match commit `LAUNCH_PAYLOAD_COMMIT`.
 - [ ] **No Secret Files**: Verification script confirms no PEM keys, API credentials, or local configs are present in the repository.
 - [ ] **No Plugin Changes**: No active plugins have been activated, deactivated, or deleted.
 - [ ] **No Reach Activation**: The free Hostinger Reach email list plan remains unclaimed and inactive.
