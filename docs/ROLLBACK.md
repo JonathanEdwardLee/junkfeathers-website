@@ -49,4 +49,9 @@ If an applied sync script (`scripts/sync-to-local.ps1 -Apply`) was executed and 
 
 ## 3. Live Site Rollback
 
-A rollback protocol for the live website (`junkfeathers.com` on Hostinger) is **not yet designed or authorized**. No deployment systems or staging connections have been established or approved. The live website is completely untouched in this phase.
+A live production rollback plan (V1) has been drafted in [docs/deployment/PRODUCTION_ROLLBACK_PLAN_V1.md](deployment/PRODUCTION_ROLLBACK_PLAN_V1.md). It outlines:
+* **Level 1**: Single-page restore via WordPress revisions or pre-deployment HTML backups.
+* **Level 2**: Theme directory restore via SFTP/File Manager using pre-deployment backups.
+* **Level 3**: Full database and file restore via Hostinger hPanel backup utilities.
+
+No live execution of rollbacks or deployments is authorized during this phase.

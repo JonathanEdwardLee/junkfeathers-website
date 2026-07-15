@@ -55,6 +55,13 @@ vendor/
 Thumbs.db
 desktop.ini
 
+# Private subscriber/contact exports
+private-data/
+exports/subscribers/
+*subscriber-export*.csv
+*contact-export*.csv
+*reach-export*.csv
+
 # Temporary secret-scan output
 gitleaks-report.*
 secret-scan-report.*

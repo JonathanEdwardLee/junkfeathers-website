@@ -30,6 +30,5 @@ The primary goal of future phases will be to clean up local configurations, alig
 ### Gate 5: Visual Foundations & Component Architecture [RESOLVED]
 * **Outcome**: The visual foundation pass 1 (monochrome OLED visual system, generic monospace typography, square borders, solid black body background, scanlines restricted to screens), the Tech landing page prototype (featuring Orpheus Deck), and the Orpheus Deck conversion page prototype (ID 12) were successfully implemented on July 14, 2026, bumping the child theme version to `0.4.0`.
 
-### Gate 6: Deployment Workflow Design
-* **Question**: How will code updates be deployed to Hostinger production without exposing SQL dumps, credentials, or local configs, given that no paid staging environment is planned?
-* **Outcome**: Design a secure, manual or reviewed deployment pipeline (e.g. via SFTP or plugin upload) once local QA is complete.
+### Gate 6: Deployment Workflow Design [RESOLVED]
+* **Outcome**: Bounded manual deployment runbook, content records, and rollback plans (V1) were designed in Task 11 on July 15, 2026. Execution remains pending authorization.

@@ -29,15 +29,15 @@ This checklist outlines the mandatory technical gates that must be completed and
 - [ ] **Gate 9: Exact Form/Contact-Field Mapping Verified**
   - Confirm that the signup form input field targets the correct Reach subscriber list database.
 - [ ] **Gate 10: Consent Evidence Behavior Verified**
-  - Verify that the Reach database correctly logs consent checkbox status and timestamps for each registration.
+  - Verify if and how the Reach database logs consent checkbox status, consent-statement version, signup-source page, or IP address for consent logging automatically for each registration.
 - [ ] **Gate 11: Unsubscribe and Suppression Behavior Tested**
-  - Confirm that the footer unsubscribe links automatically add opt-outs to the suppression list.
+  - Confirm that the footer unsubscribe links automatically add opt-outs to the suppression list, and verify whether Reach allows complete deletion from suppression lists if requested.
 - [ ] **Gate 12: Controlled Founder Signup Test Completed**
   - Jonathan Lee executes one test registration on the live site using a test address.
 - [ ] **Gate 13: Test Campaign Received Correctly**
-  - A test transmission email is successfully sent to and received by the founder.
+  - A test transmission email is successfully sent to and received by the founder. Verify whether Reach provides double-opt-in options or custom opt-in flows.
 - [ ] **Gate 14: Contact Export Procedure Tested**
-  - Confirm the administrator can export subscriber data as a CSV for backups.
+  - Confirm the administrator can export subscriber data as a CSV for backups, and verify data fields included.
 - [ ] **Gate 15: No Subscriber Export Stored in Git**
   - Confirm that `.gitignore` explicitly blocks any exported subscriber lists (`*.csv`) from entering version control.
 - [ ] **Gate 16: No Public Collection Until All Gates Pass**

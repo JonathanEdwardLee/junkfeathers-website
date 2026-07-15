@@ -17,6 +17,7 @@ This document records the official decisions, requirements, and revisions approv
 * **Code Snippets**: Deactivated in the Local environment on July 13, 2026, following the successful footer hook migration. The plugin remains installed locally, its five stored snippet records are kept in the database, and its live state remains unverified/unchanged.
 * **AI Provider for OpenAI**: The founder decided that this plugin is not needed. It was deactivated in the Local environment on July 13, 2026. The plugin remains installed locally; its live state remains unverified/unchanged, and deletion remains unauthorized.
 * **Environment Change Freeze**: No changes to the live site, Local database, or plugin activation states (except the authorized local deactivation of AI Provider and Code Snippets) are permitted during this phase.
+* **Deployment Method**: Core production launch uses a bounded manual deployment: tracked child-theme files through Hostinger File Manager or SFTP, followed by manual WordPress editor migration of Home, Tech, and Orpheus from reviewed production-core records. No Local database import, full-site migration, plugin migration, or Reach activation is part of the core launch.
 * **Tactile Creative Directive**: Visual aesthetics are supplied/approved by Jonathan. The design must be mobile-first, prioritize accessibility, support user-triggered sound, and respect reduced-motion requests.
 
 ---
@@ -24,8 +25,8 @@ This document records the official decisions, requirements, and revisions approv
 ## 2. Provisional / Pending Decisions (Requires Further Verification)
 
 * **Jetpack Module Configurations**: Optional modules (such as WooCommerce analytics, Blaze, JSON-API) are candidates for deactivation to improve speed, pending a local verification of dependencies.
-* **Hostinger Plugins**: Affiliate Marketing Tools and Easy Onboarding are removal candidates, but no action is authorized. Hostinger Reach is under review.
-* **Hostinger Reach**: Maintained as an open option. Reach supports external signup forms, CSV exports, public APIs, and integrations with systems like n8n. It is NOT host-locked. A final choice between Reach, Substack, Brevo, or Mailchimp remains open.
+* **Hostinger Plugins**: Affiliate Marketing Tools and Easy Onboarding are removal candidates, but no action is authorized.
+* **Hostinger Reach**: Approved as the first-year pilot provider. However, the pilot integration remains inactive and unconnected on Local, and no live Reach plan activation or email collection is authorized during the core launch.
 * **Akismet**: Remains active under review. If comments remain closed and WPForms uses other spam controls, it may be deactivated.
 * **LiteSpeed Cache**: Kept for production optimization. Caching remains disabled locally to prevent layout caching conflicts during development.
 

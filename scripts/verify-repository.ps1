@@ -74,6 +74,24 @@ foreach ($f in $AllFiles) {
         }
     }
 
+    # Check forbidden subscriber data export patterns
+    if (($RelativePath -like "private-data\*") -or
+        ($RelativePath -like "exports\subscribers\*") -or
+        (($f.Name.ToLower() -like "*subscriber-export*.csv") -or
+         ($f.Name.ToLower() -like "*contact-export*.csv") -or
+         ($f.Name.ToLower() -like "*reach-export*.csv"))) {
+
+        # Check if the file is tracked in Git
+        $IsTracked = & git -C $RepoRoot.Path ls-files $RelativePath 2>$null
+        if ($IsTracked) {
+            Write-Host "  [FAIL] Forbidden subscriber export is tracked in Git: $RelativePath" -ForegroundColor Red
+            $VerificationPassed = $false
+        } else {
+            Write-Host "  [INFO] Ignored subscriber data export present locally: $RelativePath" -ForegroundColor Gray
+        }
+    }
+
+
     # Only collect tracked/intended files for the ledger
     $IsGitTracked = & git -C $RepoRoot.Path ls-files $RelativePath 2>$null
     if ($IsGitTracked) {

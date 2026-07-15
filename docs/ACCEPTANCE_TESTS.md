@@ -54,6 +54,7 @@ This document contains the checklist required to verify the successful completio
 * [ ] Unreleased work (V34/CUT) is omitted from public copy.
 * [ ] O-FX/LIMIT is omitted since no verified visitor claims existed in the baseline content.
 * [ ] The exact Orpheus page implementation details are captured in the database reproducibility record [docs/content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md](content/ORPHEUS_PAGE_LOCAL_PROTOTYPE_V1.md).
+* [ ] WordPress page editors check status: Founder front-end verification: PASSED. WordPress editor verification: NOT YET RECORDED.
 
 ## 7. Child-Theme Copyright Migration Checks
 * [ ] The footer copyright filter exists in the tracked child-theme codebase [themes/junkfeathers-machine/functions.php](themes/junkfeathers-machine/functions.php).
@@ -75,7 +76,7 @@ This document contains the checklist required to verify the successful completio
 * [ ] The Hostinger Reach plugin remains inactive and unconnected.
 * [ ] The form contains no action/method endpoint, and the submit button is a nonfunctional `<button type="button">` with `aria-disabled="true"`.
 * [ ] No subscriber data is transmitted or stored, and no cookies are written.
-* [ ] Checkbox and email inputs start disabled and unchecked.
+* [ ] The Local prototype is visually reviewed but intentionally disabled. The email and consent controls are not submission-capable and are not keyboard-focusable in the current prototype. Full keyboard, validation, consent, and submission testing belongs to the future Reach integration pass.
 * [ ] No suitable site-wide privacy policy was fabricated; the prototype shows the required blocker disclaimer.
 * [ ] The email signup privacy requirements and Hostinger Reach activation gates are fully documented.
 * [ ] Responsive check: the signup panel fits 320px mobile width without overflow.

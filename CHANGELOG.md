@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.0] - 2026-07-15
+
+### Added
+- Created the production-core content records [docs/content/HOME_PAGE_PRODUCTION_CORE_V1.md](docs/content/HOME_PAGE_PRODUCTION_CORE_V1.md), [docs/content/TECH_PAGE_PRODUCTION_CORE_V1.md](docs/content/TECH_PAGE_PRODUCTION_CORE_V1.md), and [docs/content/ORPHEUS_PAGE_PRODUCTION_CORE_V1.md](docs/content/ORPHEUS_PAGE_PRODUCTION_CORE_V1.md) containing the exact approved HTML markup for the Home, Tech, and Orpheus pages, excluding all Signal List signup panels and Local-preview code.
+- Created the content manifest [docs/deployment/PRODUCTION_CONTENT_MANIFEST_V1.md](docs/deployment/PRODUCTION_CONTENT_MANIFEST_V1.md) detailing target pages, relative routes, expected media assets, and SHA-256 hashes of the exact production HTML blocks.
+- Created the deployment runbook [docs/deployment/PRODUCTION_DEPLOYMENT_RUNBOOK_V1.md](docs/deployment/PRODUCTION_DEPLOYMENT_RUNBOOK_V1.md) describing step-by-step procedures for the manual copy of child-theme files (style.css, functions.php, README.md) and manual database page content migration on Hostinger.
+- Created the rollback plan [docs/deployment/PRODUCTION_ROLLBACK_PLAN_V1.md](docs/deployment/PRODUCTION_ROLLBACK_PLAN_V1.md) defining Level 1 (Single-page WordPress revision), Level 2 (Theme SFTP rollback), and Level 3 (Hostinger hPanel full restore) recovery procedures and triggers.
+- Created the production acceptance checklist [docs/deployment/PRODUCTION_ACCEPTANCE_CHECKLIST_V1.md](docs/deployment/PRODUCTION_ACCEPTANCE_CHECKLIST_V1.md) mapping all safety, integrity, accessibility, and signup boundary checks.
+- Appended narrow subscriber data ignore patterns (`private-data/`, `exports/subscribers/`, `*subscriber-export*.csv`, `*contact-export*.csv`, `*reach-export*.csv`) to [.gitignore](.gitignore) and [scripts/verify-repository.ps1](scripts/verify-repository.ps1).
+
+### Changed
+- Corrected historic claims regarding Method A/B editor verifications in [docs/ACCEPTANCE_TESTS.md](docs/ACCEPTANCE_TESTS.md) to note that WordPress Page editors have not yet been verified (`Founder front-end verification: PASSED. WordPress editor verification: NOT YET RECORDED.`).
+- Corrected disabled control focus claims in [docs/ACCEPTANCE_TESTS.md](docs/ACCEPTANCE_TESTS.md) to clarify that disabled inputs and checkboxes in the Local prototype are not keyboard-focusable or submission-capable.
+- Qualified Hostinger Reach and consent logging assumptions in [docs/legal/EMAIL_SIGNUP_PRIVACY_REQUIREMENTS_V1.md](docs/legal/EMAIL_SIGNUP_PRIVACY_REQUIREMENTS_V1.md) and [docs/integrations/HOSTINGER_REACH_ACTIVATION_CHECKLIST.md](docs/integrations/HOSTINGER_REACH_ACTIVATION_CHECKLIST.md) as live pilot verification items.
+- Updated [docs/COUNCIL_DECISIONS.md](docs/COUNCIL_DECISIONS.md) to record the locked manual deployment method decision.
+- Updated [docs/DEPLOYMENT_NOT_AUTHORIZED.md](docs/DEPLOYMENT_NOT_AUTHORIZED.md) and [docs/ROLLBACK.md](docs/ROLLBACK.md) to reference the prepared launch documentation.
+- Updated [docs/plans/FOUNDATION_PASS_PLAN.md](docs/plans/FOUNDATION_PASS_PLAN.md) to mark Gate 6 (Deployment Workflow Design) as resolved.
+
+---
+
 ## [0.8.0] - 2026-07-14
 
 ### Added
