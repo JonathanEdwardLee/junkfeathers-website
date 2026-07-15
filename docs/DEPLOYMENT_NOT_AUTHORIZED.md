@@ -2,7 +2,7 @@
 
 * **Current Status**: **STRICT FREEZE**
 * **Active Development/QA Environment**: Local by WP Engine (no staging subdomain or server exists)
-* **Production Deployment Status**: Bounded manual deployment runbook and content records prepared in Task 11. No execution is authorized.
+* **Production Deployment Status**: Bounded manual deployment runbook and content records prepared. The approved launch payload is locked strictly to `LAUNCH_PAYLOAD_COMMIT`. No execution is authorized.
 * **Staging Upgrade Status**: No paid Hostinger staging upgrade is planned
 * **Task Sync Operations**: Applied sync (`sync-to-local.ps1 -Apply`) was run locally in Task 09 (OLED Visuals) and Task 10 (Signup design components) to sync the child-theme files. No databases, uploads, core files, or plugins were synced.
 * **Hostinger Plugin Status**: The four `.disabled` Hostinger folders are preserved locally inside the Local site backups but excluded from Git.

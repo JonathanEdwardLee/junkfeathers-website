@@ -3,7 +3,7 @@
 * **Date Prepared**: July 15, 2026
 * **Child-Theme Version**: `0.5.0`
 * **Target Launch State**: **Omitted Signups** (All nonfunctional Signal List preview panels are excluded from this release manifest).
-* **Deployment Status**: **PENDING AUTHORIZATION** (No live deployment has occurred).
+* **Deployment Status**: **PENDING AUTHORIZATION** (Approved deployment payload is locked to `LAUNCH_PAYLOAD_COMMIT`).
 
 ---
 
@@ -52,7 +52,7 @@ These SHA-256 hashes are computed from the exact HTML content blocks defined in 
   - Hash: `fe8c94e51450e808e0ddb5a478bd042a430e6348b6708459665fc89abb36bda4`
   - Source File: [HOME_PAGE_PRODUCTION_CORE_V1.md](../content/HOME_PAGE_PRODUCTION_CORE_V1.md)
 * **Tech Page HTML**:
-  - Hash: `a370c1739dcdde802224e4c2333cc9d4da6280451dea8eb17a81decc72c9fd70`
+  - Hash: `e40641df4461971dbd6408d7f83cab9a915bdd36be57ab090eeb9370e5b60537`
   - Source File: [TECH_PAGE_PRODUCTION_CORE_V1.md](../content/TECH_PAGE_PRODUCTION_CORE_V1.md)
 * **Orpheus Deck Page HTML**:
   - Hash: `e47e3496236f57972932fb60ad17e4fbbf8bfacc2b58858d744b9824ceea8a75`

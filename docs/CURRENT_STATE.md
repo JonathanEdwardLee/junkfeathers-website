@@ -82,6 +82,6 @@ The active site pages are:
 ## 7. Versioning Conventions
 
 To maintain clear and accurate history tracking, we apply two separate versioning pathways:
-1. **Root Repository Changelog**: Tracks workspace setup, script configurations, database reproducibility records, and workflow milestones (e.g. `0.5.0`, `0.6.0`, `0.7.0`, `0.8.0`).
+1. **Root Repository Changelog**: Tracks workspace setup, script configurations, database reproducibility records, and workflow milestones (e.g. `0.5.0`, `0.6.0`, `0.7.0`, `0.8.0`, `0.9.0`).
 2. **Child-Theme Version**: Tracks visitor-facing child theme code, styles, and template assets loaded by WordPress (e.g. `0.2.0`, `0.3.0`, `0.4.0`, `0.5.0`).
 *They serve distinct purposes and do not need to share identical version numbers.*
