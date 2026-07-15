@@ -1,6 +1,6 @@
 # Current State of the Project (v8)
 
-* **Last Updated**: July 14, 2026
+* **Last Updated**: July 15, 2026
 * **WordPress Version**: 7.0.1
 * **Local App version**: 10.1.1
 * **Database Target**: `local` (MySQL 8.4.0)
@@ -22,7 +22,7 @@
 
 * **QA & Development Environment**: Local by WP Engine is the active local environment.
 * **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole staging/QA location.
-* **Production Deployment Status**: No production deployment pipeline or method is designed or authorized.
+* **Production Deployment Status**: Bounded manual deployment runbook and rollback plan (V1) executed successfully in Task 12. Core launch is live.
 * **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved in the Local site's active plugin directory `wp-content/plugins/` (with a `.disabled` suffix to prevent activation) but excluded from Git tracking.
 
 ---
@@ -70,10 +70,10 @@
 ## 6. Site Navigation & Page Map
 
 The active site pages are:
-* `/` (Home): A monochrome OLED machine front panel prototype with signup.
+* `/` (Home): A monochrome OLED machine front panel prototype (signups omitted).
 * `/music/`: A list of YouTube, Bandcamp, and Spotify embeds.
 * `/tech/`: A concise monochrome machine directory featuring Orpheus Deck.
-* `/orpheus-deck/`: Android recorder app info, Play Store outbound link, screenshots, local-first privacy panel, nonfunctional signup, and a return link to `/tech/`.
+* `/orpheus-deck/`: Android recorder app info, Play Store outbound link, screenshots, local-first privacy panel, and a return link to `/tech/` (signups omitted).
 * `/orpheus-deck-privacy-policy/`: Compliant App privacy policy.
 * `/chronos/`: Empty draft placeholder.
 
