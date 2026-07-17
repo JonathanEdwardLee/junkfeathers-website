@@ -17,7 +17,12 @@ $AllowedRootPaths = @(
     "docs",
     "scripts",
     "themes",
-    "plugins"
+    "plugins",
+    "web",
+    ".github",
+    ".nvmrc",
+    "LICENSE.md",
+    "CONTRIBUTING.md"
 )
 
 # Forbidden extensions and files (including keys, credentials, and backups)
@@ -41,8 +46,11 @@ Write-Host "Checking repository structure and file suffixes..." -ForegroundColor
 foreach ($f in $AllFiles) {
     $RelativePath = $f.FullName.Substring($RepoRoot.Path.Length + 1)
 
-    # Skip checking git metadata folder
-    if ($RelativePath -like ".git\*") {
+    # Skip checking git metadata folder and build/dependency directories
+    if ($RelativePath -like ".git\*" -or 
+        $RelativePath -like "*node_modules\*" -or 
+        $RelativePath -like "*\dist\*" -or 
+        $RelativePath -like "*\.astro\*") {
         continue
     }
 
@@ -61,8 +69,10 @@ foreach ($f in $AllFiles) {
         $VerificationPassed = $false
     }
 
-    # Check forbidden filenames (e.g. credentials.json, sync-config.local.ps1)
-    if ($ForbiddenNames -contains $f.Name.ToLower()) {
+    # Check forbidden filenames (e.g. credentials.json, sync-config.local.ps1, .env files)
+    $IsForbiddenName = ($ForbiddenNames -contains $f.Name.ToLower()) -or 
+                       (($f.Name.ToLower() -like ".env.*") -and ($f.Name.ToLower() -ne ".env.example"))
+    if ($IsForbiddenName) {
         # Check if the file is tracked in Git or just present
         $IsTracked = & git -C $RepoRoot.Path ls-files $RelativePath 2>$null
         if ($IsTracked) {
@@ -114,13 +124,16 @@ $SecretPatterns = @{
 $ScannedCount = 0
 foreach ($f in $AllFiles) {
     $RelativePath = $f.FullName.Substring($RepoRoot.Path.Length + 1)
-    if ($RelativePath -like ".git\*") {
+    if ($RelativePath -like ".git\*" -or 
+        $RelativePath -like "*node_modules\*" -or 
+        $RelativePath -like "*\dist\*" -or 
+        $RelativePath -like "*\.astro\*") {
         continue
     }
 
     # Only scan readable text formats
     $Ext = [System.IO.Path]::GetExtension($f.Name).ToLower()
-    if ($Ext -in @(".txt", ".md", ".php", ".css", ".js", ".json", ".ps1", "")) {
+    if ($Ext -in @(".txt", ".md", ".php", ".css", ".js", ".json", ".ps1", ".ts", ".astro", "")) {
         $ScannedCount++
         $FileContent = Get-Content -Path $f.FullName -Raw -ErrorAction SilentlyContinue
         if ($FileContent) {

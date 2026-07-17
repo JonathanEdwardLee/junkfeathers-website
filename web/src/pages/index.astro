@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MonthlyTransmission from '../components/email/MonthlyTransmission.astro';
+---
+
+<Layout title="Junkfeathers - Songs. Small tech. Junk Notes.">
+  <div class="jf-machine-shell">
+    <div class="jf-screen">
+      <div style="text-align: center; padding: 20px 0;">
+        <h1 class="jf-machine-title">JUNKFEATHERS</h1>
+        <hr class="jf-divider" />
+        <p class="jf-machine-subtitle">Songs. Small tech. Junk Notes.</p>
+      </div>
+    </div>
+
+    <div class="jf-panel" style="text-align: center; padding: var(--jf-space-5) var(--jf-space-4);">
+      <div class="jf-stack">
+        <a href="/music/" class="jf-btn jf-btn--primary" style="display: block; font-size: 1.2em;">[ MUSIC ]</a>
+        <a href="/tech/" class="jf-btn jf-btn--primary" style="display: block; font-size: 1.2em;">[ TECH ]</a>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: var(--jf-space-4);">
+      <a href="/orpheus-deck/" class="jf-btn jf-btn--secondary" style="font-size: 0.85em;">[ ORPHEUS DECK ]</a>
+    </div>
+
+    <MonthlyTransmission />
+  </div>
+</Layout>

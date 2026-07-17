@@ -47,6 +47,8 @@ cache/
 uploads/
 node_modules/
 vendor/
+web/dist/
+web/.astro/
 
 # Editor and operating-system clutter
 .vscode/
