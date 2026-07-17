@@ -1,7 +1,9 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
+import { glob } from 'astro/loaders';
 
-const musicCollection = defineCollection({
-  type: 'content',
+const music = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/music" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -16,8 +18,8 @@ const musicCollection = defineCollection({
   })
 });
 
-const techCollection = defineCollection({
-  type: 'content',
+const tech = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/tech" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -35,8 +37,8 @@ const techCollection = defineCollection({
   })
 });
 
-const clioCollection = defineCollection({
-  type: 'content',
+const clio = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/clio" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -51,8 +53,4 @@ const clioCollection = defineCollection({
   })
 });
 
-export const collections = {
-  'music': musicCollection,
-  'tech': techCollection,
-  'clio': clioCollection
-};
+export const collections = { music, tech, clio };

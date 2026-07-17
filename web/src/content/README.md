@@ -1,6 +1,6 @@
 # Content Collections Schema & Guidelines
 
-This directory houses the Markdown/MDX content for Junkfeathers. All entries must adhere to the schemas defined in `web/src/content/config.ts`.
+This directory houses the Markdown/MDX content for Junkfeathers. All entries must adhere to the schemas defined in `web/src/content.config.ts`.
 
 ---
 
