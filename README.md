@@ -1,72 +1,224 @@
-# Junkfeathers Website Codebase
+# Junkfeathers Website
 
-This repository contains the custom codebase, design variables, and technical documentation for **junkfeathers.com**.
+Private proprietary source repository for **junkfeathers.com**, owned by Jonathan Edward Lee / Junkfeathers Tech.
 
----
+> Retro outside. Current stable technology underneath.
 
-## 1. Project Purpose & Creative Doctrine
+## Ownership
 
-> **"Retro outside. Current stable technology underneath."**
+Copyright © 2026 Jonathan Edward Lee / Junkfeathers Tech. All rights reserved.
 
-Junkfeathers is a growing museum/workshop of strange, tactile, and musical retro machines. The website is styled to feel like a handmade retro OLED device—tactile, app-like on mobile, animated, and artistic—while the underlying code utilizes clean, modern, performant, and version-controlled WordPress standards.
+This repository is private and proprietary. No license is granted to copy, redistribute, publish, sell, sublicense, or reuse its code, writing, designs, assets, or documentation without Jonathan Lee’s written permission.
 
----
+GitHub ownership and this notice document the project’s provenance. Copyright ownership does not depend on publishing the repository or selecting an open-source license.
 
-## 2. Environment & Repository Scope
+## Mission
 
-This repository follows **Option B: Standalone Custom-Code Repository**. To prevent database credential leaks, core conflicts, and file bloat, this directory tracks **only custom assets** and documentation.
+Junkfeathers.com is the owned Music + Tech machine for:
 
-* **Development & QA Environment**: Local by WP Engine is the active local environment.
-* **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole staging/QA location.
-* **Production Deployment Status**: No production deployment pipeline or method is designed or authorized.
-* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved in the Local site's active plugin directory `wp-content/plugins/` (with a `.disabled` suffix to prevent activation) but excluded from Git tracking.
-* **Plugin State Status**: Both Code Snippets and AI Provider for OpenAI are deactivated locally but remain installed. No custom plugins exist.
+- Junkfeathers music
+- Orpheus Deck
+- future strange musical machines
+- one monthly Junkfeathers transmission
+- Clio Interviews
+- product, support, and privacy information
 
-### Tracked Folders
-* `docs/`: Technical audits, plans, architecture schemas, and guidelines.
-* `themes/junkfeathers-machine/`: Custom stylesheet rules, enqueues, and layout variables.
-* `plugins/`: Placeholder folder for future custom plugins.
-* `scripts/`: Local verification and synchronization scripts.
+The site should feel like a strange musical instrument rather than a normal corporate website.
 
-### Explicitly Excluded (Do Not Add)
-* WordPress core files, `wp-config.php`, `.htaccess`.
-* Third-party themes (such as parent GeneratePress) and standard plugins.
-* Database backups (`*.sql`), SQL files, site archives.
-* Uploads folder (`wp-content/uploads/`) and media binary dumps.
-* Private credentials, API keys, credentials, or Local server configuration.
+## Architecture Direction
 
----
+The current WordPress website remains the safe public baseline while a modern Git-native replacement is developed and tested.
 
-## 3. Local Sync Process
+The replacement is designed for:
 
-Since this repository is standalone, code edits are written here and copied to the local runtime path for testing.
+- artistic freedom
+- clear Music and Tech navigation
+- fast static delivery
+- accessible machine-like interaction
+- Markdown/MDX content that AI can maintain safely
+- pull-request review before release
+- reproducible builds
+- simple rollback
+- minimal ongoing plugin and database maintenance
 
-1. Copy `scripts/sync-config.example.ps1` to `scripts/sync-config.local.ps1`.
-2. Edit `sync-config.local.ps1` to set `$LocalSiteRootPath` and `$LocalBackupRootPath`. This file is ignored by Git.
-3. Run the synchronization helper:
-   ```powershell
-   # Dry run (verify paths - default)
-   .\scripts\sync-to-local.ps1
+The preferred rebuild stack is:
 
-   # Apply changes (performs a dry run, backs up local theme, then copies theme files)
-   .\scripts\sync-to-local.ps1 -Apply
+- Astro
+- TypeScript in strict mode
+- static output
+- Markdown/MDX and Astro content collections
+- semantic HTML
+- CSS and lightweight browser JavaScript
+- no client framework unless a specific interaction justifies it
+
+Use the newest stable releases that pass testing. Do not use preview, beta, canary, or experimental dependencies merely because they are newer.
+
+## Repository State
+
+- `main` is the last founder-approved repository state.
+- The current WordPress production snapshot remains preserved in Git history and under the existing WordPress directories.
+- New work happens on one bounded task branch at a time.
+- Hostinger production deployment is not triggered merely by merging a pull request.
+- The future production deployment source will be a reviewed deploy-only branch or narrowly scoped workflow.
+
+## Branch Workflow
+
+Do not develop directly on `main`.
+
+For each Antigravity task:
+
+1. Create a branch from current `main`:
+   ```text
+   task/NNN-short-description
    ```
-*(Note: Applied sync was run in Task 10 to update child-theme functions.php version comments and style.css signup form layout classes).*
+2. Antigravity edits only the authorized files.
+3. Run local checks and build the site.
+4. Jonathan previews the branch locally in a browser.
+5. Website Council reviews the pull request, diff, test evidence, and risks.
+6. Corrections stay on the same branch.
+7. Jonathan merges only after approval.
+8. Production deployment requires a separate explicit authorization.
 
----
+No direct push to `main`.  
+No force-push to `main`.  
+No automatic production deployment from task branches.
 
-## 4. Verification & Secret Scanning
+## Local Development
 
-Before committing code, run the repository verification script:
-```powershell
-.\scripts\verify-repository.ps1
+The modern rebuild lives in:
+
+```text
+web/
 ```
-This script checks for forbidden file extensions (like `.sql`, `.zip`, `.config`) and scans files for accidental credential and private token leaks.
 
----
+Typical workflow:
 
-## 5. Antigravity Agent Authorization & Prohibitions
+```bash
+cd web
+npm install
+npm run dev
+```
 
-* **Task-Bound Permissions**: Antigravity may modify only the files and environments explicitly named in the current founder-issued, Council-reviewed task. No standing authorization exists for design changes, applied sync, plugin changes, database changes, or deployment.
-* **Database & Plugin Blocks**: Antigravity is NOT authorized to activate, deactivate, or modify WordPress database values or live plugins (except for the local plugin deactivation tests explicitly authorized by current tasks).
-* **LIVE DEPLOYMENT PROHIBITION**: Live site deployment is strictly prohibited during this phase.
+Before pull-request review:
+
+```bash
+npm run check
+npm run build
+```
+
+The current WordPress Local installation remains available for legacy reference. It is not the runtime for the Astro rebuild.
+
+## Deployment Boundary
+
+Never deploy the entire repository into `public_html`.
+
+The repository includes source, documentation, tests, and legacy WordPress records. A future production deployment must publish only reviewed build output.
+
+Preferred eventual flow:
+
+```text
+task branch
+  → pull request
+  → founder-approved main
+  → verified static build
+  → deploy-only production branch or scoped deployment workflow
+  → Hostinger
+```
+
+The existing WordPress production site remains live until the replacement passes local, preview, accessibility, performance, email, rollback, and founder-approval gates.
+
+## Email Strategy
+
+Junkfeathers maintains one audience and sends one routine editorial/promotional email per month.
+
+Approved public promise:
+
+> One transmission a month from the Junkfeathers workshop: new music, strange machines, Clio Interviews, product updates, and occasional offers.
+
+Button:
+
+> Receive the Monthly Transmission
+
+There is no separate Clio subscription.
+
+Hostinger Reach remains the planned provider. Public collection is not enabled until consent, privacy, sender authentication, delivery, confirmation, unsubscribe, export, deletion, postal address, accessibility, mobile behavior, measurement, backup, and rollback pass a controlled test.
+
+## Design System
+
+The company visual language is shared with Orpheus Deck and Chronos:
+
+- black, white, and gray monochrome OLED
+- generic monospace typography
+- square machine geometry
+- restrained green only for links and genuine error states
+- physical panel divisions
+- displays, labels, meters, switches, knobs, and ports
+- controlled glitch behavior
+- no autoplay audio
+- keyboard access
+- reduced-motion support
+
+Optional spectacle must never obscure Music, Tech, Orpheus Deck, or the monthly signup.
+
+## Source-of-Truth Boundaries
+
+- Git/GitHub: exact code, branches, commits, tests, build configuration, and reviewed content source
+- Hostinger: live runtime and deployment evidence
+- Google Drive: approved company strategy, council state, and durable decisions
+- Current WordPress database: legacy live content until the replacement site is launched
+
+## Security
+
+Never commit:
+
+- passwords, access tokens, API keys, authentication codes, or salts
+- `.env` files containing secrets
+- `wp-config.php`
+- database exports
+- Hostinger backups
+- private email configuration
+- subscriber/contact exports
+- WordPress uploads
+- private customer or user data
+- production credentials
+- local-machine configuration
+
+Use GitHub or Hostinger secret storage only when a reviewed deployment task requires it.
+
+## Antigravity Authority
+
+Antigravity may:
+
+- work locally on the current authorized task branch
+- install reviewed project dependencies
+- run checks and builds
+- push the task branch
+- open or update a pull request
+- prepare evidence for founder and Council review
+
+Antigravity may not:
+
+- merge the pull request
+- push directly to `main`
+- connect Hostinger
+- deploy production
+- delete the live WordPress site
+- modify DNS, email, analytics, plugins, users, or live content
+- request or store Jonathan’s credentials
+- make the repository public
+- grant repository access to another person or application
+
+## Release Rule
+
+A production replacement requires:
+
+1. founder-approved architecture
+2. passing email foundation
+3. passing local and preview builds
+4. accessibility and performance acceptance
+5. exact deployment payload
+6. fresh WordPress and Hostinger rollback copies
+7. founder visual approval
+8. explicit cutover authorization
+9. verified rollback procedure
+10. post-launch validation
