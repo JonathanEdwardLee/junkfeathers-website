@@ -1,12 +1,13 @@
 # Current State of the Project (v8)
 
-* **Last Updated**: July 15, 2026
+* **Last Updated**: July 19, 2026
 * **WordPress Version**: 7.0.1
 * **Local App version**: 10.1.1
 * **Database Target**: `local` (MySQL 8.4.0)
 * **Local Server**: Nginx, PHP 8.2.29
 * **Active Child Theme**: Junkfeathers Machine (v0.5.0)
 * **Parent dependency**: GeneratePress
+* **Governance Adoption**: Council OS 1.3 standard adopted on Task 013 branch. Restart acceptance check is pending.
 
 ---
 

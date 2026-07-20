@@ -1,8 +1,13 @@
 # Pull Request: [Task Title]
 
-## 1. Metadata
+## 1. Metadata & Exchange Identity
 * **Task Number & Branch**: `task/NNN-short-description`
 * **Scope**: [Describe the task boundary and target files]
+* **Current DevAI Tool**: [e.g., Antigravity]
+* **Active Exchange**: `Council-DevAI-Exchange.zip`
+* **Exchange Status**: [e.g., AUTHORIZED / RETURNED_FOR_COUNCIL_REVIEW]
+* **Exchange Starting SHA-256**: [Hash value]
+* **Exchange Return SHA-256**: [Hash value of the returned zip]
 
 ---
 
@@ -27,9 +32,10 @@
 
 ---
 
-## 5. Security & Verification Check
+## 5. Security & Repository Hygiene Verification
 - [ ] Checked `.\scripts\verify-repository.ps1` output.
 - [ ] Confirmed no secrets, `.env` files, credentials, or subscriber list sheets are staged or committed.
+- [ ] Confirmed no exchange zip files (`Council-DevAI-Exchange.zip`), `.work/` folders, or `devai-return/` folders are tracked or staged.
 
 ---
 
@@ -38,8 +44,9 @@
 
 ---
 
-## 7. Live Hostinger Boundary Confirmation
-- [ ] **CONFIRMED**: No live systems, Hostinger accounts, or live WordPress files/databases were accessed or altered during this branch work.
+## 7. Live Hostinger & Authorization Confirmations
+- [ ] **CONFIRMED**: No live systems, Hostinger accounts, DNS, Reach, billing, or live WordPress files/databases were accessed or altered during this branch work.
+- [ ] **CONFIRMED**: Work was restricted strictly to the two authorized local roots. Google Drive was not accessed.
 
 ---
 

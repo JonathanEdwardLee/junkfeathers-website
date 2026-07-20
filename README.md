@@ -65,13 +65,13 @@ Use the newest stable releases that pass testing. Do not use preview, beta, cana
 
 Do not develop directly on `main`.
 
-For each Antigravity task:
+For each DevAI task:
 
 1. Create a branch from current `main`:
    ```text
    task/NNN-short-description
    ```
-2. Antigravity edits only the authorized files.
+2. The DevAI tool edits only the authorized files specified in the active exchange.
 3. Run local checks and build the site.
 4. Jonathan previews the branch locally in a browser.
 5. Website Council reviews the pull request, diff, test evidence, and risks.
@@ -185,9 +185,11 @@ Never commit:
 
 Use GitHub or Hostinger secret storage only when a reviewed deployment task requires it.
 
-## Antigravity Authority
+## DevAI Authority
 
-Antigravity may:
+The repository-specific DevAI welcome and rules are documented in [AGENTS.md](AGENTS.md). The DevAI tool (such as Antigravity) must follow all safety boundaries, working procedures, and HOLD conditions defined in [AGENTS.md](AGENTS.md) and the active exchange (`Council-DevAI-Exchange.zip`).
+
+The DevAI tool may:
 
 - work locally on the current authorized task branch
 - install reviewed project dependencies
@@ -196,7 +198,7 @@ Antigravity may:
 - open or update a pull request
 - prepare evidence for founder and Council review
 
-Antigravity may not:
+The DevAI tool may not:
 
 - merge the pull request
 - push directly to `main`

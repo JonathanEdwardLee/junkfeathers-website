@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.10.0] - 2026-07-19
+
+### Added
+- Created [AGENTS.md](AGENTS.md) exactly from the approved council-reference content, establishing the repository-specific DevAI communication foundation.
+- Configured `.github/pull_request_template.md` to capture exchange identity, status, starting SHA-256 hash, and repository hygiene confirmations.
+
+### Changed
+- Updated [README.md](README.md) to replace Antigravity-specific authority wording with generic DevAI role and exchange terminology, and point to [AGENTS.md](AGENTS.md) as the authority.
+- Updated [CONTRIBUTING.md](CONTRIBUTING.md) to require active exchange verification, [AGENTS.md](AGENTS.md) alignment, and founder merge authority.
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) to record that the governance installation is present but restart acceptance is pending.
+- Updated [scripts/verify-repository.ps1](scripts/verify-repository.ps1) to allow [AGENTS.md](AGENTS.md), remove `WELCOME_AG.md`, and detect/fail on tracked communication/exchange artifacts or prohibited temporary folders.
+- Expanded [.gitignore](.gitignore) to exclude local exchange, extracted exchange, and council-return communication files.
+
+### Removed
+- Deleted `WELCOME_AG.md` after confirming all durable safety rules are preserved in [AGENTS.md](AGENTS.md).
+
+---
+
 ## [0.9.0] - 2026-07-15
 
 ### Added

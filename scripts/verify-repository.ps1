@@ -12,7 +12,7 @@ $AllowedRootPaths = @(
     ".gitignore",
     ".gitattributes",
     "README.md",
-    "WELCOME_AG.md",
+    "AGENTS.md",
     "CHANGELOG.md",
     "docs",
     "scripts",
@@ -60,6 +60,17 @@ foreach ($f in $AllFiles) {
     if ($AllowedRootPaths -notcontains $RootFolder -and $AllowedRootPaths -notcontains $RelativePath) {
         Write-Host "  [FAIL] Unrecognized root file/folder detected: $RelativePath" -ForegroundColor Red
         $VerificationPassed = $false
+    }
+
+    # Check for forbidden communication/exchange artifacts or temporary folders inside the repository
+    $ForbiddenCommNames = @("Council-DevAI-Exchange.zip", "devai-return", "council-reference", "source-snapshot", "evidence", ".work")
+    foreach ($commName in $ForbiddenCommNames) {
+        if ($RelativePath -eq $commName -or
+            $RelativePath -like "$commName\*" -or
+            $RelativePath -like "*\$commName\*") {
+            Write-Host "  [FAIL] Prohibited communication/exchange artifact detected inside repository: $RelativePath" -ForegroundColor Red
+            $VerificationPassed = $false
+        }
     }
 
     # Check forbidden extensions

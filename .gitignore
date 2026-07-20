@@ -67,3 +67,11 @@ exports/subscribers/
 # Temporary secret-scan output
 gitleaks-report.*
 secret-scan-report.*
+
+# Council OS DevAI Exchange communication artifacts
+Council-DevAI-Exchange.zip
+.work/
+devai-return/
+council-reference/
+evidence/
+source-snapshot/
