@@ -314,7 +314,7 @@ a:focus-visible {
 }
 
 .jf-email-input:focus {
-  outline: var(--jf-border-standard) solid var(--jf-link);
+  outline: var(--jf-border-standard) solid var(--jf-fg);
   outline-offset: 2px;
 }
 
@@ -340,7 +340,7 @@ a:focus-visible {
   min-width: 20px;
   min-height: 20px;
   margin-top: 2px;
-  accent-color: var(--jf-link);
+  accent-color: var(--jf-fg);
   border-radius: 0;
   cursor: pointer;
 }
