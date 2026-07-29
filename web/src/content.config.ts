@@ -9,11 +9,12 @@ const music = defineCollection({
     description: z.string(),
     pubDate: z.date(),
     draft: z.boolean().default(false),
-    embedUrl: z.string().url().optional(),
+    internalFixture: z.boolean().default(false),
+    embedUrl: z.url().optional(),
     seo: z.object({
       title: z.string().optional(),
       description: z.string().optional(),
-      canonicalUrl: z.string().url().optional()
+      canonicalUrl: z.url().optional()
     }).optional()
   })
 });
@@ -25,14 +26,15 @@ const tech = defineCollection({
     description: z.string(),
     pubDate: z.date(),
     draft: z.boolean().default(false),
+    internalFixture: z.boolean().default(false),
     featured: z.boolean().default(false),
     featureImage: z.string().optional(),
-    playStoreUrl: z.string().url().optional(),
+    playStoreUrl: z.url().optional(),
     relatedMusic: z.array(z.string()).optional(),
     seo: z.object({
       title: z.string().optional(),
       description: z.string().optional(),
-      canonicalUrl: z.string().url().optional()
+      canonicalUrl: z.url().optional()
     }).optional()
   })
 });
@@ -44,11 +46,12 @@ const clio = defineCollection({
     description: z.string(),
     pubDate: z.date(),
     draft: z.boolean().default(false),
+    internalFixture: z.boolean().default(false),
     interviewee: z.string(),
     seo: z.object({
       title: z.string().optional(),
       description: z.string().optional(),
-      canonicalUrl: z.string().url().optional()
+      canonicalUrl: z.url().optional()
     }).optional()
   })
 });

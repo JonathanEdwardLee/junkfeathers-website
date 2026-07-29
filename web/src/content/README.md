@@ -13,6 +13,7 @@ This directory houses the Markdown/MDX content for Junkfeathers. All entries mus
   description: string # Short excerpt or context
   pubDate: Date # YYYY-MM-DD
   draft: boolean # Default: false
+  internalFixture: boolean # Default: false
   embedUrl: string (optional) # Valid Bandcamp/YouTube/Spotify URL
   seo: (optional)
     title: string (optional)
@@ -30,6 +31,7 @@ This directory houses the Markdown/MDX content for Junkfeathers. All entries mus
   description: string # Brief marketing/support excerpt
   pubDate: Date # YYYY-MM-DD
   draft: boolean # Default: false
+  internalFixture: boolean # Default: false
   featured: boolean # Default: false (true displays it on Tech Workshop main panel)
   featureImage: string (optional) # Relative path to media asset
   playStoreUrl: string (optional) # Outbound Google Play store link
@@ -50,6 +52,7 @@ This directory houses the Markdown/MDX content for Junkfeathers. All entries mus
   description: string # Snippet or overview of the discussion
   pubDate: Date # YYYY-MM-DD
   draft: boolean # Default: false
+  internalFixture: boolean # Default: false
   interviewee: string # Full name of the interviewee
   seo: (optional)
     title: string (optional)
@@ -60,5 +63,12 @@ This directory houses the Markdown/MDX content for Junkfeathers. All entries mus
 
 ---
 
-## 2. Draft Behavior
-During production builds (`npm run build`), all files with `draft: true` are excluded from the output. In development mode (`npm run dev`), drafts are rendered for preview verification.
+## 2. Publication Guard & Draft Behavior
+
+Astro content collection loaders (`glob()`) load all content entries matching the pattern regardless of draft status. Publication eligibility is enforced explicitly by public-route helpers.
+
+Public listing and detail routes MUST use `getPublishedEntries()` from `web/src/lib/content.ts` (or an equivalent filter) which filters out entries where:
+- `draft === true`; OR
+- `internalFixture === true`.
+
+Internal schema fixtures (`internalFixture: true`) and unready drafts are strictly excluded from public site rendering.

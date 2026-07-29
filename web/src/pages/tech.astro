@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPublishedEntries } from '../lib/content';
+
+const publishedTech = await getPublishedEntries('tech');
 ---
 
 <Layout title="Tech Workshop - Junkfeathers">
@@ -18,7 +21,7 @@ import Layout from '../layouts/Layout.astro';
       <h2 style="font-size: 1.6em; margin: 0 0 15px 0; letter-spacing: 0.05em;">ORPHEUS DECK</h2>
 
       <div style="margin-bottom: var(--jf-space-4); text-align: center;">
-        <img src="/wp-content/uploads/2026/07/OrpheusDeck_GooglePlay_FeatureGraphic_1024x500.png" alt="Orpheus Deck Feature Graphic" class="jf-feature-media" />
+        <img src="/media/orpheus/OrpheusDeck_GooglePlay_FeatureGraphic_1024x500.png" alt="Orpheus Deck Feature Graphic" class="jf-feature-media" />
       </div>
 
       <p style="margin: 0 0 var(--jf-space-4) 0;">A retro Android 4-track recorder for songwriters.</p>
@@ -27,6 +30,17 @@ import Layout from '../layouts/Layout.astro';
         <a href="/orpheus-deck/" class="jf-btn jf-btn--primary" style="display: block; font-size: 1.1em;">[ OPEN ORPHEUS DECK ]</a>
       </div>
     </div>
+
+    {publishedTech.length > 0 && (
+      <div class="jf-panel">
+        <span class="jf-label">OTHER TOOLS</span>
+        <ul>
+          {publishedTech.map((item) => (
+            <li>{item.data.title}</li>
+          ))}
+        </ul>
+      </div>
+    )}
 
     <div class="jf-panel" style="border-style: dashed; padding: var(--jf-space-4); text-align: center; margin-bottom: 0;">
       <p class="jf-meta" style="color: var(--jf-gray-mid); margin: 0; letter-spacing: 0.1em;">MORE MACHINES IN DEVELOPMENT</p>

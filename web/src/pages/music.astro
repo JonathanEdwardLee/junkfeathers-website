@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPublishedEntries } from '../lib/content';
+
+const publishedMusic = await getPublishedEntries('music');
 ---
 
 <Layout title="Music - Junkfeathers">
@@ -17,6 +20,17 @@ import Layout from '../layouts/Layout.astro';
       <span class="jf-label">ARCHIVE STATUS</span>
       <p style="margin: 0;">Legacy music tracks, Bandcamp embeds, and playlist links will be organized here in a future release.</p>
     </div>
+
+    {publishedMusic.length > 0 && (
+      <div class="jf-panel">
+        <span class="jf-label">MUSIC TRACKS</span>
+        <ul>
+          {publishedMusic.map((item) => (
+            <li>{item.data.title}</li>
+          ))}
+        </ul>
+      </div>
+    )}
 
     <div style="text-align: center; margin-top: var(--jf-space-4);">
       <a href="/" class="jf-btn jf-btn--secondary" style="font-size: 0.9em;">&lt; RETURN TO HOME</a>
