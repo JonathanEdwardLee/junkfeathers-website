@@ -1,88 +1,48 @@
-# Current State of the Project (v8)
+# Current State of the Project (v9)
 
-* **Last Updated**: July 19, 2026
-* **WordPress Version**: 7.0.1
-* **Local App version**: 10.1.1
-* **Database Target**: `local` (MySQL 8.4.0)
-* **Local Server**: Nginx, PHP 8.2.29
-* **Active Child Theme**: Junkfeathers Machine (v0.5.0)
-* **Parent dependency**: GeneratePress
-* **Governance Adoption**: Council OS 1.3 standard adopted on Task 013 branch. Restart acceptance check is pending.
-
----
-
-## 1. Local Baseline Backup Status
-
-* **Local Site State**: The local WordPress site is running. The primary paths (`/`, `/music/`, `/tech/`, and `/orpheus-deck/`) are functional.
-* **Sync Execution**: Applied sync (`sync-to-local.ps1 -Apply`) was run in Task 10, copying the child-theme `style.css` and `functions.php` updates (version 0.5.0) and creating a safe pre-sync backup under the `Junkfeathers Website Backups` folder.
-* **Founder Backup Status**: Jonathan Lee has confirmed that a fresh Local site export and database backup have been saved securely outside the repository and Local site directories.
+* **Last Updated**: July 28, 2026
+* **Live Production Runtime**: WordPress on Hostinger (Tag `production-wordpress-v0.5.0` at commit `e481054`)
+* **Legacy WordPress Reference/QA**: Local by WP Engine
+* **Astro Replacement Target**: `web/` directory under branch `task/013-astro-machine-foundation` and private GitHub Pull Request #1 (unmerged)
+* **Governance Standard**: Accepted Council OS 1.3 baseline
+* **Hostinger / Reach Status**: Unconnected and inactive for Astro development
+* **Pygmalion Visual Status**: Pending formal Pygmalion visual handoff and Website Council acceptance
 
 ---
 
-## 2. Environment & Tooling Boundaries
+## 1. Production & Baseline Fallback
 
-* **QA & Development Environment**: Local by WP Engine is the active local environment.
-* **Hostinger Staging Status**: No paid Hostinger staging upgrade is planned. Local remains the sole staging/QA location.
-* **Production Deployment Status**: Bounded manual deployment runbook and rollback plan (V1) executed successfully in Task 12. Core launch is live.
-* **Hostinger Plugin Backups**: The four `.disabled` Hostinger plugins are preserved in the Local site's active plugin directory `wp-content/plugins/` (with a `.disabled` suffix to prevent activation) but excluded from Git tracking.
-
----
-
-## 3. Active Technical Inventory
-
-### Active Plugins
-1. **GenerateBlocks** (Visual Layout)
-2. **LiteSpeed Cache** (Caching plugin - active on production host, but deactivated/disabled in the Local site configuration to prevent layout caching conflicts during local QA and development)
-3. **All in One SEO Pack** (SEO metadata)
-4. **Google Site Kit** (Google Analytics 4 & PageSpeed Insights)
-5. **Jetpack** (Connected to WordPress.com user account `junkfeathers`)
-6. **WPForms Lite** (Form builder, zero active forms)
-7. **Akismet Anti-Spam** (Comment spam protection)
-
-### Disabled Local Plugins (Preserved in Workspace)
-* **Code Snippets** (Version: 3.9.6, Slug: `code-snippets` - Deactivated locally on July 13, 2026, following the successful migration of the GeneratePress footer copyright filter into the child theme code. The plugin remains installed locally; its five stored snippet records remain inside the database, and its live state remains unverified/unchanged).
-* **AI Provider for OpenAI** (Version: 1.0.3, Slug: `ai-provider-for-openai` - Deactivated locally on July 13, 2026, following the founder's decision that it is not needed. The plugin remains installed locally; its live state remains unverified/unchanged, and deletion remains unauthorized).
-* **Hostinger Reach** (Version: 1.5.6, Slug: `hostinger-reach.disabled` - Preserved in the plugins directory with a `.disabled` suffix to prevent accidental activation. The pilot integration remains inactive and unconnected).
-* `hostinger.disabled`
-* `hostinger-affiliate-plugin.disabled`
-* `hostinger-easy-onboarding.disabled`
+* **Live Public Production**: WordPress remains the active public runtime for `junkfeathers.com`.
+* **Legacy WordPress Baseline**: Tracked under tag `production-wordpress-v0.5.0` on commit `e481054`.
+* **Local Reference**: Local by WP Engine serves as the legacy WordPress reference/QA environment.
 
 ---
 
-## 4. Theme & Layout Hooks
+## 2. Astro Machine Foundation Status (`web/`)
 
-* **GeneratePress Footer Copyright Hook**: Moves from Code Snippets database to the child theme [themes/junkfeathers-machine/functions.php](../themes/junkfeathers-machine/functions.php).
-* **Callback Function**: A named, documented function `junkfeathers_machine_footer_copyright` is registered to the `generate_copyright` filter. It formats the year dynamically using `wp_date('Y')`, escapes the external URL `https://snorkleprawn.com`, and preserves the original link attributes (`target="_blank"`, `rel="noopener noreferrer"`).
-
----
-
-## 5. Visual Foundation & Homepage Prototype
-
-* **Visual System**: Monochrome OLED (black site background, white primary text, gray details, restrained link green).
-* **Typography**: Default generic `monospace` family, no remote/Google fonts are loaded.
-* **Layout Structure**: Flat square geometry (zero rounded corners, zero drop shadows). Depth is supplied by border weights, grid spacing, and line dividers.
-* **Scanlines**: Confined strictly to screen display classes (such as `.jf-screen`). The global body background is set to solid black.
-* **Homepage**: ID 5 is updated locally to display a framed monochrome machine front panel prototype (includes site title, status string, and square navigation buttons) and a compact nonfunctional signup panel prototype at the bottom.
-* **Tech Landing Page**: ID 10 is updated locally as a concise monochrome machine directory featuring Orpheus Deck (ID 12) with a custom CTA and relative paths.
-* **Orpheus Deck Page**: ID 12 is updated locally as a high-conversion landing page containing a dynamic download button, descriptive purpose block, screenshots, local-first privacy statement, and a nonfunctional signup panel prototype. Unreleased branch features (V34/CUT) and O-FX/LIMIT panels are omitted. Two metadata rows (Release Date and Engine) have been removed.
+* **Repository Workspace**: `JonathanEdwardLee/junkfeathers-website` (private repository).
+* **Branch**: `task/013-astro-machine-foundation`.
+* **Pull Request**: GitHub PR #1 (open, review-ready, unmerged).
+* **Stack**: Astro `6.4.8`, Node `22.23.1`, TypeScript `5.9.3`, `@astrojs/check` `0.9.9`.
+* **Local Windows Verification**: Direct Node execution (`node .\node_modules\@astrojs\check\bin\astro-check.js` and `node .\node_modules\astro\bin\astro.mjs build`) works cleanly without script wrapper hangs.
+* **Content Layer**: Content Layer API configured at `web/src/content.config.ts`.
+* **Publication Guard**: `getPublishedEntries()` in `web/src/lib/content.ts` explicitly excludes drafts (`draft: true`) and internal schema fixtures (`internalFixture: true`) from public site routes.
+* **CI Build Artifact**: GitHub Actions uploads a 5-day static review build artifact (`junkfeathers-astro-pr-build`) created from `web/dist/` via `actions/upload-artifact@v7`.
 
 ---
 
-## 6. Site Navigation & Page Map
+## 3. Environment & Service Boundaries
 
-The active site pages are:
-* `/` (Home): A monochrome OLED machine front panel prototype (signups omitted).
-* `/music/`: A list of YouTube, Bandcamp, and Spotify embeds.
-* `/tech/`: A concise monochrome machine directory featuring Orpheus Deck.
-* `/orpheus-deck/`: Android recorder app info, Play Store outbound link, screenshots, local-first privacy panel, and a return link to `/tech/` (signups omitted).
-* `/orpheus-deck-privacy-policy/`: Compliant App privacy policy.
-* `/chronos/`: Empty draft placeholder.
+* **Hostinger / Reach**: No server connections, Reach activation, email collection, analytics changes, or DNS modifications exist for Astro development.
+* **Pygmalion Visual Integration**: Jonathan is final visual authority; Pygmalion owns art direction, visual memory, and specifications. The Astro foundation uses a simple text-only skeleton until an approved visual handoff occurs.
 
 ---
 
-## 7. Versioning Conventions
+## 4. Active Astro Route Map
 
-To maintain clear and accurate history tracking, we apply two separate versioning pathways:
-1. **Root Repository Changelog**: Tracks workspace setup, script configurations, database reproducibility records, and workflow milestones (e.g. `0.5.0`, `0.6.0`, `0.7.0`, `0.8.0`, `0.9.0`).
-2. **Child-Theme Version**: Tracks visitor-facing child theme code, styles, and template assets loaded by WordPress (e.g. `0.2.0`, `0.3.0`, `0.4.0`, `0.5.0`).
-*They serve distinct purposes and do not need to share identical version numbers.*
+* `/` (Home): Monochrome OLED machine front panel with neutral `Junkfeathers Music and Tech` identity.
+* `/music/`: Music collection index using `getPublishedEntries('music')`.
+* `/tech/`: Tech workshop index featuring Orpheus Deck using `getPublishedEntries('tech')`.
+* `/orpheus-deck/`: High-conversion Android recorder app page with local static media assets and privacy link.
+* `/orpheus-deck-privacy-policy/`: Complete 16-section founder-approved app privacy policy.
+* `/chronos/`: Accurate historical prototype statement (`The original Junkfeathers timing-machine prototype. Future hardware work is parked.`).

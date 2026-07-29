@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.11.0] - 2026-07-28
+
+### Added
+- **Task 013 / 013A / 013B Astro Foundation**: Scaffolded and modernized Astro machine foundation under `web/` using Astro `6.4.8`, Node `22.23.1`, TypeScript `5.9.3`, and `@astrojs/check` `0.9.9`.
+- **Founder Image Library Audit**: Completed recursive audit of founder image library (`C:\Users\joned\Documents\Junkfeathers DevAI Exchange\junkfeathers-website\00 ACTIVE\Images-From-Founder`), returning detailed inventory CSV, JSON, Markdown audit report, duplicate groups report, and unreadable/unsupported report under `devai-return/image-audit/`.
+- **Orpheus Static Media Migration**: Migrated exact-matched `OrpheusDeck_logo_512_app_icon.png` to `web/public/media/orpheus/` with verified SHA-256 parity, and documented candidate assets for missing/suffix-mismatched files (`ASSET_SELECTION_NEEDED`) in `docs/assets/ORPHEUS_STATIC_MEDIA_MIGRATION_V1.md`.
+- **Orpheus App Privacy Policy**: Implemented all 16 numbered sections of the founder-approved privacy policy at `/orpheus-deck-privacy-policy/`, documented in `docs/content/ORPHEUS_APP_PRIVACY_ASTRO_MIGRATION_V1.md`.
+- **Publication Guard Helper**: Added `getPublishedEntries()` in `web/src/lib/content.ts` to strictly exclude drafts (`draft: true`) and internal schema fixtures (`internalFixture: true`) from public site routes.
+- **CI Build Artifact**: Updated `.github/workflows/ci.yml` with `actions/upload-artifact@v7` to upload a 5-day review build artifact (`junkfeathers-astro-pr-build`) from `web/dist/`.
+
+### Changed
+- **Astro/Zod Deprecation Fix**: Replaced deprecated `z.string().url()` forms in `web/src/content.config.ts` with supported `z.url()` form, achieving 0 errors, 0 warnings, and 0 hints in Astro Check.
+- **Editorial Copy Correction**: Removed superseded "Junk Notes" tagline, replacing default metadata with "Junkfeathers Music and Tech".
+- **MonthlyTransmission Component Safety**: Enforced locked copy and button label, removed red status text and green accents, replaced focus outlines with white/gray, and removed inline `onsubmit="return false;"`.
+- **Chronos Business Copy**: Updated Chronos subtitle to state: "The original Junkfeathers timing-machine prototype. Future hardware work is parked."
+- **Pygmalion Governance Boundary**: Updated `docs/architecture/PYGMALION_ASTRO_INTEGRATION_BOUNDARY_V1.md` to explicitly state Jonathan as founder and final visual authority.
+- **Documentation Reconciliation**: Updated `docs/architecture/ASTRO_REBUILD_DECISION_V1.md`, `docs/CURRENT_STATE.md`, and `docs/deployment/WORDPRESS_TO_ASTRO_CUTOVER_PLAN_V1.md`.
+
+---
+
 ## [0.10.0] - 2026-07-19
 
 ### Added
