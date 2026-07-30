@@ -381,6 +381,7 @@ a:focus-visible {
   .jf-machine-shell {
     margin: var(--jf-space-3) auto;
     padding: var(--jf-space-3);
+    max-width: calc(100vw - 16px);
   }
 
   .jf-panel {
@@ -393,47 +394,97 @@ a:focus-visible {
     padding: var(--jf-space-3);
   }
 
+  .jf-action-panel {
+    padding: var(--jf-space-3);
+  }
+
   .jf-machine-title {
-    font-size: 1.4em;
-    letter-spacing: 0.08em;
+    font-size: 1.3em !important;
+    letter-spacing: 0.06em !important;
   }
 
   .jf-machine-subtitle {
-    font-size: 0.85em;
-    letter-spacing: 0.03em;
+    font-size: 0.8em !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .jf-label,
+  .jf-status-strip {
+    font-size: 0.75em;
+    letter-spacing: 0.08em;
+    word-break: break-word;
   }
 
   .jf-btn {
     display: block;
     width: 100%;
     padding: 12px var(--jf-space-2);
+    font-size: 0.9em !important;
     box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 
   .jf-row {
     flex-direction: column;
     gap: var(--jf-space-2);
   }
+
+  .site-header {
+    padding: 0 var(--jf-space-2) !important;
+  }
+
+  .site-footer {
+    padding: 0 var(--jf-space-2) !important;
+  }
 }
 
 @media (max-width: 360px) {
   .jf-machine-shell {
+    margin: var(--jf-space-2) auto;
     padding: var(--jf-space-2);
     border-width: var(--jf-border-standard);
+    max-width: calc(100vw - 8px);
   }
 
   .jf-panel,
-  .jf-signup-panel {
+  .jf-signup-panel,
+  .jf-action-panel {
     padding: var(--jf-space-2);
   }
 
   .jf-machine-title {
-    font-size: 1.2em;
+    font-size: 1.1em !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  .jf-machine-subtitle {
+    font-size: 0.75em !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  .jf-label,
+  .jf-status-strip {
+    font-size: 0.7em;
     letter-spacing: 0.05em;
+  }
+
+  .jf-btn {
+    padding: 10px var(--jf-space-1);
+    font-size: 0.82em !important;
   }
 
   .jf-consent-row {
     gap: var(--jf-space-1);
+  }
+
+  .site-header {
+    padding: 0 var(--jf-space-1) !important;
+  }
+
+  .site-footer {
+    padding: 0 var(--jf-space-1) !important;
   }
 }
 
