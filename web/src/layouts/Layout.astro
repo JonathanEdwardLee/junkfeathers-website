@@ -21,7 +21,7 @@ const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
   </head>
   <body>
     <div id="page" class="site-container">
-      <header class="site-header" style="max-width: 800px; margin: 20px auto 0 auto; padding: 0 16px; display: flex; justify-content: space-between; align-items: center;">
+      <header class="site-header">
         <div class="site-branding">
           <a href="/" style="font-weight: 700; border-bottom: none; color: var(--jf-fg) !important;">junkfeathers.com</a>
         </div>
@@ -35,7 +35,7 @@ const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
         <slot />
       </main>
 
-      <footer class="site-footer" style="max-width: 800px; margin: var(--jf-space-5) auto; padding: 0 16px; text-align: center;">
+      <footer class="site-footer">
         <div class="inside-site-info">
           <div class="copyright-bar" style="font-size: 0.85em; color: var(--jf-gray-mid); text-transform: uppercase;">
             © {new Date().getFullYear()} Junkfeathers. Pet the <a href="https://snorkleprawn.com" target="_blank" rel="noopener noreferrer">SnorklePrawn</a>.
