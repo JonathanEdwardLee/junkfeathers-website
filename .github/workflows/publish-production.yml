@@ -1,0 +1,139 @@
+name: Publish production branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: junkfeathers-production-publish
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Build and publish generated site
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout triggering commit
+        # actions/checkout v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ github.token }}
+
+      - name: Setup Node.js
+        # actions/setup-node v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.1' # Matches web/package.json engines.node.
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: web
+
+      - name: Run Astro check
+        run: npm run check
+        working-directory: web
+
+      - name: Build static output
+        run: npm run build
+        working-directory: web
+
+      - name: Validate static output
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_pages=(
+            "index.html"
+            "chronos/index.html"
+            "music/index.html"
+            "orpheus-deck/index.html"
+            "orpheus-deck-privacy-policy/index.html"
+            "tech/index.html"
+          )
+
+          for page in "${required_pages[@]}"; do
+            test -f "web/dist/${page}" || {
+              echo "Missing required page: ${page}" >&2
+              exit 1
+            }
+          done
+
+          if find web/dist -type d \( -name .git -o -name node_modules -o -name src \) -print -quit | grep -q .; then
+            echo "Generated output contains a forbidden directory." >&2
+            exit 1
+          fi
+
+          if find web/dist -type f \( \
+            -name '.env' -o -name '.env.*' -o \
+            -name '*.astro' -o -name '*.ts' -o -name '*.tsx' -o \
+            -name '*.pem' -o -name '*.key' -o -name 'id_rsa*' -o \
+            -iname '*credential*' \
+          \) -print -quit | grep -q .; then
+            echo "Generated output contains a forbidden source, environment, or credential file." >&2
+            exit 1
+          fi
+
+      - name: Publish dist contents to production
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          publish_dir="${RUNNER_TEMP}/junkfeathers-production"
+
+          if git ls-remote --exit-code --heads origin production >/dev/null 2>&1; then
+            git fetch origin production:refs/remotes/origin/production
+            git worktree add --detach "${publish_dir}" origin/production
+            git -C "${publish_dir}" switch -C production origin/production
+
+            existing_source="$(sed -n 's/^Source main commit: //p' "${publish_dir}/DEPLOYMENT_SOURCE.txt" 2>/dev/null || true)"
+            if [[ "${existing_source}" == "${GITHUB_SHA}" ]]; then
+              echo "Production already records source commit ${GITHUB_SHA}; nothing to publish."
+              exit 0
+            fi
+
+            git -C "${publish_dir}" rm -r --ignore-unmatch -- .
+          else
+            git worktree add --detach "${publish_dir}" "${GITHUB_SHA}"
+            git -C "${publish_dir}" switch --orphan production
+            git -C "${publish_dir}" rm -r --ignore-unmatch -- .
+          fi
+
+          cp -a web/dist/. "${publish_dir}/"
+
+          cat > "${publish_dir}/DEPLOYMENT_SOURCE.txt" <<EOF
+          Source main commit: ${GITHUB_SHA}
+          Build timestamp (UTC): $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Workflow run ID: ${GITHUB_RUN_ID}
+          EOF
+
+          git -C "${publish_dir}" add --all
+
+          test -f "${publish_dir}/index.html"
+          test -f "${publish_dir}/DEPLOYMENT_SOURCE.txt"
+
+          if git -C "${publish_dir}" ls-files | grep -E '(^|/)(\.git|\.github|node_modules|src)(/|$)|^web/|(^|/)\.env($|\.)|(^|/)(package(-lock)?\.json|tsconfig\.json|astro\.config\.[^/]+)$|\.(astro|ts|tsx|pem|key)$|(^|/)id_rsa' ; then
+            echo "Publication tree contains a forbidden path." >&2
+            exit 1
+          fi
+
+          if git -C "${publish_dir}" diff --cached --quiet; then
+            echo "Generated publication output is unchanged; nothing to publish."
+            exit 0
+          fi
+
+          git -C "${publish_dir}" config user.name "github-actions[bot]"
+          git -C "${publish_dir}" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "${publish_dir}" commit -m "chore(production): publish ${GITHUB_SHA}"
+          git -C "${publish_dir}" push origin HEAD:production
