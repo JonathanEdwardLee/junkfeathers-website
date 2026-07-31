@@ -1,43 +1,29 @@
-# Astro Rebuild Decision V1
+# Astro Static Architecture
 
-This document evaluates the transition from the legacy WordPress runtime to a modern Git-native Astro static site architecture for **junkfeathers.com**.
+Junkfeathers uses Astro to produce a small static website that is easy to review, build, and host.
 
-* **Date**: July 28, 2026
-* **Status**: **Approved Proof of Concept (Task 013B Foundation)**
+## Why Astro
 
----
+- Static HTML, CSS, and assets provide fast delivery with no application server or database.
+- Components and content schemas keep the source readable and maintainable.
+- A committed npm lockfile makes builds reproducible.
+- Semantic markup and vanilla CSS support the machine-inspired visual system without a client framework.
+- Static output reduces routine runtime maintenance and narrows the production attack surface.
 
-## 1. Architectural Rationales
+## Current stack
 
-The transition from WordPress to Astro resolves several developer overhead and business goals identified by Jonathan Lee and the Website Council:
+- Astro `6.4.8`
+- Node.js `22.23.1`
+- TypeScript `5.9.3`
+- `@astrojs/check` `0.9.9`
+- Astro content collections
+- Static output with trailing-slash routes
+- Vanilla CSS and no client framework
 
-1. **Artistic Freedom**: Custom monochrome layouts, retro OLED terminal interfaces, and dynamic visual panels can be written cleanly in semantic HTML and CSS, without fighting database page layouts or block editor serialization.
-2. **Simplified AI Maintenance**: A static layout is highly readable. Coding agents can edit Markdown files, configure content schema, or add static Astro components without breaking database structures or option tables.
-3. **Reproducible Builds**: With a committed lockfile (`package-lock.json`), anyone can recreate the exact site output, resolving local-to-production configuration discrepancies.
-4. **Maintenance Overhead Reduction**:
-   - Zero WordPress Core updates.
-   - Zero third-party plugin updates (Jetpack, LiteSpeed Cache, WPForms).
-   - Zero SQL database backups required for regular site rendering.
-5. **Fast static delivery**: The final build is pure HTML/CSS/JS, served directly from a static host or basic file storage.
+Package versions are recorded in `web/package.json` and `web/package-lock.json`; those files are authoritative when this note becomes stale.
 
----
+## Source and output boundaries
 
-## 2. Transition Plan & Rollback Boundary
+The application source lives in `web/src/`, while static assets live in `web/public/`. `npm run build` writes the deployable site to `web/dist/`. The generated directory is not committed and only its contents—not the repository root—are suitable for static hosting.
 
-* The existing WordPress database, posts, media assets, and files remain active and untouched.
-* The WordPress project is tracked as the legacy fallback point under tag `production-wordpress-v0.5.0` on commit `e481054`.
-* The Astro replacement resides in the `web/` directory under branch `task/013-astro-machine-foundation` and unmerged Pull Request #1.
-* No merge or production deployment has occurred.
-
----
-
-## 3. Technology Stack Choice
-
-* **Framework**: Astro `6.4.8`
-* **Node Version**: `22.23.1`
-* **TypeScript Version**: `5.9.3`
-* **Astro Check**: `@astrojs/check` `0.9.9`
-* **Content Layer**: Content Layer API configured at `web/src/content.config.ts`
-* **Output Mode**: `static` (zero server-side Node rendering dependency for pages)
-* **Styling**: Vanilla CSS
-* **Client Framework**: None (Pure HTML/CSS/Vanilla JS)
+The legacy WordPress theme remains under `themes/` as historical source. It is not imported by or required for the Astro build.

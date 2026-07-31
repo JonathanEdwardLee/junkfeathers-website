@@ -8,11 +8,20 @@ scripts/sync-config.local.ps1
 .local/
 tmp/
 temp/
+.codex/
+.agents/
+**/Images-From-Founder/
+**/Founder-Inputs/
 
 # Secrets and environment files
 .env
 .env.*
 !.env.example
+.envrc
+.npmrc
+.pypirc
+.credentials/
+credentials/
 *.pem
 *.key
 *.p12
