@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: astro-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build and Check
@@ -20,6 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,6 +47,7 @@ jobs:
         working-directory: web
 
       - name: Upload PR review build
+        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v7
         with:
           name: junkfeathers-astro-pr-build
