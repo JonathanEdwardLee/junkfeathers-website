@@ -47,6 +47,8 @@ cache/
 uploads/
 node_modules/
 vendor/
+web/dist/
+web/.astro/
 
 # Editor and operating-system clutter
 .vscode/
@@ -65,3 +67,11 @@ exports/subscribers/
 # Temporary secret-scan output
 gitleaks-report.*
 secret-scan-report.*
+
+# Council OS DevAI Exchange communication artifacts
+Council-DevAI-Exchange.zip
+.work/
+devai-return/
+council-reference/
+evidence/
+source-snapshot/

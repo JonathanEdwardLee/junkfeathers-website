@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.11.0] - 2026-07-28
+
+### Added
+- **Task 013 / 013A / 013B Astro Foundation**: Scaffolded and modernized Astro machine foundation under `web/` using Astro `6.4.8`, Node `22.23.1`, TypeScript `5.9.3`, and `@astrojs/check` `0.9.9`.
+- **Founder Image Library Audit**: Completed recursive audit of founder image library (`C:\Users\joned\Documents\Junkfeathers DevAI Exchange\junkfeathers-website\00 ACTIVE\Images-From-Founder`), returning detailed inventory CSV, JSON, Markdown audit report, duplicate groups report, and unreadable/unsupported report under `devai-return/image-audit/`.
+- **Orpheus Static Media Migration**: Migrated exact-matched `OrpheusDeck_logo_512_app_icon.png` to `web/public/media/orpheus/` with verified SHA-256 parity, and documented candidate assets for missing/suffix-mismatched files (`ASSET_SELECTION_NEEDED`) in `docs/assets/ORPHEUS_STATIC_MEDIA_MIGRATION_V1.md`.
+- **Orpheus App Privacy Policy**: Implemented all 16 numbered sections of the founder-approved privacy policy at `/orpheus-deck-privacy-policy/`, documented in `docs/content/ORPHEUS_APP_PRIVACY_ASTRO_MIGRATION_V1.md`.
+- **Publication Guard Helper**: Added `getPublishedEntries()` in `web/src/lib/content.ts` to strictly exclude drafts (`draft: true`) and internal schema fixtures (`internalFixture: true`) from public site routes.
+- **CI Build Artifact**: Updated `.github/workflows/ci.yml` with `actions/upload-artifact@v7` to upload a 5-day review build artifact (`junkfeathers-astro-pr-build`) from `web/dist/`.
+
+### Changed
+- **Astro/Zod Deprecation Fix**: Replaced deprecated `z.string().url()` forms in `web/src/content.config.ts` with supported `z.url()` form, achieving 0 errors, 0 warnings, and 0 hints in Astro Check.
+- **Editorial Copy Correction**: Removed superseded "Junk Notes" tagline, replacing default metadata with "Junkfeathers Music and Tech".
+- **MonthlyTransmission Component Safety**: Enforced locked copy and button label, removed red status text and green accents, replaced focus outlines with white/gray, and removed inline `onsubmit="return false;"`.
+- **Chronos Business Copy**: Updated Chronos subtitle to state: "The original Junkfeathers timing-machine prototype. Future hardware work is parked."
+- **Pygmalion Governance Boundary**: Updated `docs/architecture/PYGMALION_ASTRO_INTEGRATION_BOUNDARY_V1.md` to explicitly state Jonathan as founder and final visual authority.
+- **Documentation Reconciliation**: Updated `docs/architecture/ASTRO_REBUILD_DECISION_V1.md`, `docs/CURRENT_STATE.md`, and `docs/deployment/WORDPRESS_TO_ASTRO_CUTOVER_PLAN_V1.md`.
+
+---
+
+## [0.10.0] - 2026-07-19
+
+### Added
+- Created [AGENTS.md](AGENTS.md) exactly from the approved council-reference content, establishing the repository-specific DevAI communication foundation.
+- Configured `.github/pull_request_template.md` to capture exchange identity, status, starting SHA-256 hash, and repository hygiene confirmations.
+
+### Changed
+- Updated [README.md](README.md) to replace Antigravity-specific authority wording with generic DevAI role and exchange terminology, and point to [AGENTS.md](AGENTS.md) as the authority.
+- Updated [CONTRIBUTING.md](CONTRIBUTING.md) to require active exchange verification, [AGENTS.md](AGENTS.md) alignment, and founder merge authority.
+- Updated [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) to record that the governance installation is present but restart acceptance is pending.
+- Updated [scripts/verify-repository.ps1](scripts/verify-repository.ps1) to allow [AGENTS.md](AGENTS.md), remove `WELCOME_AG.md`, and detect/fail on tracked communication/exchange artifacts or prohibited temporary folders.
+- Expanded [.gitignore](.gitignore) to exclude local exchange, extracted exchange, and council-return communication files.
+
+### Removed
+- Deleted `WELCOME_AG.md` after confirming all durable safety rules are preserved in [AGENTS.md](AGENTS.md).
+
+---
+
 ## [0.9.0] - 2026-07-15
 
 ### Added

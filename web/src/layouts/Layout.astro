@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div id="page" class="site-container">
+      <header class="site-header">
+        <div class="site-branding">
+          <a href="/" style="font-weight: 700; border-bottom: none; color: var(--jf-fg) !important;">junkfeathers.com</a>
+        </div>
+        <nav class="main-navigation" aria-label="Primary" style="display: flex; gap: 16px;">
+          <a href="/music/" style="border-bottom: none;">Music</a>
+          <a href="/tech/" style="border-bottom: none;">Tech</a>
+        </nav>
+      </header>
+
+      <main id="content">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <div class="inside-site-info">
+          <div class="copyright-bar" style="font-size: 0.85em; color: var(--jf-gray-mid); text-transform: uppercase;">
+            © {new Date().getFullYear()} Junkfeathers. Pet the <a href="https://snorkleprawn.com" target="_blank" rel="noopener noreferrer">SnorklePrawn</a>.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
