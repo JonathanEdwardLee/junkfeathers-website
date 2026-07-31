@@ -1,0 +1,85 @@
+---
+interface Category {
+  label: string;
+  state: 'active' | 'inactive';
+  target?: string;
+}
+
+interface Props {
+  categories: Category[];
+}
+
+const { categories } = Astro.props;
+---
+
+<nav class="music-category-nav" aria-label="Music categories">
+  {categories.map((category) => (
+    category.state === 'active' && category.target ? (
+      <a class="music-category music-category--active" href={`#${category.target}`}>
+        <span aria-hidden="true">●</span>
+        {category.label}
+      </a>
+    ) : (
+      <span class="music-category music-category--inactive" aria-disabled="true">
+        <span aria-hidden="true">○</span>
+        {category.label}
+      </span>
+    )
+  ))}
+</nav>
+
+<style>
+  .music-category-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block: 1px solid var(--jf-gray-soft);
+  }
+
+  .music-category {
+    min-width: 0;
+    padding: 0.85rem 0.35rem;
+    font-size: clamp(0.72rem, 3.4vw, 0.9rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .music-category + .music-category {
+    border-left: 1px solid var(--jf-gray-soft);
+  }
+
+  .music-category--active {
+    color: var(--jf-fg);
+    border-bottom: 0;
+  }
+
+  .music-category--active:hover,
+  .music-category--active:focus {
+    color: var(--jf-fg);
+    background: #111;
+  }
+
+  .music-category--inactive {
+    color: var(--jf-gray-soft);
+    cursor: not-allowed;
+    user-select: none;
+  }
+
+  .music-category span {
+    margin-right: 0.3em;
+    font-size: 0.72em;
+  }
+
+  @media (max-width: 340px) {
+    .music-category {
+      padding-inline: 0.15rem;
+      letter-spacing: 0.06em;
+    }
+
+    .music-category span {
+      display: none;
+    }
+  }
+</style>

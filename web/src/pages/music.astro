@@ -1,39 +1,98 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getPublishedEntries } from '../lib/content';
+import MusicCategoryNav from '../components/MusicCategoryNav.astro';
+import VideoTransmission from '../components/VideoTransmission.astro';
 
-const publishedMusic = await getPublishedEntries('music');
+const categories = [
+  { label: 'SOLO', state: 'active' as const, target: 'first-video-module' },
+  { label: 'COLLAB', state: 'inactive' as const },
+  { label: 'BAND', state: 'inactive' as const },
+];
+
+const firstRelease = {
+  youtubeId: 'UuIjMhftj58',
+  youtubeUrl: 'https://youtu.be/UuIjMhftj58',
+  bandcampUrl: 'https://junkfeathers.bandcamp.com/album/witches-and-goblins',
+  spotifyUrl: 'https://open.spotify.com/album/2sq5y9zmI2iBuugegbn0B9',
+  releaseTitle: 'Witches and Goblins',
+  tracks: [
+    {
+      title: 'Witches and Goblins',
+      duration: '2:52',
+      bandcampUrl: 'https://junkfeathers.bandcamp.com/track/witches-and-goblins',
+    },
+    {
+      title: 'The Vibe',
+      duration: '4:00',
+      bandcampUrl: 'https://junkfeathers.bandcamp.com/track/the-vibe',
+    },
+    {
+      title: 'Am I An Alien',
+      duration: '3:00',
+      bandcampUrl: 'https://junkfeathers.bandcamp.com/track/am-i-an-alien',
+    },
+  ],
+};
 ---
 
-<Layout title="Music - Junkfeathers">
-  <div class="jf-machine-shell">
-    <div class="jf-screen">
-      <div style="text-align: center; padding: 15px 0;">
-        <span class="jf-status-strip">MUSIC INDEX</span>
-        <h1 class="jf-machine-title">JUNKFEATHERS MUSIC</h1>
-        <hr class="jf-divider" />
-        <p class="jf-machine-subtitle">Song archives, records, and audio links.</p>
-      </div>
-    </div>
+<Layout title="Music - Junkfeathers" description="A curated selection of Junkfeathers music.">
+  <div class="music-page">
+    <header class="music-opening">
+      <p class="music-system-line" aria-hidden="true">JF / AUDIO MACHINE</p>
+      <h1>MUSIC</h1>
+      <MusicCategoryNav categories={categories} />
+    </header>
 
-    <div class="jf-panel">
-      <span class="jf-label">ARCHIVE STATUS</span>
-      <p style="margin: 0;">Legacy music tracks, Bandcamp embeds, and playlist links will be organized here in a future release.</p>
-    </div>
+    <VideoTransmission
+      anchorId="first-video-module"
+      youtubeId={firstRelease.youtubeId}
+      youtubeUrl={firstRelease.youtubeUrl}
+      bandcampUrl={firstRelease.bandcampUrl}
+      spotifyUrl={firstRelease.spotifyUrl}
+      releaseTitle={firstRelease.releaseTitle}
+      tracks={firstRelease.tracks}
+    />
 
-    {publishedMusic.length > 0 && (
-      <div class="jf-panel">
-        <span class="jf-label">MUSIC TRACKS</span>
-        <ul>
-          {publishedMusic.map((item) => (
-            <li>{item.data.title}</li>
-          ))}
-        </ul>
-      </div>
-    )}
-
-    <div style="text-align: center; margin-top: var(--jf-space-4);">
-      <a href="/" class="jf-btn jf-btn--secondary" style="font-size: 0.9em;">&lt; RETURN TO HOME</a>
-    </div>
+    <a class="music-home-link" href="/">&lt; HOME</a>
   </div>
 </Layout>
+
+<style>
+  .music-page {
+    width: min(100% - 1rem, 780px);
+    margin: clamp(1rem, 5vw, 2.5rem) auto;
+  }
+
+  .music-opening {
+    margin-bottom: clamp(2rem, 8vw, 4.5rem);
+  }
+
+  .music-system-line {
+    margin: 0 0 0.2rem;
+    color: var(--jf-gray-mid);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+  }
+
+  .music-opening h1 {
+    margin: 0 0 clamp(0.9rem, 4vw, 1.5rem);
+    font-size: clamp(2.5rem, 14vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+  }
+
+  .music-home-link {
+    display: inline-block;
+    margin-top: 3.5rem;
+    color: var(--jf-gray-mid);
+    border-color: var(--jf-gray-soft);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+  }
+
+  @media (min-width: 620px) {
+    .music-page {
+      width: min(100% - 2rem, 780px);
+    }
+  }
+</style>
