@@ -1,25 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import JunkfeathersMachine from '../components/JunkfeathersMachine.astro';
 import MonthlyTransmission from '../components/email/MonthlyTransmission.astro';
 ---
 
 <Layout title="Junkfeathers Music and Tech">
+  <JunkfeathersMachine />
+
   <div class="jf-machine-shell">
-    <div class="jf-screen">
-      <div style="text-align: center; padding: 20px 0;">
-        <h1 class="jf-machine-title">JUNKFEATHERS</h1>
-        <hr class="jf-divider" />
-        <p class="jf-machine-subtitle">Junkfeathers Music and Tech</p>
-      </div>
-    </div>
-
-    <div class="jf-panel jf-action-panel">
-      <div class="jf-stack">
-        <a href="/music/" class="jf-btn jf-btn--primary">[ MUSIC ]</a>
-        <a href="/tech/" class="jf-btn jf-btn--primary">[ TECH ]</a>
-      </div>
-    </div>
-
     <div style="text-align: center; margin-top: var(--jf-space-4);">
       <a href="/orpheus-deck/" class="jf-btn jf-btn--secondary" style="font-size: 0.85em;">[ ORPHEUS DECK ]</a>
     </div>
