@@ -313,6 +313,29 @@ a:focus-visible {
   background-color: var(--jf-bg);
 }
 
+.jf-signup-panel--inactive {
+  color: var(--jf-gray-mid);
+  border-color: var(--jf-gray-soft);
+}
+
+.jf-signup-panel--inactive .jf-field-label,
+.jf-signup-panel--inactive .jf-consent-copy {
+  color: var(--jf-gray-mid);
+}
+
+.jf-signup-panel--inactive .jf-email-input {
+  color: var(--jf-gray-mid);
+  border-color: var(--jf-gray-soft);
+}
+
+.jf-signup-panel--inactive .jf-email-input::placeholder {
+  color: var(--jf-gray-soft);
+}
+
+.jf-signup-panel--inactive .jf-consent-row input[type="checkbox"] {
+  accent-color: var(--jf-gray-mid);
+}
+
 .jf-signup-form {
   margin: var(--jf-space-4) 0;
 }
