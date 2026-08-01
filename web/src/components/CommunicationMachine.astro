@@ -1,3 +1,11 @@
+---
+import ContactForm from './ContactForm.astro';
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
+const contactAvailable = turnstileSiteKey.length > 0;
+const contactBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_CONTACT_BETA_MODE === 'true';
+---
+
 <section class="communication-shell" data-communication-shell aria-label="Site contact and support options">
   <div class="receiver-face">
     <div class="receiver-display">
@@ -43,11 +51,22 @@
 
   <div id="communication-channels" class="channel-panel" data-channel-panel hidden>
     <div class="channel-grid">
-      <button class="communication-channel communication-channel--inactive" type="button" disabled aria-disabled="true">
+      <button
+        class:list={[
+          'communication-channel',
+          contactAvailable ? 'communication-channel--active' : 'communication-channel--inactive',
+        ]}
+        type="button"
+        disabled={!contactAvailable}
+        aria-disabled={!contactAvailable}
+        aria-expanded="false"
+        aria-controls="contact-channel-panel"
+        data-contact-channel-toggle
+      >
         <span class="channel-indicator" aria-hidden="true"></span>
         <span class="channel-copy">
           <strong>CONTACT</strong>
-          <small>INACTIVE</small>
+          <small>{contactAvailable ? 'SECURE CHANNEL' : 'INACTIVE'}</small>
         </span>
       </button>
 
@@ -74,6 +93,8 @@
       </a>
     </div>
 
+    <ContactForm siteKey={turnstileSiteKey} betaMode={contactBetaMode} />
+
     <div class="control-bank" aria-hidden="true">
       <div class="control-lights">
         <i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i>
@@ -99,6 +120,8 @@
     const tuner = shell.querySelector<HTMLInputElement>('[data-tuning-control]');
     const frequency = shell.querySelector<HTMLOutputElement>('[data-frequency-output]');
     const controlLights = Array.from(shell.querySelectorAll<HTMLElement>('[data-control-light]'));
+    const contactToggle = shell.querySelector<HTMLButtonElement>('[data-contact-channel-toggle]');
+    const contactPanel = shell.querySelector<HTMLElement>('[data-contact-form-root]');
 
     if (!toggle || !panel || !label || !status || !tuner || !frequency) return;
 
@@ -128,6 +151,19 @@
         document.dispatchEvent(new CustomEvent('jf:analytics-intent', {
           detail: { eventName: 'communication_open' },
         }));
+      }
+    });
+
+    contactToggle?.addEventListener('click', () => {
+      if (!contactPanel || contactToggle.disabled) return;
+
+      const contactOpen = contactToggle.getAttribute('aria-expanded') !== 'true';
+      contactToggle.setAttribute('aria-expanded', String(contactOpen));
+      contactPanel.hidden = !contactOpen;
+      status.textContent = contactOpen ? 'CONTACT READY' : 'CHANNELS OPEN';
+
+      if (contactOpen) {
+        document.dispatchEvent(new CustomEvent('jf:contact-open'));
       }
     });
   });
@@ -494,6 +530,7 @@
   .communication-channel--active {
     border-color: var(--comm-white);
     color: var(--comm-white);
+    cursor: pointer;
     text-decoration: none;
   }
 

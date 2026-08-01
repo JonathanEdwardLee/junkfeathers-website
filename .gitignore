@@ -58,6 +58,8 @@ node_modules/
 vendor/
 web/dist/
 web/.astro/
+contact-runtime/config.php
+contact-runtime/data/
 
 # Editor and operating-system clutter
 .vscode/

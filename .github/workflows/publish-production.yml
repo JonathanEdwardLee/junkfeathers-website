@@ -44,10 +44,14 @@ jobs:
       - name: Run Astro check
         run: npm run check
         working-directory: web
+        env:
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.JF_TURNSTILE_SITEKEY }}
 
       - name: Build static output
         run: npm run build
         working-directory: web
+        env:
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.JF_TURNSTILE_SITEKEY }}
 
       - name: Validate static output
         shell: bash
@@ -60,6 +64,7 @@ jobs:
             "music/index.html"
             "orpheus-deck/index.html"
             "orpheus-deck-privacy-policy/index.html"
+            "privacy/index.html"
             "tech/index.html"
           )
 
@@ -69,6 +74,9 @@ jobs:
               exit 1
             }
           done
+
+          test -f web/dist/api/contact.php
+          cmp web/public/api/contact.php web/dist/api/contact.php
 
           if find web/dist -type d \( -name .git -o -name node_modules -o -name src \) -print -quit | grep -q .; then
             echo "Generated output contains a forbidden directory." >&2

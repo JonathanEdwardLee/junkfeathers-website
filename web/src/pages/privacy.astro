@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
   title="Website Privacy - Junkfeathers"
-  description="How optional website analytics and consent choices work on junkfeathers.com."
+  description="How contact messages, optional website analytics, and consent choices work on junkfeathers.com."
 >
   <div class="jf-machine-shell">
     <div class="jf-screen">
@@ -17,21 +17,26 @@ import Layout from '../layouts/Layout.astro';
     </div>
 
     <div class="jf-panel">
-      <p><strong>Effective baseline:</strong> July 31, 2026</p>
+      <p><strong>Effective baseline:</strong> August 1, 2026</p>
+
+      <h2>Contact messages</h2>
+      <p>The CONTACT channel asks for an optional name, required email address, and required message. That information is used only to deliver and respond to the message. Submitting CONTACT does not subscribe you to updates.</p>
+      <p>Messages are protected with Cloudflare Turnstile and delivered through authenticated email infrastructure. Limited abuse-prevention information may be processed, including a short-lived pseudonymous rate-limit key, form timing, and verification results. The site does not store message content in browser local storage or in a server-side message database.</p>
+      <p>Contact fields, message text, email addresses, verification tokens, and failure details are never sent to Google Analytics. If Analytics was already allowed, the site may send one fixed <strong>contact_message_sent</strong> event only after confirmed delivery.</p>
 
       <h2>Analytics is optional</h2>
       <p>Junkfeathers uses Google Analytics 4 only after you choose <strong>ALLOW ANALYTICS</strong>. Its purpose is to help Jonathan understand site use in aggregate, such as page views and a small set of interactions with the site’s machines and project links.</p>
       <p>If you decline, the Google Analytics tag is not loaded and no Analytics request is made by this site. Your choice is stored locally in your browser so the site can remember it.</p>
 
       <h2>What this site measures</h2>
-      <p>After consent, this site may record page views, opening the Communication Machine, activating the TIP THE ARTIST link, and activating the Orpheus Deck Google Play link. These events use fixed, low-cardinality labels and are not intended to contain names, email addresses, form contents, subscriber details, or exact tuner values.</p>
+      <p>After consent, this site may record page views, opening the Communication Machine, a confirmed Contact delivery, activating the TIP THE ARTIST link, and activating the Orpheus Deck Google Play link. These events use fixed, low-cardinality labels and do not contain names, email addresses, form contents, subscriber details, verification results, or exact tuner values.</p>
 
       <h2>Google and advertising features</h2>
       <p>Google provides the measurement service and may set Analytics cookies after consent. This site configures Google Signals and advertising-personalization signals off. It does not install Google Tag Manager or a Google Ads tag in this release.</p>
       <p>Google’s handling of information is also described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google’s Privacy Policy</a>.</p>
 
       <h2>Contact and Subscribe</h2>
-      <p>CONTACT and SUBSCRIBE FOR UPDATES remain inactive in this release. They do not collect or send information, and no Contact or Subscribe data is sent to Analytics.</p>
+      <p>CONTACT is a direct-message channel. SUBSCRIBE FOR UPDATES remains inactive and does not collect information. A Contact message is never treated as subscription consent.</p>
 
       <h2>Change your choice</h2>
       <p>Use <strong>ANALYTICS SETTINGS</strong> near the footer on any page to allow or decline Analytics later. Declining after previously allowing Analytics prevents future site hits and removes known Google Analytics cookies for this site where the browser permits it.</p>
