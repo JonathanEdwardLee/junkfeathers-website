@@ -1,9 +1,11 @@
 ---
 import ContactForm from './ContactForm.astro';
+import SubscribeForm from './SubscribeForm.astro';
 
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
 const contactAvailable = turnstileSiteKey.length > 0;
 const contactBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_CONTACT_BETA_MODE === 'true';
+const subscribeBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_REACH_BETA_MODE === 'true';
 ---
 
 <section class="communication-shell" data-communication-shell aria-label="Site contact and support options">
@@ -70,11 +72,22 @@ const contactBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_CONTACT_BE
         </span>
       </button>
 
-      <button class="communication-channel communication-channel--inactive" type="button" disabled aria-disabled="true">
+      <button
+        class:list={[
+          'communication-channel',
+          subscribeBetaMode ? 'communication-channel--active' : 'communication-channel--inactive',
+        ]}
+        type="button"
+        disabled={!subscribeBetaMode}
+        aria-disabled={!subscribeBetaMode}
+        aria-expanded="false"
+        aria-controls="subscribe-channel-panel"
+        data-subscribe-channel-toggle
+      >
         <span class="channel-indicator" aria-hidden="true"></span>
         <span class="channel-copy">
           <strong>SUBSCRIBE FOR UPDATES</strong>
-          <small>INACTIVE</small>
+          <small>{subscribeBetaMode ? 'EMAIL UPDATES' : 'INACTIVE'}</small>
         </span>
       </button>
 
@@ -94,6 +107,7 @@ const contactBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_CONTACT_BE
     </div>
 
     <ContactForm siteKey={turnstileSiteKey} betaMode={contactBetaMode} />
+    <SubscribeForm enabled={subscribeBetaMode} />
 
     <div class="control-bank" aria-hidden="true">
       <div class="control-lights">
@@ -122,6 +136,8 @@ const contactBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_CONTACT_BE
     const controlLights = Array.from(shell.querySelectorAll<HTMLElement>('[data-control-light]'));
     const contactToggle = shell.querySelector<HTMLButtonElement>('[data-contact-channel-toggle]');
     const contactPanel = shell.querySelector<HTMLElement>('[data-contact-form-root]');
+    const subscribeToggle = shell.querySelector<HTMLButtonElement>('[data-subscribe-channel-toggle]');
+    const subscribePanel = shell.querySelector<HTMLElement>('[data-subscribe-form-root]');
 
     if (!toggle || !panel || !label || !status || !tuner || !frequency) return;
 
@@ -163,7 +179,24 @@ const contactBetaMode = import.meta.env.DEV || import.meta.env.PUBLIC_CONTACT_BE
       status.textContent = contactOpen ? 'CONTACT READY' : 'CHANNELS OPEN';
 
       if (contactOpen) {
+        subscribeToggle?.setAttribute('aria-expanded', 'false');
+        if (subscribePanel) subscribePanel.hidden = true;
         document.dispatchEvent(new CustomEvent('jf:contact-open'));
+      }
+    });
+
+    subscribeToggle?.addEventListener('click', () => {
+      if (!subscribePanel || subscribeToggle.disabled) return;
+
+      const subscribeOpen = subscribeToggle.getAttribute('aria-expanded') !== 'true';
+      subscribeToggle.setAttribute('aria-expanded', String(subscribeOpen));
+      subscribePanel.hidden = !subscribeOpen;
+      status.textContent = subscribeOpen ? 'SUBSCRIBE READY' : 'CHANNELS OPEN';
+
+      if (subscribeOpen) {
+        contactToggle?.setAttribute('aria-expanded', 'false');
+        if (contactPanel) contactPanel.hidden = true;
+        document.dispatchEvent(new CustomEvent('jf:subscribe-open'));
       }
     });
   });
