@@ -306,116 +306,6 @@ a:focus-visible {
   display: block;
 }
 
-/* 5. Signup Form Prototype Classes */
-.jf-signup-panel {
-  border: var(--jf-border-standard) solid var(--jf-border-color);
-  padding: var(--jf-space-4);
-  background-color: var(--jf-bg);
-}
-
-.jf-signup-panel--inactive {
-  color: var(--jf-gray-mid);
-  border-color: var(--jf-gray-soft);
-}
-
-.jf-signup-panel--inactive .jf-field-label,
-.jf-signup-panel--inactive .jf-consent-copy {
-  color: var(--jf-gray-mid);
-}
-
-.jf-signup-panel--inactive .jf-email-input {
-  color: var(--jf-gray-mid);
-  border-color: var(--jf-gray-soft);
-}
-
-.jf-signup-panel--inactive .jf-email-input::placeholder {
-  color: var(--jf-gray-soft);
-}
-
-.jf-signup-panel--inactive .jf-consent-row input[type="checkbox"] {
-  accent-color: var(--jf-gray-mid);
-}
-
-.jf-signup-form {
-  margin: var(--jf-space-4) 0;
-}
-
-.jf-form-field {
-  margin-bottom: var(--jf-space-3);
-}
-
-.jf-field-label {
-  font-size: 0.85em;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--jf-fg);
-  margin-bottom: var(--jf-space-1);
-  display: block;
-}
-
-.jf-email-input {
-  width: 100%;
-  height: 44px; /* Ensured 44px minimum target height */
-  background-color: var(--jf-bg);
-  color: var(--jf-fg);
-  border: var(--jf-border-minor) solid var(--jf-border-color);
-  padding: 0 var(--jf-space-2);
-  font-family: monospace;
-  font-size: 1em;
-  border-radius: 0;
-}
-
-.jf-email-input:focus {
-  outline: var(--jf-border-standard) solid var(--jf-fg);
-  outline-offset: 2px;
-}
-
-.jf-consent-row {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--jf-space-2);
-  margin-bottom: var(--jf-space-4);
-  text-align: left;
-}
-
-.jf-consent-copy {
-  font-size: 0.8em;
-  color: var(--jf-gray-strong);
-  line-height: 1.4;
-  user-select: none;
-}
-
-/* Checkbox alignment and size */
-.jf-consent-row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  min-height: 20px;
-  margin-top: 2px;
-  accent-color: var(--jf-fg);
-  border-radius: 0;
-  cursor: pointer;
-}
-
-.jf-btn--inactive {
-  background-color: var(--jf-bg);
-  color: var(--jf-gray-mid);
-  border-color: var(--jf-gray-soft);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.jf-btn--inactive:hover, .jf-btn--inactive:focus {
-  background-color: var(--jf-bg);
-  color: var(--jf-gray-mid);
-}
-
-.jf-privacy-note {
-  font-size: 0.75em;
-  color: var(--jf-gray-mid);
-  text-transform: uppercase;
-}
-
 .jf-visually-hidden {
   position: absolute;
   width: 1px;
@@ -439,7 +329,6 @@ a:focus-visible {
   }
 
   .jf-panel,
-  .jf-signup-panel,
   .jf-action-panel {
     padding: var(--jf-space-3);
     margin-bottom: var(--jf-space-3);
@@ -496,10 +385,6 @@ a:focus-visible {
     padding: 0 var(--jf-space-3) !important;
   }
 
-  .jf-consent-copy {
-    font-size: 0.76em;
-    min-width: 0;
-  }
 }
 
 @media (max-width: 360px) {
@@ -512,7 +397,6 @@ a:focus-visible {
   }
 
   .jf-panel,
-  .jf-signup-panel,
   .jf-action-panel {
     padding: var(--jf-space-2);
     margin-bottom: var(--jf-space-2);
@@ -537,14 +421,6 @@ a:focus-visible {
   .jf-btn {
     padding: 8px var(--jf-space-1);
     font-size: 0.78em !important;
-  }
-
-  .jf-consent-row {
-    gap: var(--jf-space-1);
-  }
-
-  .jf-consent-copy {
-    font-size: 0.72em;
   }
 
   .site-header {
