@@ -1,0 +1,20 @@
+{
+  "name": "junkfeathers/contact-runtime",
+  "description": "Protected runtime dependencies for the Junkfeathers contact endpoint.",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.1",
+    "ext-curl": "*",
+    "ext-filter": "*",
+    "ext-hash": "*",
+    "ext-json": "*",
+    "phpmailer/phpmailer": "7.1.1"
+  },
+  "config": {
+    "allow-plugins": {},
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}
