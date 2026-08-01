@@ -1,35 +1,27 @@
-<button class="analytics-settings" type="button" data-analytics-settings>
-  ANALYTICS SETTINGS
-</button>
-
-<aside
-  class="analytics-panel"
+<section
+  class="analytics-inline"
   data-analytics-panel
   aria-labelledby="analytics-title"
   aria-describedby="analytics-description"
   hidden
 >
-  <div class="analytics-panel__header">
-    <div>
-      <span class="analytics-panel__label">SIGNALS FROM THE LAB</span>
-      <h2 id="analytics-title">ANALYTICS CONTROL</h2>
-    </div>
-    <button class="analytics-panel__close" type="button" aria-label="Close analytics settings" data-analytics-close hidden>
-      ×
-    </button>
+  <div class="analytics-inline__header">
+    <span class="cookie-indicator" aria-hidden="true"><i></i><i></i><i></i></span>
+    <h2 id="analytics-title" tabindex="-1">COOKIE MACHINE?</h2>
   </div>
 
   <p id="analytics-description">
-    Allow anonymous, minimal-use analytics to help improve Junkfeathers. Google Analytics stays unloaded unless you allow it.
+    Optional analytics cookies help me see what people actually use, improve the website, and decide what strange thing to build next.
+    Google Analytics only loads if you allow it. No advertising personalization.
   </p>
-  <p class="analytics-panel__privacy"><a href="/privacy/">READ THE PRIVACY NOTICE</a></p>
+  <p class="analytics-inline__privacy"><a href="/privacy/">PRIVACY DETAILS</a></p>
 
-  <div class="analytics-panel__status" aria-live="polite" data-analytics-status>CURRENT: NOT SET</div>
-  <div class="analytics-panel__actions">
+  <div class="analytics-inline__actions">
     <button type="button" data-analytics-allow>ALLOW ANALYTICS</button>
-    <button type="button" data-analytics-decline>DECLINE</button>
+    <button type="button" data-analytics-decline>NO THANKS</button>
   </div>
-</aside>
+  <div class="analytics-inline__status" aria-live="polite" data-analytics-status>ANALYTICS: OFF</div>
+</section>
 
 <script>
   const measurementId = 'G-152ZY7TDDP';
@@ -50,12 +42,12 @@
   const analyticsWindow = window as unknown as AnalyticsWindow;
   const panel = document.querySelector<HTMLElement>('[data-analytics-panel]');
   const settings = document.querySelector<HTMLButtonElement>('[data-analytics-settings]');
-  const close = document.querySelector<HTMLButtonElement>('[data-analytics-close]');
+  const heading = document.querySelector<HTMLElement>('#analytics-title');
   const allow = document.querySelector<HTMLButtonElement>('[data-analytics-allow]');
   const decline = document.querySelector<HTMLButtonElement>('[data-analytics-decline]');
   const status = document.querySelector<HTMLElement>('[data-analytics-status]');
 
-  if (panel && settings && close && allow && decline && status) {
+  if (panel && settings && heading && allow && decline && status) {
     const readChoice = (): ConsentChoice => {
       try {
         const value = window.localStorage.getItem(consentKey);
@@ -75,26 +67,27 @@
 
     const updateInterface = (choice: ConsentChoice) => {
       status.textContent = choice === 'granted'
-        ? 'CURRENT: ANALYTICS ALLOWED'
-        : choice === 'denied'
-          ? 'CURRENT: ANALYTICS DECLINED'
-          : 'CURRENT: NOT SET';
-      close.hidden = choice === null;
+        ? 'ANALYTICS: ALLOWED'
+        : 'ANALYTICS: OFF';
       allow.setAttribute('aria-pressed', String(choice === 'granted'));
       decline.setAttribute('aria-pressed', String(choice === 'denied'));
     };
 
-    const openPanel = () => {
+    const showPanel = (moveFocus = false) => {
       panel.hidden = false;
       settings.setAttribute('aria-expanded', 'true');
-      window.requestAnimationFrame(() => allow.focus());
+      if (moveFocus) {
+        window.requestAnimationFrame(() => {
+          panel.scrollIntoView({ block: 'nearest' });
+          heading.focus({ preventScroll: true });
+        });
+      }
     };
 
-    const closePanel = () => {
-      if (readChoice() === null) return;
+    const hidePanel = (returnFocus = false) => {
       panel.hidden = true;
       settings.setAttribute('aria-expanded', 'false');
-      settings.focus();
+      if (returnFocus) settings.focus();
     };
 
     function gtag(..._args: GtagCommand) {
@@ -188,19 +181,23 @@
     const initialChoice = readChoice();
     updateInterface(initialChoice);
     if (initialChoice === 'granted') loadAnalytics();
-    if (initialChoice === null) openPanel();
+    if (initialChoice === null) showPanel();
 
-    settings.addEventListener('click', openPanel);
-    close.addEventListener('click', closePanel);
+    settings.addEventListener('click', () => {
+      if (panel.hidden) showPanel(true);
+      else hidePanel(true);
+    });
     allow.addEventListener('click', () => {
       writeChoice('granted');
       updateInterface('granted');
       loadAnalytics();
+      hidePanel(true);
     });
     decline.addEventListener('click', () => {
       writeChoice('denied');
       updateInterface('denied');
       disableAnalytics();
+      hidePanel(true);
     });
 
     document.addEventListener('click', (event) => {
@@ -217,157 +214,152 @@
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !panel.hidden && readChoice() !== null) closePanel();
+      if (event.key === 'Escape' && !panel.hidden) hidePanel(true);
     });
   }
 </script>
 
 <style>
-  .analytics-settings {
-    min-height: auto;
-    padding: 0;
-    border: 0;
-    border-bottom: 1px dashed var(--jf-gray-soft);
-    border-radius: 0;
-    background: transparent;
-    color: var(--jf-gray-mid);
-    cursor: pointer;
-    font: 400 0.72rem/1.6 monospace;
-    letter-spacing: 0.08em;
-  }
-
-  .analytics-settings:hover,
-  .analytics-settings:focus {
-    border-bottom-style: solid;
-    border-color: var(--jf-gray-mid);
+  .analytics-inline {
+    position: relative;
+    width: min(100% - 1rem, 780px);
+    margin: 0 auto;
+    padding: 0.9rem;
+    border: 1px solid var(--jf-gray-mid);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 23px, rgba(255, 255, 255, 0.018) 23px 24px),
+      #020202;
     color: var(--jf-fg);
-  }
-
-  .analytics-panel {
-    position: fixed;
-    z-index: 1000;
-    right: 0.5rem;
-    bottom: 0.5rem;
-    left: 0.5rem;
-    width: min(calc(100% - 1rem), 780px);
-    margin-inline: auto;
-    padding: clamp(1rem, 4vw, 1.4rem);
-    border: var(--jf-border-major) solid var(--jf-fg);
-    background: #020202;
-    color: var(--jf-fg);
-    box-shadow: 5px 5px 0 #171717;
+    box-shadow: 4px 4px 0 #171717;
     font-family: monospace;
     text-align: left;
   }
 
-  .analytics-panel[hidden] { display: none; }
+  .analytics-inline[hidden] { display: none; }
 
-  .analytics-panel__header {
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .analytics-panel__label {
-    color: var(--jf-gray-mid);
-    font-size: 0.61rem;
-    letter-spacing: 0.14em;
-  }
-
-  .analytics-panel h2 {
-    margin: 0.2rem 0 0;
-    color: var(--jf-fg);
-    font-size: clamp(1.2rem, 6vw, 1.65rem);
-    letter-spacing: 0.04em;
-  }
-
-  .analytics-panel p {
-    max-width: 62ch;
-    margin: 0.9rem 0 0;
-    color: #c8c8c8;
-    font-size: 0.82rem;
-    line-height: 1.5;
-  }
-
-  .analytics-panel__privacy a {
-    color: var(--jf-fg);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-  }
-
-  .analytics-panel__close {
-    width: 44px;
-    min-width: 44px;
-    height: 44px;
-    padding: 0;
+  .analytics-inline::before,
+  .analytics-inline::after {
+    position: absolute;
+    top: 7px;
+    width: 4px;
+    height: 4px;
     border: 1px solid var(--jf-gray-mid);
-    border-radius: 0;
-    background: #050505;
-    color: var(--jf-fg);
-    cursor: pointer;
-    font: 1.4rem/1 monospace;
+    border-radius: 50%;
+    background: #000;
+    content: '';
   }
 
-  .analytics-panel__status {
-    margin-top: 1rem;
-    padding: 0.55rem 0.7rem;
-    border: 1px solid #333;
-    color: var(--jf-gray-mid);
-    font-size: 0.64rem;
-    letter-spacing: 0.1em;
+  .analytics-inline::before { left: 7px; }
+  .analytics-inline::after { right: 7px; }
+
+  .analytics-inline__header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #2c2c2c;
   }
 
-  .analytics-panel__actions {
+  .cookie-indicator {
+    width: 30px;
+    height: 30px;
     display: grid;
-    gap: 0.65rem;
-    margin-top: 0.75rem;
+    grid-template-columns: repeat(2, 5px);
+    place-content: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    border: 1px solid var(--jf-gray-mid);
+    border-radius: 50%;
   }
 
-  .analytics-panel__actions button {
-    min-height: 48px;
-    padding: 0.7rem 0.9rem;
-    border: 2px solid var(--jf-fg);
-    border-radius: 0;
-    background: #050505;
+  .cookie-indicator i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--jf-gray-mid);
+  }
+
+  .cookie-indicator i:last-child { grid-column: 1 / -1; justify-self: center; }
+
+  .analytics-inline h2 {
+    margin: 0;
     color: var(--jf-fg);
-    cursor: pointer;
-    font: 700 0.74rem/1.15 monospace;
+    font-size: clamp(1rem, 5vw, 1.25rem);
     letter-spacing: 0.06em;
   }
 
-  .analytics-panel__actions button:hover,
-  .analytics-panel__actions button:focus,
-  .analytics-panel__actions button[aria-pressed='true'] {
+  .analytics-inline p {
+    max-width: 72ch;
+    margin: 0.7rem 0 0;
+    color: #c8c8c8;
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  .analytics-inline__privacy a {
+    color: var(--jf-gray-mid);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+  }
+
+  .analytics-inline__actions {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+  }
+
+  .analytics-inline__actions button {
+    min-height: 46px;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--jf-fg);
+    border-radius: 0;
+    background: #050505;
+    color: var(--jf-fg);
+    cursor: pointer;
+    font: 700 0.72rem/1.15 monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .analytics-inline__actions button:hover,
+  .analytics-inline__actions button:focus,
+  .analytics-inline__actions button[aria-pressed='true'] {
     background: var(--jf-fg);
     color: #000;
   }
 
-  .analytics-settings:focus-visible,
-  .analytics-panel button:focus-visible,
-  .analytics-panel a:focus-visible {
+  .analytics-inline__status {
+    margin-top: 0.65rem;
+    color: var(--jf-gray-mid);
+    font-size: 0.59rem;
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  .analytics-inline button:focus-visible,
+  .analytics-inline a:focus-visible,
+  .analytics-inline h2:focus-visible {
     outline: 2px solid var(--jf-fg) !important;
     outline-offset: 3px;
   }
 
   @media (min-width: 540px) {
-    .analytics-panel { right: 1rem; bottom: 1rem; left: 1rem; }
-    .analytics-panel__actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .analytics-inline { padding: 1rem 1.15rem; }
+    .analytics-inline__actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 600px) {
+    .analytics-inline { width: min(100% - 2rem, 780px); }
   }
 
   @media (max-width: 350px) {
-    .analytics-panel {
-      right: 0.375rem;
-      bottom: 0.375rem;
-      left: 0.375rem;
+    .analytics-inline {
       width: calc(100% - 0.75rem);
-      border-width: var(--jf-border-standard);
+      padding: 0.75rem;
       box-shadow: 3px 3px 0 #171717;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .analytics-panel *,
-    .analytics-settings { transition: none !important; }
+    .analytics-inline * { transition: none !important; }
   }
 </style>
