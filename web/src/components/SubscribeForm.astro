@@ -1,0 +1,238 @@
+---
+interface Props {
+  enabled: boolean;
+}
+
+const { enabled } = Astro.props;
+const reachFormId = '6629a388-b893-47b8-9889-67f1d6ea31e3';
+---
+
+<section
+  id="subscribe-channel-panel"
+  class="subscribe-panel"
+  data-subscribe-form-root
+  data-subscribe-enabled={String(enabled)}
+  data-reach-form-id={reachFormId}
+  hidden
+>
+  <div class="reach-frame" data-reach-frame aria-busy={enabled ? 'true' : 'false'}>
+    <div
+      class="reach-status"
+      role="status"
+      aria-live="polite"
+      data-reach-status
+    >
+      {enabled ? 'FORM STANDBY' : 'CHANNEL INACTIVE'}
+    </div>
+
+    <div
+      class="reach-form-mount"
+      data-reach-form={enabled ? reachFormId : undefined}
+      data-reach-mount
+    ></div>
+  </div>
+
+  <p class="subscribe-pending" role="status" aria-live="polite" data-subscribe-pending hidden>
+    Check your inbox to confirm your subscription.
+  </p>
+
+  <p class="subscribe-disclosure">
+    Receive email updates from Junkfeathers. Unsubscribe anytime.
+    <a href="/privacy/">Privacy Policy.</a>
+  </p>
+</section>
+
+<script>
+  type ReachEmbedApi = {
+    init: () => void;
+  };
+
+  type ReachWindow = Window & {
+    __reachEmbed?: ReachEmbedApi;
+    __jfReachEmbedLoader?: Promise<void>;
+  };
+
+  const reachWindow = window as ReachWindow;
+  const reachScriptUrl = 'https://cdn-reach.hostinger.com/js/embed.js';
+  const reachRoots = document.querySelectorAll<HTMLElement>('[data-subscribe-form-root]');
+
+  const loadReachEmbed = (): Promise<void> => {
+    if (reachWindow.__reachEmbed) return Promise.resolve();
+    if (reachWindow.__jfReachEmbedLoader) return reachWindow.__jfReachEmbedLoader;
+
+    reachWindow.__jfReachEmbedLoader = new Promise((resolve, reject) => {
+      const existing = document.querySelector<HTMLScriptElement>('[data-jf-reach-embed]');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error('Reach embed unavailable')), { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = reachScriptUrl;
+      script.async = true;
+      script.defer = true;
+      script.referrerPolicy = 'strict-origin-when-cross-origin';
+      script.dataset.jfReachEmbed = 'true';
+      script.addEventListener('load', () => resolve(), { once: true });
+      script.addEventListener('error', () => reject(new Error('Reach embed unavailable')), { once: true });
+      document.head.append(script);
+    });
+
+    return reachWindow.__jfReachEmbedLoader;
+  };
+
+  reachRoots.forEach((root) => {
+    const enabled = root.dataset.subscribeEnabled === 'true';
+    const formId = root.dataset.reachFormId ?? '';
+    const frame = root.querySelector<HTMLElement>('[data-reach-frame]');
+    const mount = root.querySelector<HTMLElement>('[data-reach-mount]');
+    const status = root.querySelector<HTMLElement>('[data-reach-status]');
+    const pending = root.querySelector<HTMLElement>('[data-subscribe-pending]');
+
+    if (!enabled || !formId || !frame || !mount || !status || !pending) return;
+
+    let ready = false;
+    let loading = false;
+
+    const markReady = () => {
+      ready = true;
+      loading = false;
+      frame.setAttribute('aria-busy', 'false');
+      status.textContent = 'FORM READY';
+    };
+
+    const waitForIframe = (): Promise<void> => new Promise((resolve, reject) => {
+      if (mount.querySelector('iframe')) {
+        resolve();
+        return;
+      }
+
+      const observer = new MutationObserver(() => {
+        if (!mount.querySelector('iframe')) return;
+        observer.disconnect();
+        window.clearTimeout(timeoutId);
+        resolve();
+      });
+      const timeoutId = window.setTimeout(() => {
+        observer.disconnect();
+        reject(new Error('Reach form did not mount'));
+      }, 10000);
+
+      observer.observe(mount, { childList: true });
+    });
+
+    const openForm = async () => {
+      if (ready || loading) return;
+
+      loading = true;
+      frame.setAttribute('aria-busy', 'true');
+      status.textContent = 'CONNECTING TO REACH…';
+
+      try {
+        await loadReachEmbed();
+        reachWindow.__reachEmbed?.init();
+        await waitForIframe();
+        markReady();
+      } catch {
+        loading = false;
+        frame.setAttribute('aria-busy', 'false');
+        status.textContent = 'SUBSCRIPTION FORM UNAVAILABLE';
+      }
+    };
+
+    root.addEventListener('reach:form-submitted', (event) => {
+      if (!(event instanceof CustomEvent) || event.detail?.formId !== formId) return;
+
+      pending.hidden = false;
+      status.textContent = 'REQUEST RECEIVED';
+      document.dispatchEvent(new CustomEvent('jf:analytics-intent', {
+        detail: { eventName: 'subscribe_request_submitted' },
+      }));
+    });
+
+    document.addEventListener('jf:subscribe-open', () => {
+      if (!root.hidden) void openForm();
+    });
+  });
+</script>
+
+<style>
+  .subscribe-panel {
+    margin-top: 0.75rem;
+    padding: clamp(0.8rem, 3vw, 1rem);
+    border: 1px solid var(--comm-mid, #858585);
+    background:
+      repeating-linear-gradient(0deg, transparent 0 23px, rgba(255, 255, 255, 0.015) 23px 24px),
+      #030303;
+    color: #fff;
+    font-family: monospace;
+  }
+
+  .subscribe-panel[hidden] { display: none; }
+
+  .subscribe-disclosure,
+  .subscribe-pending {
+    margin: 0;
+    color: #bfbfbf;
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .reach-frame {
+    min-width: 0;
+    min-height: 132px;
+    margin-top: 0;
+    overflow: hidden;
+    border: 1px solid #292929;
+    background: #010101;
+  }
+
+  .reach-status {
+    padding: 0.55rem 0.65rem;
+    border-bottom: 1px solid #292929;
+    color: #858585;
+    font-size: 0.58rem;
+    letter-spacing: 0.09em;
+  }
+
+  .reach-form-mount {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .subscribe-pending {
+    margin-top: 0.7rem;
+    padding: 0.7rem;
+    border: 1px solid #fff;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .subscribe-pending[hidden] { display: none; }
+
+  .subscribe-disclosure {
+    margin-top: 0.75rem;
+    color: #858585;
+    font-size: 0.62rem;
+  }
+
+  .subscribe-disclosure a {
+    color: #fff;
+    text-underline-offset: 0.2em;
+  }
+
+  .subscribe-panel a:focus-visible {
+    outline: 2px solid #fff !important;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 350px) {
+    .subscribe-panel { padding: 0.65rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .subscribe-panel * { animation: none !important; transition: none !important; }
+  }
+</style>

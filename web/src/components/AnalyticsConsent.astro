@@ -164,6 +164,7 @@
       const eventParameters: Record<string, Record<string, string>> = {
         communication_open: { source_module: 'communication_machine' },
         contact_message_sent: { source_module: 'communication_machine' },
+        subscribe_request_submitted: { source_module: 'communication_machine', provider: 'reach' },
         support_lab_click: { source_module: 'communication_machine', destination_type: 'kofi' },
         orpheus_get_click: { project_name: 'orpheus_deck', destination_type: 'google_play' },
       };
