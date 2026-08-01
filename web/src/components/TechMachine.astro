@@ -193,6 +193,7 @@ const inventoryRows = ['MERCH', 'TOOLS', 'GEAR', 'CREW'];
                       href={action.href}
                       target={action.external ? '_blank' : undefined}
                       rel={action.external ? 'noopener noreferrer' : undefined}
+                      data-analytics-event={project.id === 'orpheus' && action.href?.includes('play.google.com') ? 'orpheus_get_click' : undefined}
                     >
                       {action.label}{action.external ? ' ↗' : ''}
                     </a>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://junkfeathers.com/sitemap-index.xml

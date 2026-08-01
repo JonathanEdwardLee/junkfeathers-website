@@ -64,6 +64,7 @@
         href="https://ko-fi.com/junkfeathers"
         target="_blank"
         rel="noopener noreferrer"
+        data-analytics-event="support_lab_click"
       >
         <span class="channel-indicator" aria-hidden="true"></span>
         <span class="channel-copy">
@@ -122,6 +123,12 @@
       label.textContent = open ? 'CLOSE CHANNELS' : 'OPEN CHANNELS';
       status.textContent = open ? 'CHANNELS OPEN' : 'STANDBY';
       updateTuner();
+
+      if (open) {
+        document.dispatchEvent(new CustomEvent('jf:analytics-intent', {
+          detail: { eventName: 'communication_open' },
+        }));
+      }
     });
   });
 </script>

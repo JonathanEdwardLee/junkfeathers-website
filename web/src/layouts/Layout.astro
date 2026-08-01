@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import AnalyticsConsent from '../components/AnalyticsConsent.astro';
 import CommunicationMachine from '../components/CommunicationMachine.astro';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://junkfeathers.com');
 ---
 
 <!doctype html>
@@ -15,7 +17,9 @@ const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
@@ -24,11 +28,11 @@ const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
     <div id="page" class="site-container">
       <header class="site-header">
         <div class="site-branding">
-          <a href="/" style="font-weight: 700; border-bottom: none; color: var(--jf-fg) !important;">junkfeathers.com</a>
+          <a class="site-home-link" href="/">junkfeathers.com</a>
         </div>
-        <nav class="main-navigation" aria-label="Primary" style="display: flex; gap: 16px;">
-          <a href="/music/" style="border-bottom: none; color: var(--jf-fg);">Music</a>
-          <a href="/tech/" style="border-bottom: none; color: var(--jf-fg);">Tech</a>
+        <nav class="main-navigation" aria-label="Primary">
+          <a href="/music/">Music</a>
+          <a href="/tech/">Tech</a>
         </nav>
       </header>
 
@@ -42,6 +46,10 @@ const { title, description = "Junkfeathers Music and Tech" } = Astro.props;
         <div class="inside-site-info">
           <div class="copyright-bar" style="font-size: 0.85em; color: var(--jf-gray-mid); text-transform: uppercase;">
             © {new Date().getFullYear()} Junkfeathers. Pet the <a href="https://snorkleprawn.com" target="_blank" rel="noopener noreferrer" style="color: var(--jf-fg); border-color: var(--jf-fg);">SnorklePrawn</a>.
+          </div>
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.65rem 1rem; margin-top: 0.75rem;">
+            <a href="/privacy/" style="color: var(--jf-gray-mid); border-color: var(--jf-gray-soft); font-size: 0.72rem; letter-spacing: 0.08em;">PRIVACY</a>
+            <AnalyticsConsent />
           </div>
         </div>
       </footer>
