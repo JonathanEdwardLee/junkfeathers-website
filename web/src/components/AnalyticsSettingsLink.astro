@@ -1,0 +1,34 @@
+<button class="analytics-settings" type="button" data-analytics-settings>
+  ANALYTICS SETTINGS
+</button>
+
+<style>
+  .analytics-settings {
+    min-height: auto;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px dashed var(--jf-gray-soft);
+    border-radius: 0;
+    background: transparent;
+    color: var(--jf-gray-mid);
+    cursor: pointer;
+    font: 400 0.72rem/1.6 monospace;
+    letter-spacing: 0.08em;
+  }
+
+  .analytics-settings:hover,
+  .analytics-settings:focus {
+    border-bottom-style: solid;
+    border-color: var(--jf-gray-mid);
+    color: var(--jf-fg);
+  }
+
+  .analytics-settings:focus-visible {
+    outline: 2px solid var(--jf-fg) !important;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .analytics-settings { transition: none !important; }
+  }
+</style>

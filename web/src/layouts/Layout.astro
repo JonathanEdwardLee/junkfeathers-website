@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import AnalyticsConsent from '../components/AnalyticsConsent.astro';
+import AnalyticsSettingsLink from '../components/AnalyticsSettingsLink.astro';
 import CommunicationMachine from '../components/CommunicationMachine.astro';
 
 interface Props {
@@ -41,6 +42,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://junkfeat
       </main>
 
       <CommunicationMachine />
+      <AnalyticsConsent />
 
       <footer class="site-footer">
         <div class="inside-site-info">
@@ -49,7 +51,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://junkfeat
           </div>
           <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.65rem 1rem; margin-top: 0.75rem;">
             <a href="/privacy/" style="color: var(--jf-gray-mid); border-color: var(--jf-gray-soft); font-size: 0.72rem; letter-spacing: 0.08em;">PRIVACY</a>
-            <AnalyticsConsent />
+            <AnalyticsSettingsLink />
           </div>
         </div>
       </footer>
