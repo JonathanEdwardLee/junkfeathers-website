@@ -1,0 +1,586 @@
+<section class="communication-shell" data-communication-shell aria-label="Site contact and support options">
+  <div class="receiver-face">
+    <div class="receiver-display">
+      <div class="receiver-status">
+        <span class="signal-lamp"></span>
+        <span data-receiver-status>STANDBY</span>
+        <output class="receiver-band" for="communication-tuner" data-frequency-output>102.0</output>
+      </div>
+
+      <div class="signal-window">
+        <div class="signal-bars">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <input
+          id="communication-tuner"
+          class="tuning-control"
+          type="range"
+          min="88"
+          max="118"
+          step="0.1"
+          value="102"
+          aria-label="Radio tuning frequency"
+          data-tuning-control
+        />
+      </div>
+
+      <div class="receiver-scale">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <button
+      class="channel-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="communication-channels"
+      data-channel-toggle
+    >
+      <span class="toggle-switch" aria-hidden="true"><i></i></span>
+      <span data-toggle-label>OPEN CHANNELS</span>
+    </button>
+  </div>
+
+  <div id="communication-channels" class="channel-panel" data-channel-panel hidden>
+    <div class="channel-grid">
+      <button class="communication-channel communication-channel--inactive" type="button" disabled aria-disabled="true">
+        <span class="channel-indicator" aria-hidden="true"></span>
+        <span class="channel-copy">
+          <strong>CONTACT</strong>
+          <small>INACTIVE</small>
+        </span>
+      </button>
+
+      <button class="communication-channel communication-channel--inactive" type="button" disabled aria-disabled="true">
+        <span class="channel-indicator" aria-hidden="true"></span>
+        <span class="channel-copy">
+          <strong>SUBSCRIBE FOR UPDATES</strong>
+          <small>INACTIVE</small>
+        </span>
+      </button>
+
+      <a
+        class="communication-channel communication-channel--active"
+        href="https://ko-fi.com/junkfeathers"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="channel-indicator" aria-hidden="true"></span>
+        <span class="channel-copy">
+          <strong>TIP THE ARTIST</strong>
+          <small>KO-FI ↗</small>
+        </span>
+      </a>
+    </div>
+
+    <div class="control-bank" aria-hidden="true">
+      <div class="control-lights">
+        <i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i><i data-control-light></i>
+      </div>
+      <div class="control-traces">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="control-switches">
+        <i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const shells = document.querySelectorAll<HTMLElement>('[data-communication-shell]');
+
+  shells.forEach((shell) => {
+    const toggle = shell.querySelector<HTMLButtonElement>('[data-channel-toggle]');
+    const panel = shell.querySelector<HTMLElement>('[data-channel-panel]');
+    const label = shell.querySelector<HTMLElement>('[data-toggle-label]');
+    const status = shell.querySelector<HTMLElement>('[data-receiver-status]');
+    const tuner = shell.querySelector<HTMLInputElement>('[data-tuning-control]');
+    const frequency = shell.querySelector<HTMLOutputElement>('[data-frequency-output]');
+    const controlLights = Array.from(shell.querySelectorAll<HTMLElement>('[data-control-light]'));
+
+    if (!toggle || !panel || !label || !status || !tuner || !frequency) return;
+
+    const updateTuner = () => {
+      frequency.value = Number(tuner.value).toFixed(1);
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      const progress = (Number(tuner.value) - Number(tuner.min)) / (Number(tuner.max) - Number(tuner.min));
+      const activeLights = Math.round(progress * (controlLights.length - 1)) + 1;
+
+      controlLights.forEach((light, index) => {
+        light.classList.toggle('is-tuned', open && index < activeLights);
+      });
+    };
+
+    tuner.addEventListener('input', updateTuner);
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      shell.classList.toggle('is-open', open);
+      label.textContent = open ? 'CLOSE CHANNELS' : 'OPEN CHANNELS';
+      status.textContent = open ? 'CHANNELS OPEN' : 'STANDBY';
+      updateTuner();
+    });
+  });
+</script>
+
+<style>
+  .communication-shell {
+    --comm-white: #fff;
+    --comm-mid: #858585;
+    --comm-dim: #4a4a4a;
+    --comm-line: #2a2a2a;
+    position: relative;
+    width: min(100% - 1rem, 780px);
+    margin: clamp(2.75rem, 9vw, 5rem) auto 1.25rem;
+    border: var(--jf-border-major) solid var(--comm-mid);
+    background: #020202;
+    box-shadow: 5px 5px 0 #171717;
+  }
+
+  .communication-shell::before,
+  .communication-shell::after {
+    position: absolute;
+    z-index: 3;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border: 1px solid var(--comm-mid);
+    border-radius: 50%;
+    background: #000;
+    content: '';
+  }
+
+  .communication-shell::before { left: 7px; }
+  .communication-shell::after { right: 7px; }
+
+  .receiver-face {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .receiver-display {
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid var(--comm-line);
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.012) 50%, transparent 50%),
+      #050505;
+    background-size: 100% 4px;
+  }
+
+  .receiver-status {
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--comm-mid);
+    font-size: 0.61rem;
+    letter-spacing: 0.12em;
+  }
+
+  .receiver-band {
+    margin-left: auto;
+    min-width: 4.6ch;
+    color: var(--comm-mid);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+
+  .signal-lamp {
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--comm-mid);
+    border-radius: 50%;
+    background: #151515;
+    animation: standby-lamp 4.8s ease-in-out infinite;
+  }
+
+  .signal-window {
+    position: relative;
+    height: 54px;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 0.35rem;
+    border-block: 1px solid var(--comm-line);
+  }
+
+  .signal-window::before {
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--comm-dim);
+    content: '';
+  }
+
+  .signal-bars {
+    position: relative;
+    z-index: 1;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 3px;
+  }
+
+  .signal-bars i {
+    width: 2px;
+    height: 22%;
+    background: var(--comm-mid);
+    animation: receiver-signal 3.2s ease-in-out infinite alternate;
+  }
+
+  .signal-bars i:nth-child(2n) { height: 48%; animation-delay: -0.4s; }
+  .signal-bars i:nth-child(3n) { height: 72%; animation-delay: -0.9s; }
+  .signal-bars i:nth-child(4n) { height: 34%; animation-delay: -1.4s; }
+  .signal-bars i:nth-child(5n) { height: 86%; animation-delay: -1.9s; }
+
+  .tuning-control {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    appearance: none;
+    background: transparent;
+    cursor: ew-resize;
+    touch-action: pan-y;
+  }
+
+  .tuning-control:focus-visible {
+    outline: 2px solid var(--comm-white);
+    outline-offset: -3px;
+  }
+
+  .tuning-control::-webkit-slider-runnable-track {
+    height: 100%;
+    background: transparent;
+  }
+
+  .tuning-control::-webkit-slider-thumb {
+    width: 3px;
+    height: 42px;
+    margin-top: 5px;
+    border: 0;
+    border-radius: 0;
+    appearance: none;
+    background: var(--comm-white);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.55);
+  }
+
+  .tuning-control::-moz-range-track {
+    height: 100%;
+    border: 0;
+    background: transparent;
+  }
+
+  .tuning-control::-moz-range-thumb {
+    width: 3px;
+    height: 42px;
+    border: 0;
+    border-radius: 0;
+    background: var(--comm-white);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.55);
+  }
+
+  .receiver-scale {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.45rem;
+  }
+
+  .receiver-scale span {
+    width: 1px;
+    height: 5px;
+    background: var(--comm-dim);
+  }
+
+  .channel-toggle {
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    border: 2px solid var(--comm-white);
+    border-radius: 0;
+    background: #050505;
+    color: var(--comm-white);
+    cursor: pointer;
+    font: 700 0.78rem/1.15 monospace;
+    letter-spacing: 0.07em;
+    text-align: left;
+  }
+
+  .channel-toggle:hover,
+  .channel-toggle:focus {
+    background: #141414;
+  }
+
+  .channel-toggle:focus-visible {
+    outline: 2px solid var(--comm-white) !important;
+    outline-offset: 4px;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 38px;
+    height: 20px;
+    border: 1px solid var(--comm-mid);
+    background: #000;
+  }
+
+  .toggle-switch i {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    background: var(--comm-mid);
+    transition: left 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .is-open .toggle-switch i {
+    left: 21px;
+    background: var(--comm-white);
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.6);
+  }
+
+  .channel-panel {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--comm-line);
+  }
+
+  .channel-panel[hidden] {
+    display: none;
+  }
+
+  .channel-grid {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 1rem;
+  }
+
+  .control-bank {
+    display: grid;
+    grid-template-columns: auto minmax(80px, 1fr) auto;
+    align-items: center;
+    gap: clamp(0.75rem, 3vw, 1.5rem);
+    min-height: 62px;
+    margin-top: 0.75rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--comm-line);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 17px, rgba(255, 255, 255, 0.025) 17px 18px),
+      #030303;
+  }
+
+  .control-lights,
+  .control-switches {
+    display: flex;
+    align-items: center;
+    gap: 0.38rem;
+  }
+
+  .control-lights i {
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--comm-mid);
+    border-radius: 50%;
+    background: #171717;
+    transition: background-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .control-lights i.is-tuned {
+    background: #d7d7d7;
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.5);
+    animation: control-breathe 3.6s ease-in-out infinite;
+  }
+
+  .control-lights i.is-tuned:nth-child(2n) { animation-delay: -1.2s; }
+  .control-lights i.is-tuned:nth-child(3n) { animation-delay: -2.3s; }
+
+  .control-traces {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 4px;
+    border-inline: 1px solid var(--comm-line);
+  }
+
+  .control-traces span {
+    width: 12%;
+    height: 2px;
+    background: var(--comm-dim);
+    box-shadow: 0 8px 0 #202020, 0 -8px 0 #202020;
+    animation: trace-breathe 4.2s ease-in-out infinite;
+  }
+
+  .control-traces span:nth-child(2n) { animation-delay: -1.8s; }
+
+  .control-switches i {
+    width: 7px;
+    height: 22px;
+    border: 1px solid var(--comm-dim);
+    background: linear-gradient(to bottom, var(--comm-mid) 0 38%, #111 38%);
+  }
+
+  .communication-channel {
+    min-width: 0;
+    min-height: 64px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid;
+    border-radius: 0;
+    background: #050505;
+    font-family: monospace;
+    text-align: left;
+  }
+
+  .channel-copy {
+    min-width: 0;
+    display: grid;
+    gap: 0.14rem;
+  }
+
+  .channel-copy strong {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
+
+  .channel-copy small {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .channel-indicator {
+    width: 9px;
+    height: 9px;
+    border: 1px solid;
+    border-radius: 50%;
+  }
+
+  .communication-channel--inactive,
+  .communication-channel--inactive:hover,
+  .communication-channel--inactive:focus {
+    border-color: var(--comm-line);
+    background: #030303;
+    color: var(--comm-dim);
+    cursor: not-allowed;
+  }
+
+  .communication-channel--inactive .channel-indicator {
+    border-color: var(--comm-dim);
+    background: #111;
+  }
+
+  .communication-channel--active {
+    border-color: var(--comm-white);
+    color: var(--comm-white);
+    text-decoration: none;
+  }
+
+  .communication-channel--active .channel-indicator {
+    border-color: var(--comm-white);
+    background: var(--comm-white);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  }
+
+  .communication-channel--active:hover,
+  .communication-channel--active:focus {
+    border-bottom: 1px solid var(--comm-white);
+    background: var(--comm-white);
+    color: #000;
+  }
+
+  .communication-channel--active:focus-visible {
+    outline: 2px solid var(--comm-white) !important;
+    outline-offset: 4px;
+  }
+
+  .is-open .signal-lamp {
+    background: var(--comm-white);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+    animation-duration: 2.2s;
+  }
+
+  .is-open .signal-bars i {
+    animation-duration: 1.8s;
+  }
+
+  .is-open .receiver-status,
+  .is-open .receiver-band {
+    color: var(--comm-white);
+  }
+
+  @media (min-width: 560px) {
+    .receiver-face {
+      grid-template-columns: minmax(0, 1fr) 180px;
+      align-items: stretch;
+    }
+
+    .channel-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .channel-toggle {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+  }
+
+  @media (min-width: 600px) {
+    .communication-shell {
+      width: min(100% - 2rem, 780px);
+    }
+  }
+
+  @media (max-width: 350px) {
+    .communication-shell {
+      width: calc(100% - 0.75rem);
+      border-width: var(--jf-border-standard);
+      box-shadow: 3px 3px 0 #171717;
+    }
+
+    .receiver-face { padding: 0.7rem; }
+    .channel-panel { padding: 0 0.7rem 0.7rem; }
+    .control-bank { grid-template-columns: 1fr; }
+    .control-lights, .control-switches { justify-content: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .communication-shell *,
+    .communication-shell *::before,
+    .communication-shell *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  @keyframes standby-lamp {
+    45%, 55% { background: #8d8d8d; box-shadow: 0 0 6px rgba(255, 255, 255, 0.35); }
+  }
+
+  @keyframes receiver-signal {
+    to { filter: brightness(1.55); transform: scaleY(0.56); }
+  }
+
+  @keyframes control-breathe {
+    50% { background: #d7d7d7; box-shadow: 0 0 7px rgba(255, 255, 255, 0.5); }
+  }
+
+  @keyframes trace-breathe {
+    50% { background: var(--comm-white); filter: brightness(1.5); transform: scaleX(0.65); }
+  }
+</style>
