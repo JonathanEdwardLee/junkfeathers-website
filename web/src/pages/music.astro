@@ -43,15 +43,6 @@ const firstRelease = {
       <MusicCategoryNav categories={categories} />
     </header>
 
-    <aside class="archive-entry" aria-labelledby="archive-entry-title">
-      <p class="archive-entry-signal">JF / CATALOG SIGNAL</p>
-      <div>
-        <h2 id="archive-entry-title">ARCHIVE MACHINE</h2>
-        <p>Search 195 known songs across releases, versions, projects, people, places, and listening links.</p>
-      </div>
-      <a href="/music/archive/">ENTER ARCHIVE →</a>
-    </aside>
-
     <VideoTransmission
       anchorId="first-video-module"
       youtubeId={firstRelease.youtubeId}
@@ -61,6 +52,27 @@ const firstRelease = {
       releaseTitle={firstRelease.releaseTitle}
       tracks={firstRelease.tracks}
     />
+
+    <aside class="archive-entry" aria-labelledby="archive-entry-title">
+      <div class="archive-entry-art" aria-hidden="true">
+        <div class="archive-reel">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="archive-reader">
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="archive-entry-readout">
+          <span>CAT / 010</span>
+          <strong>INDEX READY</strong>
+        </div>
+      </div>
+      <div class="archive-entry-copy">
+        <p class="archive-entry-signal">JF / CATALOG SIGNAL</p>
+        <h2 id="archive-entry-title">ARCHIVE MACHINE</h2>
+        <p>Enter through the ten latest Junkfeathers release signals, then search 195 known songs, versions, projects, people, places, and listening links.</p>
+        <a href="/music/archive/?view=latest">ENTER ARCHIVE <span aria-hidden="true">↗</span></a>
+      </div>
+    </aside>
   </div>
 </Layout>
 
@@ -89,17 +101,122 @@ const firstRelease = {
   }
 
   .archive-entry {
+    --archive-mid: #858585;
+    --archive-dim: #4a4a4a;
     display: grid;
-    gap: 0.8rem;
-    margin-bottom: clamp(2rem, 8vw, 4.5rem);
+    margin-top: clamp(2.75rem, 9vw, 5rem);
+    border: var(--jf-border-major) solid var(--archive-mid);
+    background: #020202;
+    box-shadow: 5px 5px 0 #171717;
+  }
+
+  .archive-entry-art {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(88px, 0.8fr) minmax(110px, 1.2fr);
+    gap: 1rem;
+    min-height: 180px;
     padding: 1rem;
-    border: 2px solid var(--jf-gray-strong);
-    background: #050505;
+    overflow: hidden;
+    border-bottom: 2px solid var(--archive-mid);
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255, 255, 255, 0.025) 4px),
+      #070707;
+  }
+
+  .archive-reel {
+    position: relative;
+    place-self: center;
+    width: clamp(88px, 29vw, 126px);
+    aspect-ratio: 1;
+    border: 2px solid var(--archive-mid);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 9px #090909, inset 0 0 0 11px var(--archive-dim);
+    animation: archive-reel-turn 18s linear infinite;
+  }
+
+  .archive-reel::before,
+  .archive-reel::after,
+  .archive-reel span {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 12px;
+    height: 34%;
+    border: 1px solid var(--archive-mid);
+    background: #030303;
+    content: '';
+    transform-origin: 50% 0;
+  }
+
+  .archive-reel::before { transform: rotate(0deg) translate(-50%, 8px); }
+  .archive-reel::after { transform: rotate(120deg) translate(-50%, 8px); }
+  .archive-reel span:first-child { transform: rotate(240deg) translate(-50%, 8px); }
+  .archive-reel span:nth-child(2) {
+    inset: 50% auto auto 50%;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #c8c8c8;
+    transform: translate(-50%, -50%);
+  }
+  .archive-reel span:nth-child(3) { display: none; }
+
+  .archive-reader {
+    align-self: stretch;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 0.7rem;
+    border: 1px solid var(--archive-dim);
+    background: #020202;
+  }
+
+  .archive-reader i {
+    position: relative;
+    overflow: hidden;
+    border-inline: 1px solid #202020;
+  }
+
+  .archive-reader i::after {
+    position: absolute;
+    inset: 72% 2px auto;
+    height: 22%;
+    background: #8f8f8f;
+    content: '';
+    animation: archive-reader-breathe 3.6s ease-in-out infinite alternate;
+  }
+
+  .archive-reader i:nth-child(2)::after { animation-delay: -1.4s; }
+  .archive-reader i:nth-child(3)::after { animation-delay: -2.6s; }
+  .archive-reader i:nth-child(4)::after { animation-delay: -0.8s; }
+  .archive-reader i:nth-child(5)::after { animation-delay: -2s; }
+
+  .archive-entry-readout {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    display: grid;
+    justify-items: end;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--archive-dim);
+    background: rgba(0, 0, 0, 0.88);
+    color: var(--archive-mid);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .archive-entry-readout strong { color: var(--jf-fg); }
+
+  .archive-entry-copy {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    padding: clamp(1rem, 4vw, 1.5rem);
   }
 
   .archive-entry-signal {
-    margin: 0;
-    color: var(--jf-link);
+    margin: 0 0 0.45rem;
+    color: var(--archive-mid);
     font-size: 0.68rem;
     letter-spacing: 0.14em;
   }
@@ -110,7 +227,7 @@ const firstRelease = {
   }
 
   .archive-entry p:not(.archive-entry-signal) {
-    margin: 0;
+    margin: 0 0 1rem;
     color: var(--jf-gray-strong);
   }
 
@@ -120,8 +237,15 @@ const firstRelease = {
     display: inline-flex;
     align-items: center;
     color: var(--jf-fg);
+    border-bottom: 1px dashed var(--archive-mid);
     font-weight: 700;
     letter-spacing: 0.08em;
+  }
+
+  .archive-entry a:hover,
+  .archive-entry a:focus {
+    color: var(--jf-fg);
+    border-bottom-color: var(--jf-fg);
   }
 
   @media (min-width: 620px) {
@@ -129,13 +253,18 @@ const firstRelease = {
       width: min(100% - 2rem, 780px);
     }
 
-    .archive-entry {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-    }
+    .archive-entry { grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr); }
+    .archive-entry-art { border-right: 2px solid var(--archive-mid); border-bottom: 0; }
+  }
 
-    .archive-entry-signal {
-      grid-column: 1 / -1;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    .archive-reel,
+    .archive-reader i::after { animation: none; }
+  }
+
+  @keyframes archive-reel-turn { to { transform: rotate(360deg); } }
+  @keyframes archive-reader-breathe {
+    from { opacity: 0.28; transform: translateY(18%); }
+    to { opacity: 0.88; transform: translateY(-210%); }
   }
 </style>
