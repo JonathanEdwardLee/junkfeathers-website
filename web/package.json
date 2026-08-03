@@ -7,6 +7,9 @@
     "node": "22.23.1"
   },
   "scripts": {
+    "archive:build": "node scripts/music-archive/import.mjs",
+    "archive:public-test": "node --test scripts/music-archive/public-artifact.test.mjs",
+    "archive:test": "node --test scripts/music-archive/archive.test.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
