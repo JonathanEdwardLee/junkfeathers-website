@@ -41,6 +41,10 @@ jobs:
         run: npm ci
         working-directory: web
 
+      - name: Run public archive regression tests
+        run: npm run archive:public-test
+        working-directory: web
+
       - name: Run Astro check
         run: npm run check
         working-directory: web

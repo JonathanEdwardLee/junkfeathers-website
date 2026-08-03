@@ -43,6 +43,15 @@ const firstRelease = {
       <MusicCategoryNav categories={categories} />
     </header>
 
+    <aside class="archive-entry" aria-labelledby="archive-entry-title">
+      <p class="archive-entry-signal">JF / CATALOG SIGNAL</p>
+      <div>
+        <h2 id="archive-entry-title">ARCHIVE MACHINE</h2>
+        <p>Search 195 known songs across releases, versions, projects, people, places, and listening links.</p>
+      </div>
+      <a href="/music/archive/">ENTER ARCHIVE →</a>
+    </aside>
+
     <VideoTransmission
       anchorId="first-video-module"
       youtubeId={firstRelease.youtubeId}
@@ -79,9 +88,54 @@ const firstRelease = {
     letter-spacing: 0.04em;
   }
 
+  .archive-entry {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: clamp(2rem, 8vw, 4.5rem);
+    padding: 1rem;
+    border: 2px solid var(--jf-gray-strong);
+    background: #050505;
+  }
+
+  .archive-entry-signal {
+    margin: 0;
+    color: var(--jf-link);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .archive-entry h2 {
+    margin: 0 0 0.25rem;
+    font-size: clamp(1.2rem, 6vw, 1.8rem);
+  }
+
+  .archive-entry p:not(.archive-entry-signal) {
+    margin: 0;
+    color: var(--jf-gray-strong);
+  }
+
+  .archive-entry a {
+    width: fit-content;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--jf-fg);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
   @media (min-width: 620px) {
     .music-page {
       width: min(100% - 2rem, 780px);
+    }
+
+    .archive-entry {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .archive-entry-signal {
+      grid-column: 1 / -1;
     }
   }
 </style>
