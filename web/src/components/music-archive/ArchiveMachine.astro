@@ -2,9 +2,9 @@
   <div class="archive-console-top">
   <header class="archive-header">
     <div>
-      <p class="archive-kicker">JF / CATALOG SIGNAL 01</p>
-      <h1>ARCHIVE MACHINE</h1>
-      <p class="archive-intro">Search the known songs, versions, releases, projects, people, places, and listening links recovered so far.</p>
+      <p class="archive-kicker">JF / MUSIC CATALOG</p>
+      <h1>MUSIC ARCHIVE</h1>
+      <p class="archive-intro">Welcome to my Music Archive Machine — a collection of songs I've written, songs I've collaborated on with others, and also the music of the bands I've been in over the years. This machine is an ongoing project as I compile older projects with newer ones in one collection. Thank you for being here and enjoy!</p>
     </div>
     <div class="archive-counter" aria-label="195 known songs">
       <strong>195</strong>
@@ -282,7 +282,28 @@
         const projectFilter = filters.find((filter) => filter.dataset.filter === 'project')!;
         for (const project of data.projects) projectFilter.append(option(project.id, project.name.toUpperCase()));
         const contributorFilter = filters.find((filter) => filter.dataset.filter === 'contributor')!;
-        for (const contributor of data.contributors) contributorFilter.append(option(contributor.id, contributor.name.toUpperCase()));
+        const appearanceCounts = new Map<string, number>();
+        for (const item of items) {
+          for (const contributorId of item.contributorIds) {
+            appearanceCounts.set(contributorId, (appearanceCounts.get(contributorId) ?? 0) + 1);
+          }
+        }
+        const pinnedContributor = data.contributors.find((contributor) => {
+          const name = contributor.name.toLowerCase();
+          return name.includes('jonathan') && name.includes('lee');
+        })?.id;
+        const sortedContributors = [...data.contributors].sort((left, right) => {
+          if (pinnedContributor) {
+            if (left.id === pinnedContributor) return -1;
+            if (right.id === pinnedContributor) return 1;
+          }
+          const appearanceDelta = (appearanceCounts.get(right.id) ?? 0) - (appearanceCounts.get(left.id) ?? 0);
+          if (appearanceDelta !== 0) return appearanceDelta;
+          return left.name.localeCompare(right.name);
+        });
+        for (const contributor of sortedContributors) {
+          contributorFilter.append(option(contributor.id, contributor.name.toUpperCase()));
+        }
         const platformFilter = filters.find((filter) => filter.dataset.filter === 'platform')!;
         for (const platform of [...new Set(data.links.map((link) => link.platform))].sort()) platformFilter.append(option(platform, platform.toUpperCase()));
         typeFilter.value = 'release';
@@ -337,7 +358,7 @@
   .archive-header { display: grid; gap: 1.5rem; align-items: end; padding: clamp(1rem, 4vw, 1.75rem); }
   .archive-kicker { margin: 0; color: var(--archive-mid); font-size: .7rem; letter-spacing: .16em; }
   .archive-header h1 { margin: .2rem 0 .75rem; font-size: clamp(2.2rem, 11vw, 4.8rem); line-height: .9; }
-  .archive-intro { max-width: 58ch; margin: 0; color: var(--jf-gray-strong); }
+  .archive-intro { max-width: 68ch; margin: 0; color: var(--jf-gray-strong); }
   .archive-counter { display: grid; justify-items: start; border-left: 3px solid var(--archive-mid); padding-left: 1rem; }
   .archive-counter strong { font-size: clamp(2.8rem, 12vw, 4.5rem); line-height: .9; font-variant-numeric: tabular-nums; }
   .archive-counter span { color: var(--archive-white); font-weight: 700; letter-spacing: .14em; }
