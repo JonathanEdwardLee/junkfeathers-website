@@ -1,13 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import MusicCategoryNav from '../components/MusicCategoryNav.astro';
 import VideoTransmission from '../components/VideoTransmission.astro';
-
-const categories = [
-  { label: 'SOLO', state: 'active' as const, target: 'first-video-module' },
-  { label: 'COLLAB', state: 'inactive' as const },
-  { label: 'BAND', state: 'inactive' as const },
-];
 
 const firstRelease = {
   youtubeId: 'UuIjMhftj58',
@@ -40,7 +33,6 @@ const firstRelease = {
     <header class="music-opening">
       <p class="music-system-line" aria-hidden="true">JF / AUDIO MACHINE</p>
       <h1>MUSIC</h1>
-      <MusicCategoryNav categories={categories} />
     </header>
 
     <VideoTransmission
@@ -67,9 +59,9 @@ const firstRelease = {
         </div>
       </div>
       <div class="archive-entry-copy">
-        <p class="archive-entry-signal">JF / CATALOG SIGNAL</p>
-        <h2 id="archive-entry-title">ARCHIVE MACHINE</h2>
-        <p>Enter through the ten latest Junkfeathers release signals, then search 195 known songs, versions, projects, people, places, and listening links.</p>
+        <p class="archive-entry-signal">JF / MUSIC CATALOG</p>
+        <h2 id="archive-entry-title">MUSIC ARCHIVE</h2>
+        <p>The music archive is a work in process. Explore my music catalog of over twenty years. Get the latest Junkfeathers releases and my other musical projects like Leadership Class, Nora and Gnoll and more.</p>
         <a href="/music/archive/?view=latest">ENTER ARCHIVE <span aria-hidden="true">↗</span></a>
       </div>
     </aside>
