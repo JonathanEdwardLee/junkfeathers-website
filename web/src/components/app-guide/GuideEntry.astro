@@ -1,0 +1,38 @@
+---
+import type { AppGuideEntry } from '../../data/appGuide';
+import GuideBlocks from './GuideBlocks.astro';
+
+interface Props {
+  entry: AppGuideEntry;
+  level?: 3 | 4;
+}
+
+const { entry, level = 3 } = Astro.props;
+const Heading = `h${level}` as 'h3' | 'h4';
+---
+
+<article class="guide-entry" id={entry.id}>
+  <Heading class="guide-question">{entry.question}</Heading>
+  <GuideBlocks blocks={entry.blocks} />
+</article>
+
+<style>
+  /* Tokens are inherited from the enclosing .app-guide machine. */
+  .guide-entry {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+    padding-left: 0.7rem;
+    border-left: 1px solid var(--guide-line);
+    scroll-margin-top: var(--guide-jump-offset);
+  }
+
+  .guide-question {
+    margin: 0;
+    color: var(--guide-white);
+    font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    overflow-wrap: break-word;
+  }
+</style>

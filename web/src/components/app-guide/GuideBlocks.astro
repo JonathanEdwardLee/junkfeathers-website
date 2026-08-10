@@ -1,0 +1,121 @@
+---
+import type { AppGuideBlock, AppGuideLink } from '../../data/appGuide';
+
+interface Props {
+  blocks: AppGuideBlock[];
+}
+
+const { blocks } = Astro.props;
+---
+
+{blocks.map((block: AppGuideBlock) => (
+  <>
+    {block.kind === 'paragraph' && <p class="guide-text">{block.text}</p>}
+
+    {block.kind === 'list' && (
+      <ul class="guide-list">
+        {block.items.map((item: string) => <li>{item}</li>)}
+      </ul>
+    )}
+
+    {block.kind === 'steps' && (
+      <ol class="guide-steps">
+        {block.items.map((item: string) => <li>{item}</li>)}
+      </ol>
+    )}
+
+    {block.kind === 'links' && (
+      <p class="guide-inline-links">
+        {block.items.map((link: AppGuideLink) => (
+          <a
+            href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+          >
+            {link.label}{link.external ? ' ↗' : ''}
+          </a>
+        ))}
+      </p>
+    )}
+  </>
+))}
+
+<style>
+  /* Tokens are inherited from the enclosing .app-guide machine. */
+  .guide-text {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--guide-text);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    overflow-wrap: break-word;
+  }
+
+  .guide-list,
+  .guide-steps {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+    max-width: 66ch;
+    padding-left: 1.35rem;
+    color: var(--guide-text);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .guide-list {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .guide-list li,
+  .guide-steps li {
+    overflow-wrap: break-word;
+  }
+
+  .guide-list li {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .guide-list li::before {
+    position: absolute;
+    left: 0;
+    color: var(--guide-text-dim);
+    content: '—';
+  }
+
+  /* Bordered and spaced so neighbouring links never read as a single control. */
+  .guide-inline-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.75rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .guide-inline-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--guide-border);
+    background: #080808;
+    color: var(--guide-white);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .guide-inline-links a:hover {
+    border-color: var(--guide-white);
+    background: #131313;
+    color: var(--guide-white);
+  }
+
+  .guide-inline-links a:focus,
+  .guide-inline-links a:focus-visible {
+    outline: 2px solid var(--guide-white) !important;
+    outline-offset: 3px;
+  }
+</style>
