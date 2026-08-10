@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AppGuideMachine from '../../components/app-guide/AppGuideMachine.astro';
+import { orpheusDeckGuide } from '../../data/orpheusGuide';
+---
+
+<Layout title={orpheusDeckGuide.pageTitle} description={orpheusDeckGuide.metaDescription}>
+  <AppGuideMachine config={orpheusDeckGuide} />
+</Layout>

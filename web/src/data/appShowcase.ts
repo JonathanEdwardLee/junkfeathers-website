@@ -3,7 +3,6 @@ export type AppShowcaseSectionId =
   | 'watch'
   | 'screens'
   | 'guide'
-  | 'faq'
   | 'history';
 
 export interface AppShowcaseScreenshot {
@@ -18,8 +17,6 @@ export interface AppShowcaseLink {
   label: string;
   href?: string;
   external?: boolean;
-  /** Opens Communication Machine Contact without inventing a new support surface. */
-  action?: 'open-contact';
 }
 
 export interface AppShowcaseStoreAction {
@@ -34,6 +31,8 @@ export interface AppShowcaseSection {
   label: string;
   /** When false, control is visible but inert. */
   enabled: boolean;
+  /** When set, the control routes to another page instead of switching an in-machine panel. */
+  href?: string;
 }
 
 export interface AppShowcaseConfig {
@@ -110,14 +109,13 @@ export const orpheusDeckShowcase: AppShowcaseConfig = {
   },
   links: [
     { label: 'PRIVACY', href: '/orpheus-deck-privacy-policy/' },
-    { label: 'SUPPORT', action: 'open-contact' },
+    { label: 'CONTACT', href: '/orpheus-deck/support/' },
   ],
   sections: [
     { id: 'overview', label: 'OVERVIEW', enabled: true },
     { id: 'watch', label: 'WATCH', enabled: false },
     { id: 'screens', label: 'SCREENS', enabled: true },
-    { id: 'guide', label: 'GUIDE', enabled: false },
-    { id: 'faq', label: 'FAQ', enabled: false },
+    { id: 'guide', label: 'GUIDE', enabled: true, href: '/orpheus-deck/guide/' },
     { id: 'history', label: 'HISTORY', enabled: false },
   ],
   screenshots: [

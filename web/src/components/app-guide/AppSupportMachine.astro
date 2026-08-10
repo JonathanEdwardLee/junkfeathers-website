@@ -1,0 +1,413 @@
+---
+import type { AppSupportConfig, AppSupportIntent } from '../../data/appGuide';
+
+interface Props {
+  config: AppSupportConfig;
+}
+
+const { config } = Astro.props;
+const stamp = (index: number) => String(index + 1).padStart(2, '0');
+---
+
+<section class="app-support" aria-labelledby="support-title">
+  <header class="support-header">
+    <p class="support-status">{config.statusStrip}</p>
+    <h1 class="support-title" id="support-title">{config.heading}</h1>
+    <p class="support-lead">{config.lead}</p>
+
+    <nav class="support-actions" aria-label={`${config.appName} routes`}>
+      <a class="support-action" href={config.guideLink.href}>{config.guideLink.label}</a>
+      <a class="support-action" href={config.showcaseLink.href}>{config.showcaseLink.label}</a>
+      <a
+        class="support-action"
+        href={config.storeAction.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${config.storeAction.label} (opens in a new tab)`}
+        data-analytics-event={config.storeAction.analyticsEvent}
+      >
+        {config.storeAction.label} <span aria-hidden="true">↗</span>
+      </a>
+    </nav>
+  </header>
+
+  <div class="support-body">
+    <h2 class="support-body__heading">{config.intentsHeading}</h2>
+
+    <div class="support-intents">
+      {config.intents.map((intent: AppSupportIntent, index: number) => (
+        <section
+          class="support-intent"
+          id={intent.id}
+          aria-labelledby={`${intent.id}-heading`}
+        >
+          <div class="support-intent__bar">
+            <span class="support-intent__stamp" aria-hidden="true">{stamp(index)}</span>
+            <h3 class="support-intent__heading" id={`${intent.id}-heading`}>{intent.label}</h3>
+          </div>
+
+          <div class="support-intent__face">
+            <p class="support-intent__summary">{intent.summary}</p>
+
+            <p class="support-intent__hint-label">HELPFUL TO INCLUDE</p>
+            <ul class="support-intent__hints">
+              {intent.hints.map((hint: string) => <li>{hint}</li>)}
+            </ul>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <div class="support-channel">
+      <p class="support-note">{config.channelNote}</p>
+
+      <button type="button" class="support-open" data-support-open-contact>
+        {config.contactActionLabel}
+      </button>
+
+      <p class="support-note support-note--quiet">{config.subscriptionNote}</p>
+
+      <noscript>
+        <p class="support-note support-note--fallback">
+          The contact channel opens with JavaScript. Without it, use the Communication Machine
+          further down this page and choose the CONTACT channel.
+        </p>
+      </noscript>
+    </div>
+  </div>
+
+  <footer class="support-footer">
+    <nav class="support-actions" aria-label="Continue">
+      <a class="support-action" href={config.guideLink.href}>{config.guideLink.label}</a>
+      <a class="support-action" href={config.privacyLink.href}>{config.privacyLink.label}</a>
+    </nav>
+  </footer>
+</section>
+
+<script>
+  const openers = document.querySelectorAll<HTMLButtonElement>('[data-support-open-contact]');
+
+  openers.forEach((opener) => {
+    opener.addEventListener('click', () => {
+      const shell = document.querySelector<HTMLElement>('[data-communication-shell]');
+      if (!shell) return;
+
+      const channelToggle = shell.querySelector<HTMLButtonElement>('[data-channel-toggle]');
+      const contactToggle = shell.querySelector<HTMLButtonElement>('[data-contact-channel-toggle]');
+      if (!channelToggle) return;
+
+      if (channelToggle.getAttribute('aria-expanded') !== 'true') {
+        channelToggle.click();
+      }
+
+      if (contactToggle && !contactToggle.disabled && contactToggle.getAttribute('aria-expanded') !== 'true') {
+        contactToggle.click();
+      }
+
+      shell.scrollIntoView({ block: 'nearest' });
+      (contactToggle && !contactToggle.disabled ? contactToggle : channelToggle).focus();
+    });
+  });
+</script>
+
+<style>
+  .app-support {
+    --support-white: #fff;
+    --support-border: #858585;
+    --support-text: #dcdcdc;
+    --support-text-dim: #adadad;
+    --support-line: #2a2a2a;
+    /* Clears the sticky site header so jumped-to headings are never covered. */
+    --support-jump-offset: 4.75rem;
+    position: relative;
+    width: min(100% - 1rem, 780px);
+    margin: clamp(1rem, 4vw, 2.5rem) auto;
+    overflow: hidden;
+    border: var(--jf-border-major) solid var(--support-border);
+    background: #020202;
+    box-shadow: 5px 5px 0 #171717;
+    color: var(--support-white);
+    font-family: monospace;
+  }
+
+  .app-support::before,
+  .app-support::after {
+    position: absolute;
+    z-index: 3;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border: 1px solid var(--support-border);
+    border-radius: 50%;
+    background: #000;
+    content: '';
+  }
+
+  .app-support::before { left: 7px; }
+  .app-support::after { right: 7px; }
+
+  .app-support :where(p, li, h1, h2, h3) {
+    overflow-wrap: break-word;
+  }
+
+  /* No decorative green anywhere in the machine: overrides the global link colour,
+     the global green dashed underline, and the global green focus outline. */
+  .app-support :where(a) {
+    color: var(--support-white);
+    border-bottom: 0;
+    text-decoration: none;
+  }
+
+  .app-support :where(a):hover {
+    color: var(--support-white);
+  }
+
+  .app-support :where(a):focus,
+  .app-support :where(a):focus-visible {
+    outline: 2px solid var(--support-white) !important;
+    outline-offset: 3px;
+  }
+
+  .support-header {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    padding: clamp(1rem, 4vw, 1.5rem);
+    border-bottom: 1px solid var(--support-line);
+    background: #050505;
+  }
+
+  .support-status {
+    margin: 0;
+    color: var(--support-text-dim);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .support-title {
+    margin: 0;
+    font-size: clamp(1.5rem, 7vw, 2.9rem);
+    line-height: 0.98;
+    letter-spacing: 0.04em;
+  }
+
+  .support-lead {
+    margin: 0;
+    max-width: 56ch;
+    color: var(--support-text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .support-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.75rem;
+    min-width: 0;
+  }
+
+  .support-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--support-border);
+    background: #050505;
+    color: var(--support-white);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .support-action:hover {
+    border-color: var(--support-white);
+    background: #101010;
+    color: var(--support-white);
+  }
+
+  .support-body {
+    display: grid;
+    gap: clamp(0.85rem, 3vw, 1.25rem);
+    min-width: 0;
+    padding: clamp(0.9rem, 3.5vw, 1.35rem);
+  }
+
+  .support-body__heading {
+    margin: 0;
+    color: var(--support-text-dim);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+  }
+
+  .support-intents {
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .support-intent {
+    min-width: 0;
+    border: 1px solid var(--support-line);
+    background: #040404;
+    scroll-margin-top: var(--support-jump-offset);
+  }
+
+  .support-intent:target {
+    border-color: var(--support-white);
+  }
+
+  .support-intent__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--support-line);
+    background: #0a0a0a;
+  }
+
+  .support-intent__stamp {
+    flex: 0 0 auto;
+    color: var(--support-text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  .support-intent__heading {
+    margin: 0;
+    min-width: 0;
+    font-size: clamp(0.85rem, 3.4vw, 1.05rem);
+    letter-spacing: 0.08em;
+  }
+
+  .support-intent__face {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 0;
+    padding: clamp(0.7rem, 3vw, 1rem);
+  }
+
+  .support-intent__summary {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--support-text);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .support-intent__hint-label {
+    margin: 0;
+    color: var(--support-text-dim);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+  }
+
+  .support-intent__hints {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    max-width: 62ch;
+    color: var(--support-text);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .support-intent__hints li {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .support-intent__hints li::before {
+    position: absolute;
+    left: 0;
+    color: var(--support-text-dim);
+    content: '—';
+  }
+
+  .support-channel {
+    display: grid;
+    gap: 0.7rem;
+    justify-items: start;
+    min-width: 0;
+    padding: clamp(0.8rem, 3vw, 1rem);
+    border: 1px solid var(--support-border);
+    background: #080808;
+  }
+
+  .support-open {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--support-white);
+    background: var(--support-white);
+    color: #000;
+    font: inherit;
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .support-open:hover {
+    background: #d9d9d9;
+  }
+
+  .support-open:focus-visible {
+    outline: 2px solid var(--support-white) !important;
+    outline-offset: 3px;
+  }
+
+  .support-footer {
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+    padding: clamp(0.9rem, 3.5vw, 1.35rem);
+    border-top: 1px solid var(--support-line);
+    background: #050505;
+  }
+
+  .support-note {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--support-text);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .support-note--quiet {
+    color: var(--support-text-dim);
+    font-size: 0.8rem;
+  }
+
+  .support-note--fallback {
+    padding: 0.5rem 0.6rem;
+    border: 1px dashed var(--support-border);
+    color: var(--support-text);
+  }
+
+  @media (max-width: 420px) {
+    .app-support {
+      width: min(100% - 0.75rem, 780px);
+    }
+
+    .support-action {
+      flex: 1 1 100%;
+    }
+
+    .support-open {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 350px) {
+    .app-support {
+      width: min(100% - 0.5rem, 780px);
+      border-width: var(--jf-border-standard);
+    }
+  }
+</style>

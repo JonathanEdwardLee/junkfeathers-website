@@ -85,27 +85,29 @@ const primaryScreenshot = config.screenshots[0];
     </div>
 
     <nav class="showcase-links" aria-label="Privacy and support">
-      {config.links.map((link: AppShowcaseLink) =>
-        link.action === 'open-contact' ? (
-          <button type="button" class="showcase-link-action" data-showcase-open-contact>
-            {link.label}
-          </button>
-        ) : (
-          <a
-            href={link.href}
-            target={link.external ? '_blank' : undefined}
-            rel={link.external ? 'noopener noreferrer' : undefined}
-          >
-            {link.label}{link.external ? ' ↗' : ''}
-          </a>
-        ),
-      )}
+      {config.links.map((link: AppShowcaseLink) => (
+        <a
+          href={link.href}
+          target={link.external ? '_blank' : undefined}
+          rel={link.external ? 'noopener noreferrer' : undefined}
+        >
+          {link.label}{link.external ? ' ↗' : ''}
+        </a>
+      ))}
     </nav>
   </header>
 
   <div class="showcase-rail" role="group" aria-label="App showcase sections">
     {config.sections.map((section: AppShowcaseSection) =>
-      section.enabled ? (
+      section.enabled && section.href ? (
+        <a
+          class="showcase-tab showcase-tab--route"
+          id={`showcase-tab-${config.id}-${section.id}`}
+          href={section.href}
+        >
+          {section.label}
+        </a>
+      ) : section.enabled ? (
         <button
           class="showcase-tab"
           type="button"
@@ -272,27 +274,6 @@ const primaryScreenshot = config.screenshots[0];
   const machines = document.querySelectorAll<HTMLElement>('[data-app-showcase]');
 
   machines.forEach((machine) => {
-    const openContact = machine.querySelector<HTMLButtonElement>('[data-showcase-open-contact]');
-    openContact?.addEventListener('click', () => {
-      const shell = document.querySelector<HTMLElement>('[data-communication-shell]');
-      if (!shell) return;
-
-      const channelToggle = shell.querySelector<HTMLButtonElement>('[data-channel-toggle]');
-      const contactToggle = shell.querySelector<HTMLButtonElement>('[data-contact-channel-toggle]');
-      if (!channelToggle) return;
-
-      if (channelToggle.getAttribute('aria-expanded') !== 'true') {
-        channelToggle.click();
-      }
-
-      if (contactToggle && !contactToggle.disabled && contactToggle.getAttribute('aria-expanded') !== 'true') {
-        contactToggle.click();
-      }
-
-      shell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      (contactToggle && !contactToggle.disabled ? contactToggle : channelToggle).focus();
-    });
-
     const tabs = Array.from(machine.querySelectorAll<HTMLButtonElement>('[data-showcase-tab]'));
     const panels = Array.from(machine.querySelectorAll<HTMLElement>('[data-showcase-panel]'));
 
@@ -784,8 +765,7 @@ const primaryScreenshot = config.screenshots[0];
     margin-top: 0.15rem;
   }
 
-  .showcase-links a,
-  .showcase-link-action {
+  .showcase-links a {
     color: var(--show-mid);
     border: 0;
     border-bottom: 1px dashed var(--show-dim);
@@ -800,16 +780,9 @@ const primaryScreenshot = config.screenshots[0];
   }
 
   .showcase-links a:hover,
-  .showcase-links a:focus,
-  .showcase-link-action:hover,
-  .showcase-link-action:focus {
+  .showcase-links a:focus {
     color: var(--show-white);
     border-bottom-color: var(--show-white);
-  }
-
-  .showcase-link-action:focus-visible {
-    outline: 2px solid var(--show-white) !important;
-    outline-offset: 3px;
   }
 
   .showcase-rail {
@@ -853,6 +826,15 @@ const primaryScreenshot = config.screenshots[0];
   .showcase-tab:focus-visible {
     outline: 2px solid var(--show-white) !important;
     outline-offset: 3px;
+  }
+
+  .showcase-tab--route {
+    text-decoration: none;
+  }
+
+  .showcase-tab--route:hover {
+    background: #101010;
+    color: var(--show-white);
   }
 
   .showcase-tab--inert,

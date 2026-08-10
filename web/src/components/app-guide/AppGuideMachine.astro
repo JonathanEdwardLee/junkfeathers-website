@@ -1,0 +1,525 @@
+---
+import type { AppGuideConfig, AppGuideGroup, AppGuideEntry, AppGuideSection } from '../../data/appGuide';
+import GuideEntry from './GuideEntry.astro';
+
+interface Props {
+  config: AppGuideConfig;
+}
+
+const { config } = Astro.props;
+const stamp = (index: number) => String(index + 1).padStart(2, '0');
+---
+
+<section class="app-guide" aria-labelledby="guide-title">
+  <header class="guide-header">
+    <p class="guide-status">{config.statusStrip}</p>
+    <h1 class="guide-title" id="guide-title">{config.heading}</h1>
+    <p class="guide-lead">{config.lead}</p>
+
+    <nav class="guide-actions" aria-label={`${config.appName} routes`}>
+      <a class="guide-action" href={config.showcaseLink.href}>{config.showcaseLink.label}</a>
+      <a class="guide-action guide-action--primary" href={config.supportLink.href}>
+        {config.supportLink.label}
+      </a>
+      <a
+        class="guide-action"
+        href={config.storeAction.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${config.storeAction.label} (opens in a new tab)`}
+        data-analytics-event={config.storeAction.analyticsEvent}
+      >
+        {config.storeAction.label} <span aria-hidden="true">↗</span>
+      </a>
+    </nav>
+  </header>
+
+  <nav class="guide-index" aria-label="Guide sections">
+    <p class="guide-index__label">SECTION INDEX</p>
+    <ol class="guide-index__list">
+      {config.sections.map((section: AppGuideSection, index: number) => (
+        <li class="guide-index__item">
+          {section.state === 'active' ? (
+            <a class="guide-chip" href={`#${section.id}`}>
+              <span class="guide-chip__stamp" aria-hidden="true">{stamp(index)}</span>
+              <span class="guide-chip__label">{section.navLabel}</span>
+            </a>
+          ) : (
+            <span class="guide-chip guide-chip--held" aria-disabled="true">
+              <span class="guide-chip__stamp" aria-hidden="true">{stamp(index)}</span>
+              <span class="guide-chip__label">{section.navLabel}</span>
+              <span class="guide-chip__state">HELD</span>
+            </span>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <div class="guide-body">
+    {config.sections.map((section: AppGuideSection, index: number) => (
+      <section
+        class="guide-section"
+        id={section.id}
+        data-state={section.state}
+        aria-labelledby={`${section.id}-heading`}
+      >
+        <div class="guide-section__bar">
+          <span class="guide-section__stamp" aria-hidden="true">{stamp(index)}</span>
+          <h2 class="guide-section__heading" id={`${section.id}-heading`}>{section.heading}</h2>
+          {section.state === 'held' && <span class="guide-section__state">HELD</span>}
+        </div>
+
+        <div class="guide-section__face">
+          {section.lead && <p class="guide-section__lead">{section.lead}</p>}
+
+          {section.entries?.map((entry: AppGuideEntry) => (
+            <GuideEntry entry={entry} level={3} />
+          ))}
+
+          {section.groups?.map((group: AppGuideGroup) => (
+            <section class="guide-group" id={group.id} data-state={group.state}>
+              <div class="guide-group__bar">
+                <h3 class="guide-group__heading">{group.heading}</h3>
+                {group.state === 'held' && <span class="guide-group__state">HELD</span>}
+              </div>
+              {group.lead && <p class="guide-group__lead">{group.lead}</p>}
+              {group.entries?.map((entry: AppGuideEntry) => (
+                <GuideEntry entry={entry} level={4} />
+              ))}
+              {group.hold && (
+                <div class="guide-hold">
+                  <p class="guide-hold__note">{group.hold.note}</p>
+                </div>
+              )}
+            </section>
+          ))}
+
+          {section.hold && (
+            <div class="guide-hold">
+              <p class="guide-hold__note">{section.hold.note}</p>
+              {section.hold.pendingQuestions && (
+                <ul class="guide-hold__list">
+                  {section.hold.pendingQuestions.map((question: string) => <li>{question}</li>)}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <footer class="guide-footer">
+    <p class="guide-footer__note">Still stuck? The support channel goes straight to Junkfeathers.</p>
+    <nav class="guide-actions" aria-label="Continue">
+      <a class="guide-action guide-action--primary" href={config.supportLink.href}>
+        {config.supportLink.label}
+      </a>
+      <a class="guide-action" href={config.showcaseLink.href}>{config.showcaseLink.label}</a>
+      <a
+        class="guide-action"
+        href={config.storeAction.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${config.storeAction.label} (opens in a new tab)`}
+        data-analytics-event={config.storeAction.analyticsEvent}
+      >
+        {config.storeAction.label} <span aria-hidden="true">↗</span>
+      </a>
+    </nav>
+  </footer>
+</section>
+
+<style>
+  .app-guide {
+    --guide-white: #fff;
+    --guide-border: #858585;
+    --guide-text: #dcdcdc;
+    --guide-text-dim: #adadad;
+    --guide-line: #2a2a2a;
+    --guide-held-text: #9c9c9c;
+    --guide-held-border: #5c5c5c;
+    /* Clears the sticky site header so jumped-to headings are never covered. */
+    --guide-jump-offset: 4.75rem;
+    position: relative;
+    width: min(100% - 1rem, 780px);
+    margin: clamp(1rem, 4vw, 2.5rem) auto;
+    overflow: hidden;
+    border: var(--jf-border-major) solid var(--guide-border);
+    background: #020202;
+    box-shadow: 5px 5px 0 #171717;
+    color: var(--guide-white);
+    font-family: monospace;
+  }
+
+  .app-guide::before,
+  .app-guide::after {
+    position: absolute;
+    z-index: 3;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border: 1px solid var(--guide-border);
+    border-radius: 50%;
+    background: #000;
+    content: '';
+  }
+
+  .app-guide::before { left: 7px; }
+  .app-guide::after { right: 7px; }
+
+  .app-guide :where(p, li, h1, h2, h3, h4) {
+    overflow-wrap: break-word;
+  }
+
+  /* No decorative green anywhere in the machine: overrides the global link colour,
+     the global green dashed underline, and the global green focus outline. */
+  .app-guide :where(a) {
+    color: var(--guide-white);
+    border-bottom: 0;
+    text-decoration: none;
+  }
+
+  .app-guide :where(a):hover {
+    color: var(--guide-white);
+  }
+
+  .app-guide :where(a):focus,
+  .app-guide :where(a):focus-visible {
+    outline: 2px solid var(--guide-white) !important;
+    outline-offset: 3px;
+  }
+
+  .guide-header {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    padding: clamp(1rem, 4vw, 1.5rem);
+    border-bottom: 1px solid var(--guide-line);
+    background: #050505;
+  }
+
+  .guide-status {
+    margin: 0;
+    color: var(--guide-text-dim);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+
+  .guide-title {
+    margin: 0;
+    font-size: clamp(1.5rem, 7vw, 2.9rem);
+    line-height: 0.98;
+    letter-spacing: 0.04em;
+  }
+
+  .guide-lead {
+    margin: 0;
+    max-width: 56ch;
+    color: var(--guide-text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .guide-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.75rem;
+    min-width: 0;
+  }
+
+  .guide-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--guide-border);
+    background: #050505;
+    color: var(--guide-white);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .guide-action:hover {
+    border-color: var(--guide-white);
+    background: #101010;
+    color: var(--guide-white);
+  }
+
+  .guide-action--primary {
+    border-color: var(--guide-white);
+    background: var(--guide-white);
+    color: #000;
+  }
+
+  .guide-action--primary:hover {
+    background: #d9d9d9;
+    color: #000;
+  }
+
+  .guide-index {
+    min-width: 0;
+    padding: clamp(0.75rem, 3vw, 1rem);
+    border-bottom: 1px solid var(--guide-line);
+    background: #080808;
+  }
+
+  .guide-index__label {
+    margin: 0 0 0.6rem;
+    color: var(--guide-text-dim);
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+  }
+
+  .guide-index__list {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15ch), 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .guide-index__item {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .guide-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    height: 100%;
+    padding: 0.4rem 0.55rem;
+    border: 1px solid var(--guide-border);
+    background: #050505;
+    color: var(--guide-white);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+  }
+
+  a.guide-chip:hover {
+    border-color: var(--guide-white);
+    background: #101010;
+    color: var(--guide-white);
+  }
+
+  .guide-chip__stamp {
+    flex: 0 0 auto;
+    color: var(--guide-text-dim);
+  }
+
+  .guide-chip__label {
+    min-width: 0;
+  }
+
+  .guide-chip--held {
+    border-style: dashed;
+    border-color: var(--guide-held-border);
+    color: var(--guide-held-text);
+  }
+
+  .guide-chip--held .guide-chip__stamp {
+    color: var(--guide-held-text);
+  }
+
+  .guide-chip__state {
+    margin-left: auto;
+    color: var(--guide-held-text);
+    font-size: 0.56rem;
+    letter-spacing: 0.12em;
+  }
+
+  .guide-body {
+    display: grid;
+    gap: clamp(0.85rem, 3vw, 1.25rem);
+    min-width: 0;
+    padding: clamp(0.9rem, 3.5vw, 1.35rem);
+  }
+
+  .guide-section {
+    min-width: 0;
+    border: 1px solid var(--guide-line);
+    background: #040404;
+    scroll-margin-top: var(--guide-jump-offset);
+  }
+
+  .guide-section[data-state='held'] {
+    border-style: dashed;
+    border-color: var(--guide-held-border);
+  }
+
+  .guide-section__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--guide-line);
+    background: #0a0a0a;
+  }
+
+  .guide-section[data-state='held'] .guide-section__bar {
+    background: #070707;
+  }
+
+  .guide-section__stamp {
+    flex: 0 0 auto;
+    color: var(--guide-text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+
+  .guide-section__heading {
+    margin: 0;
+    min-width: 0;
+    font-size: clamp(0.85rem, 3.4vw, 1.05rem);
+    letter-spacing: 0.08em;
+  }
+
+  .guide-section[data-state='held'] .guide-section__heading {
+    color: var(--guide-held-text);
+  }
+
+  .guide-section__state,
+  .guide-group__state {
+    margin-left: auto;
+    flex: 0 0 auto;
+    padding: 0.15rem 0.35rem;
+    border: 1px dashed var(--guide-held-border);
+    color: var(--guide-held-text);
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+  }
+
+  .guide-section__face {
+    display: grid;
+    gap: 0.9rem;
+    min-width: 0;
+    padding: clamp(0.7rem, 3vw, 1rem);
+  }
+
+  .guide-section__lead {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--guide-text-dim);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .guide-group__lead {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--guide-text);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .guide-group {
+    display: grid;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid var(--guide-line);
+    background: #060606;
+    scroll-margin-top: var(--guide-jump-offset);
+  }
+
+  .guide-group[data-state='held'] {
+    border-style: dashed;
+    border-color: var(--guide-held-border);
+  }
+
+  .guide-group__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .guide-group__heading {
+    margin: 0;
+    min-width: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+  }
+
+  .guide-group[data-state='held'] .guide-group__heading {
+    color: var(--guide-held-text);
+  }
+
+  .guide-hold {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.65rem 0.7rem;
+    border: 1px dashed var(--guide-held-border);
+    background: #070707;
+  }
+
+  .guide-hold__note {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--guide-held-text);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .guide-hold__list {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    color: var(--guide-held-text);
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .guide-hold__list li {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .guide-hold__list li::before {
+    position: absolute;
+    left: 0;
+    content: '—';
+  }
+
+  .guide-footer {
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+    padding: clamp(0.9rem, 3.5vw, 1.35rem);
+    border-top: 1px solid var(--guide-line);
+    background: #050505;
+  }
+
+  .guide-footer__note {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--guide-text);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 420px) {
+    .app-guide {
+      width: min(100% - 0.75rem, 780px);
+    }
+
+    .guide-action {
+      flex: 1 1 100%;
+    }
+  }
+
+  @media (max-width: 350px) {
+    .app-guide {
+      width: min(100% - 0.5rem, 780px);
+      border-width: var(--jf-border-standard);
+    }
+  }
+</style>
