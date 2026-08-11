@@ -15,7 +15,15 @@ export type AppGuideBlock =
   | { kind: 'paragraph'; text: string }
   | { kind: 'list'; items: string[] }
   | { kind: 'steps'; items: string[] }
-  | { kind: 'links'; items: AppGuideLink[] };
+  | { kind: 'links'; items: AppGuideLink[] }
+  | {
+      kind: 'image';
+      src: string;
+      alt: string;
+      caption: string;
+      width: number;
+      height: number;
+    };
 
 export interface AppGuideEntry {
   id: string;

@@ -1,5 +1,6 @@
 ---
-import type { AppShowcaseConfig, AppShowcaseSectionId, AppShowcaseLink, AppShowcaseScreenshot, AppShowcaseSection } from '../../data/appShowcase';
+import type { AppShowcaseConfig, AppShowcaseOverviewSection, AppShowcaseSectionId, AppShowcaseLink, AppShowcaseScreenshot, AppShowcaseSection } from '../../data/appShowcase';
+import AppWatchMachine from './AppWatchMachine.astro';
 
 interface Props {
   config: AppShowcaseConfig;
@@ -161,9 +162,10 @@ const primaryScreenshot = config.screenshots[0];
 
       {config.overview.closing && <p class="showcase-lead">{config.overview.closing}</p>}
 
-      <div class="showcase-facts">
+      <div class:list={['showcase-facts', { 'showcase-facts--single': config.overview.privacyFacts.length === 0 }]}>
         <div class="showcase-fact-block">
           <h3>{config.proLabel}</h3>
+          {config.overview.proLead && <p class="showcase-fact-lead">{config.overview.proLead}</p>}
           <ul>
             {config.proBenefits.map((benefit: string) => (
               <li>{benefit}</li>
@@ -182,7 +184,44 @@ const primaryScreenshot = config.screenshots[0];
           </div>
         )}
       </div>
+
+      {config.overview.detailSections && config.overview.detailSections.length > 0 && (
+        <div class="showcase-details">
+          {config.overview.detailSections.map((section: AppShowcaseOverviewSection) => (
+            <section class="showcase-fact-block">
+              <h3>{section.heading}</h3>
+              {section.paragraphs?.map((paragraph: string) => (
+                <p class="showcase-fact-copy">{paragraph}</p>
+              ))}
+              {section.items && section.items.length > 0 && (
+                <ul>
+                  {section.items.map((item: string) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      )}
+
+      {config.overview.closingParagraphs?.map((paragraph: string) => (
+        <p class="showcase-lead">{paragraph}</p>
+      ))}
     </div>
+
+    {config.watch && (
+      <div
+        class="showcase-panel"
+        id={`showcase-panel-${config.id}-watch`}
+        role="region"
+        aria-labelledby={`showcase-tab-${config.id}-watch`}
+        data-showcase-panel="watch"
+        hidden={defaultSection !== 'watch'}
+      >
+        <AppWatchMachine watch={config.watch} />
+      </div>
+    )}
 
     <div
       class="showcase-panel"
@@ -885,6 +924,11 @@ const primaryScreenshot = config.screenshots[0];
     gap: 0.85rem;
   }
 
+  .showcase-details {
+    display: grid;
+    gap: 0.85rem;
+  }
+
   .showcase-fact-block {
     min-width: 0;
     padding: 0.85rem;
@@ -900,6 +944,19 @@ const primaryScreenshot = config.screenshots[0];
     color: var(--show-mid);
     font-size: 0.72rem;
     letter-spacing: 0.12em;
+  }
+
+  .showcase-fact-lead,
+  .showcase-fact-copy {
+    margin: 0 0 0.65rem;
+    max-width: 66ch;
+    color: var(--jf-gray-strong);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .showcase-fact-copy + .showcase-fact-copy {
+    margin-top: -0.15rem;
   }
 
   .showcase-fact-block ul {
@@ -1058,65 +1115,12 @@ const primaryScreenshot = config.screenshots[0];
   }
 
   @media (min-width: 720px) {
-    .launch-face {
-      grid-template-columns: minmax(220px, 1.05fr) 54px minmax(220px, 0.95fr);
-      align-items: stretch;
-    }
-
-    .launch-art {
-      border-right: 1px solid var(--show-line);
-    }
-
-    .launch-bridge {
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
-      grid-template-columns: 1fr;
-      justify-items: center;
-      min-height: 100%;
-      padding: 0.65rem 0.35rem;
-      border-block: 0;
-      border-inline: 1px solid var(--show-line);
-      writing-mode: horizontal-tb;
-    }
-
-    .launch-bridge__rail {
-      grid-row: 2;
-      width: 2px;
-      height: 100%;
-      min-height: 4.5rem;
-      background:
-        repeating-linear-gradient(
-          180deg,
-          var(--show-white) 0 6px,
-          transparent 6px 12px
-        );
-      background-size: 100% 24px;
-      animation-name: launch-tape-vertical;
-    }
-
-    .launch-bridge__pulse {
-      left: 50%;
-      top: 18%;
-      margin-left: -4.5px;
-      margin-top: 0;
-      animation-name: launch-pulse-vertical;
-    }
-
-    .launch-bridge__arrow {
-      grid-row: 3;
-      align-self: end;
-      margin-bottom: 0.35rem;
-      transform: rotate(90deg);
-    }
-
-    .launch-cta {
-      display: grid;
-      place-content: center;
-      padding: 0.9rem;
-    }
-
     .showcase-facts {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .showcase-facts.showcase-facts--single {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .screenshot-image {
@@ -1184,18 +1188,8 @@ const primaryScreenshot = config.screenshots[0];
     100% { left: calc(100% - 1.6rem); opacity: 0.15; }
   }
 
-  @keyframes launch-pulse-vertical {
-    0% { top: 12%; opacity: 0.15; }
-    12%, 88% { opacity: 1; }
-    100% { top: 78%; opacity: 0.15; }
-  }
-
   @keyframes launch-tape {
     to { background-position: 20px 0; }
-  }
-
-  @keyframes launch-tape-vertical {
-    to { background-position: 0 24px; }
   }
 
   @keyframes launch-lamp {
@@ -1210,12 +1204,6 @@ const primaryScreenshot = config.screenshots[0];
 
   @keyframes launch-arrow {
     50% { opacity: 0.35; transform: translateX(3px); }
-  }
-
-  @media (min-width: 720px) {
-    @keyframes launch-arrow {
-      50% { opacity: 0.35; transform: rotate(90deg) translateX(3px); }
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1241,16 +1229,5 @@ const primaryScreenshot = config.screenshots[0];
       background: var(--show-white);
     }
 
-    @media (min-width: 720px) {
-      .launch-bridge__pulse {
-        left: 50%;
-        top: 70%;
-      }
-
-      .launch-bridge__arrow {
-        opacity: 1;
-        transform: rotate(90deg);
-      }
-    }
   }
 </style>
