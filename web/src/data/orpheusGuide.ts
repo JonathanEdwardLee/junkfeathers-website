@@ -1,20 +1,16 @@
 import type { AppGuideConfig, AppSupportConfig } from './appGuide';
 import { ORPHEUS_PLAY_STORE_URL } from './appShowcase';
 
-/**
- * Public Guide copy is limited to founder-verified Orpheus 1.3 shared-guide truth.
- * Anything awaiting release verification stays in a `hold` block instead of being written as fact.
- */
 export const orpheusDeckGuide: AppGuideConfig = {
   appId: 'orpheus-deck',
   appName: 'ORPHEUS DECK',
-  statusStrip: 'ORPHEUS DECK // GUIDE',
+  statusStrip: 'ORPHEUS DECK 1.3 // GUIDE',
   pageTitle: 'Orpheus Deck Guide — Recording, O-FX, Projects & Troubleshooting',
   metaDescription:
-    'Learn how to record, overdub, use Orpheus Deck controls, manage projects, understand Free and Pro features, troubleshoot common problems, and contact Junkfeathers.',
+    'Learn Orpheus Deck 1.3 recording, Advanced Metronome, LEVEL, EDIT, project, export, privacy, and troubleshooting basics.',
   heading: 'ORPHEUS DECK GUIDE',
   lead:
-    'How to use the four-track deck, what each control does, and what to check when something sounds wrong. Same machine, same words, now in your browser.',
+    'How to use the four-track deck, what each shipped control does, and what to check when something sounds wrong.',
   showcaseLink: { label: 'ORPHEUS DECK', href: '/orpheus-deck/' },
   supportLink: { label: 'CONTACT', href: '/orpheus-deck/support/' },
   storeAction: {
@@ -37,7 +33,7 @@ export const orpheusDeckGuide: AppGuideConfig = {
             {
               kind: 'paragraph',
               text:
-                'Orpheus Deck is a retro four-track recorder for musicians, songwriters, and audio creatives. It is built for getting an idea down quickly without turning recording into a complicated studio session.',
+                'Orpheus Deck 1.3 is a retro four-track Android recorder for musicians, songwriters, and audio creatives. It is built for getting an idea down quickly without turning recording into a complicated studio session.',
             },
           ],
         },
@@ -98,7 +94,7 @@ export const orpheusDeckGuide: AppGuideConfig = {
       navLabel: 'RECORDING',
       heading: 'RECORDING',
       state: 'active',
-      lead: 'Track controls, levels, and the two settings that fix most recording problems.',
+      lead: 'Four mono tracks, deck controls, recording levels, and timing.',
       entries: [
         {
           id: 'arm-mute-solo-fx',
@@ -112,6 +108,16 @@ export const orpheusDeckGuide: AppGuideConfig = {
                 'SOLO — lets you hear that track by itself.',
                 "FX — opens the track's available O-FX tools.",
               ],
+            },
+          ],
+        },
+        {
+          id: 'recording-format',
+          question: 'What format does Orpheus record?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text: 'Orpheus Deck records a four-track mono workflow as 48 kHz PCM16 WAV audio.',
             },
           ],
         },
@@ -164,7 +170,7 @@ export const orpheusDeckGuide: AppGuideConfig = {
             {
               kind: 'paragraph',
               text:
-                "O-FX is Orpheus Deck's family of focused audio tools. Each module should feel like a small machine built into the deck.",
+                'O-FX is the deck family that contains shipped tools including the Advanced Metronome and LEVEL. The visible metronome machine may say CHRONOS O-FX inside the app.',
             },
           ],
         },
@@ -172,18 +178,45 @@ export const orpheusDeckGuide: AppGuideConfig = {
       groups: [
         {
           id: 'chronos-o-fx',
-          heading: 'CHRONOS O-FX',
-          state: 'held',
-          lead: "Chronos O-FX is Orpheus Deck's timing and click module.",
-          hold: {
-            note:
-              'Detailed Chronos O-FX control help is held until the final Orpheus 1.3 behavior is confirmed. It will be published here rather than guessed at now.',
-          },
+          heading: 'ADVANCED METRONOME',
+          state: 'active',
+          lead: 'Timing choices in Orpheus Deck 1.3, split clearly between Free and Pro.',
+          entries: [
+            {
+              id: 'advanced-metronome-free',
+              question: 'What does the Free Advanced Metronome include?',
+              blocks: [
+                {
+                  kind: 'list',
+                  items: ['4/4', 'Tap Tempo', 'Count In', 'base Sound', 'Accent Sound'],
+                },
+                {
+                  kind: 'image',
+                  src: '/media/orpheus/screens/OrpheusDeck_1_3_05_Chronos_OFX.jpg',
+                  alt: 'Orpheus Deck 1.3 Advanced Metronome interface labeled CHRONOS O-FX in the app',
+                  caption: 'Advanced Metronome / CHRONOS O-FX interface',
+                  width: 1080,
+                  height: 2104,
+                },
+              ],
+            },
+            {
+              id: 'advanced-metronome-pro',
+              question: 'What does Pro add to the Advanced Metronome?',
+              blocks: [
+                {
+                  kind: 'list',
+                  items: ['3/4', '6/8', '5/4', '7/8', 'Groove'],
+                },
+              ],
+            },
+          ],
         },
         {
           id: 'level-limit',
-          heading: 'LEVEL AND LIMIT',
+          heading: 'LEVEL',
           state: 'active',
+          lead: 'LEVEL remains Free forever.',
           entries: [
             {
               id: 'how-do-i-use-level',
@@ -192,7 +225,15 @@ export const orpheusDeckGuide: AppGuideConfig = {
                 {
                   kind: 'paragraph',
                   text:
-                    "LEVEL is Orpheus Deck's manual mastering and output tool. Use it to make the finished mix louder, control peaks, or deliberately push the sound.",
+                    'Use LEVEL to set output gain and the peak ceiling used when rendering a Master Mix. Master Mix is an export render, not a permanent mastered playback mode.',
+                },
+                {
+                  kind: 'image',
+                  src: '/media/orpheus/screens/OrpheusDeck_1_3_06_Level_Limit.jpg',
+                  alt: 'Orpheus Deck 1.3 LEVEL controls for gain and peak ceiling',
+                  caption: 'LEVEL gain and peak-ceiling controls',
+                  width: 1080,
+                  height: 2104,
                 },
               ],
             },
@@ -202,8 +243,7 @@ export const orpheusDeckGuide: AppGuideConfig = {
               blocks: [
                 {
                   kind: 'paragraph',
-                  text:
-                    'Raise GAIN to increase output level. Higher gain can also create deliberate drive or distortion when pushed into the limit.',
+                  text: 'Raise GAIN to increase the output level used for the Master Mix render.',
                 },
               ],
             },
@@ -213,17 +253,14 @@ export const orpheusDeckGuide: AppGuideConfig = {
               blocks: [
                 {
                   kind: 'paragraph',
-                  text:
-                    'LIMIT sets the peak ceiling. Lowering the dB limit gives the output less room before it is capped. Use GAIN and LIMIT together: raise GAIN for loudness or character, then choose the ceiling that keeps peaks where you want them.',
+                  text: 'LIMIT sets the peak ceiling used for the Master Mix export render.',
                 },
               ],
             },
             {
               id: 'free-peak-master-choices',
               question: 'Which Peak Master choices are available for free?',
-              blocks: [
-                { kind: 'list', items: ['-3 dB', '-2 dB', '-1 dB', '-0.5 dB'] },
-              ],
+              blocks: [{ kind: 'list', items: ['-3 dB', '-2 dB', '-1 dB', '-0.5 dB'] }],
             },
           ],
         },
@@ -233,34 +270,100 @@ export const orpheusDeckGuide: AppGuideConfig = {
       id: 'edit',
       navLabel: 'EDIT',
       heading: 'EDIT',
-      state: 'held',
-      hold: {
-        note:
-          'EDIT help is held until the final Orpheus 1.3 editing behavior is confirmed. These are the questions this section will answer.',
-        pendingQuestions: [
-          'How do I edit a recording?',
-          'How do I highlight a section?',
-          'How do I make a CUT?',
-          'How do I undo a cut?',
-          'Does editing change my original recording?',
-        ],
-      },
+      state: 'active',
+      lead: 'Browse waveforms for free; Pro unlocks non-destructive CUT.',
+      entries: [
+        {
+          id: 'how-do-i-edit-a-recording',
+          question: 'What can I do in EDIT?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text:
+                'EDIT provides waveform browsing with ZOOM and SCROLL. Pro unlocks CUT for non-destructive edit decisions.',
+            },
+            {
+              kind: 'image',
+              src: '/media/orpheus/screens/OrpheusDeck_1_3_07_Edit.jpg',
+              alt: 'Orpheus Deck 1.3 EDIT waveform interface',
+              caption: 'EDIT waveform interface',
+              width: 1080,
+              height: 2104,
+            },
+          ],
+        },
+        {
+          id: 'how-do-i-make-a-cut',
+          question: 'How does CUT work?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text:
+                'CUT is a Pro feature. Cuts are stored as metadata instead of changing the original recorded audio. You can make multiple cuts; each cut becomes a silent gap and does not ripple later audio earlier.',
+            },
+          ],
+        },
+        {
+          id: 'does-edit-change-my-original-recording',
+          question: 'Does EDIT change my original recording?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text:
+                'No. CUT is non-destructive and metadata-based. EDIT POWER bypasses the current cuts so you can compare the uncut playback, then reapplies them when turned back on.',
+            },
+          ],
+        },
+        {
+          id: 'how-do-i-undo-a-cut',
+          question: 'How do I undo or clear cuts?',
+          blocks: [
+            {
+              kind: 'list',
+              items: [
+                'UNDO CUT reverses the latest cut.',
+                'CLEAR CUTS removes the current edit decisions.',
+                'EDIT POWER bypasses or reapplies the current cut layout.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'how-does-undo-rec-work',
+          question: 'What does UNDO REC restore?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text:
+                'One-level UNDO REC restores the prior recording or clip state together with its prior cut layout.',
+            },
+          ],
+        },
+        {
+          id: 'edit-end-limitation',
+          question: 'Can CUT land exactly at the end of a recording?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text:
+                'CUT placement in the extreme end or final second can be awkward. Orpheus Deck does not claim perfect sample-end trimming.',
+            },
+          ],
+        },
+      ],
     },
     {
       id: 'files-projects',
       navLabel: 'FILES / PROJECTS',
       heading: 'FILES / PROJECTS',
       state: 'active',
-      lead: 'Where songs live and where recordings stay.',
+      lead: 'Where songs live, how audio is stored, and what each export choice does.',
       entries: [
         {
           id: 'how-do-i-manage-projects',
           question: 'How do I manage projects?',
           blocks: [
-            {
-              kind: 'paragraph',
-              text: 'Use PROJECTS to create, open, and manage song projects.',
-            },
+            { kind: 'paragraph', text: 'Use PROJECTS to create, open, and manage song projects.' },
           ],
         },
         {
@@ -274,24 +377,83 @@ export const orpheusDeckGuide: AppGuideConfig = {
             },
           ],
         },
+        {
+          id: 'what-audio-format-does-orpheus-use',
+          question: 'What audio format does Orpheus use?',
+          blocks: [
+            {
+              kind: 'paragraph',
+              text: 'The deck records four-track mono audio as 48 kHz PCM16 WAV.',
+            },
+          ],
+        },
+        {
+          id: 'what-can-i-import',
+          question: 'Can I import a WAV file?',
+          blocks: [{ kind: 'paragraph', text: 'Yes. Import WAV is a Pro feature.' }],
+        },
+        {
+          id: 'what-can-i-export',
+          question: 'What can I export?',
+          blocks: [
+            {
+              kind: 'list',
+              items: [
+                'Raw Mix — Free',
+                'Master Mix — Free',
+                'Export All Tracks — Pro',
+              ],
+            },
+            {
+              kind: 'paragraph',
+              text:
+                'Master Mix applies a peak ceiling during the export render. It is not a permanent mastered playback mode.',
+            },
+            {
+              kind: 'image',
+              src: '/media/orpheus/screens/OrpheusDeck_1_3_08_Files_Export.jpg',
+              alt: 'Orpheus Deck 1.3 Files and Export choices',
+              caption: 'Files and Export choices',
+              width: 1080,
+              height: 2104,
+            },
+          ],
+        },
       ],
-      hold: {
-        note:
-          'Import and export details, including the exact Free and Pro export choices and file-format specifics, are held until Orpheus 1.3 release verification.',
-      },
     },
     {
       id: 'free-pro',
       navLabel: 'FREE + PRO',
       heading: 'FREE + PRO',
       state: 'active',
-      lead: 'What the free recorder does, and what Pro adds on top of it.',
+      lead: 'The free four-track deck and the optional Pro additions in release 1.3.',
       entries: [
         {
           id: 'do-i-need-pro-to-record',
           question: 'Do I need Pro to record?',
           blocks: [
-            { kind: 'paragraph', text: 'No. The core four-track recorder is free.' },
+            { kind: 'paragraph', text: 'No. The core four-track mono recorder and LEVEL are free.' },
+          ],
+        },
+        {
+          id: 'what-is-included-free',
+          question: 'What is included for Free?',
+          blocks: [
+            {
+              kind: 'list',
+              items: [
+                'Four-track mono recording and playback',
+                'LEVEL',
+                'Raw Mix export',
+                'Master Mix export',
+                'EDIT waveform browsing with ZOOM and SCROLL',
+                'Advanced Metronome 4/4',
+                'Tap Tempo',
+                'Count In',
+                'base Sound',
+                'Accent Sound',
+              ],
+            },
           ],
         },
         {
@@ -301,25 +463,24 @@ export const orpheusDeckGuide: AppGuideConfig = {
             {
               kind: 'list',
               items: [
-                'Import WAV files.',
-                'One-tap all-track WAV export.',
-                'Track name templates.',
+                'Import WAV',
+                'Export All Tracks',
+                'Track-name templates',
+                'Non-destructive EDIT CUT',
+                'Advanced Metronome meters 3/4, 6/8, 5/4, and 7/8',
+                'Groove',
               ],
             },
           ],
         },
       ],
-      hold: {
-        note:
-          'Subscription management instructions are held until a verified Google Play management path is approved for publication.',
-      },
     },
     {
       id: 'privacy-using-the-app',
       navLabel: 'PRIVACY / USING THE APP',
       heading: 'PRIVACY / USING THE APP',
       state: 'active',
-      lead: 'What Orpheus Deck does and does not do with your recordings.',
+      lead: 'What Orpheus Deck does and does not do with app and recording data.',
       entries: [
         {
           id: 'does-orpheus-contain-ads',
@@ -329,12 +490,7 @@ export const orpheusDeckGuide: AppGuideConfig = {
         {
           id: 'do-i-need-an-account',
           question: 'Do I need an account to use Orpheus Deck?',
-          blocks: [
-            {
-              kind: 'paragraph',
-              text: 'No account or special sign-in is required.',
-            },
-          ],
+          blocks: [{ kind: 'paragraph', text: 'No account or special sign-in is required.' }],
         },
         {
           id: 'does-orpheus-upload-my-recordings',
@@ -342,13 +498,14 @@ export const orpheusDeckGuide: AppGuideConfig = {
           blocks: [
             {
               kind: 'paragraph',
-              text: 'Orpheus does not automatically upload your recordings.',
+              text:
+                'Projects and recordings are local-first. Orpheus does not automatically upload your recordings.',
             },
           ],
         },
         {
           id: 'does-orpheus-track-me',
-          question: 'Does Orpheus Deck track me?',
+          question: 'Does Orpheus Deck collect or share my data?',
           blocks: [
             {
               kind: 'paragraph',
@@ -364,10 +521,6 @@ export const orpheusDeckGuide: AppGuideConfig = {
           ],
         },
       ],
-      hold: {
-        note:
-          'Detailed permission and offline answers are held until final Orpheus 1.3 technical and privacy wording is verified.',
-      },
     },
     {
       id: 'troubleshooting',
@@ -406,17 +559,26 @@ export const orpheusDeckGuide: AppGuideConfig = {
           id: 'my-recording-feels-early-or-late',
           question: 'Why does my recording feel early or late?',
           blocks: [
+            { kind: 'paragraph', text: 'Open SETTINGS and review the latency adjustment.' },
+          ],
+        },
+        {
+          id: 'cut-is-not-available',
+          question: 'Why is CUT not available?',
+          blocks: [{ kind: 'paragraph', text: 'Non-destructive EDIT CUT is a Pro feature.' }],
+        },
+        {
+          id: 'master-mix-playback-different',
+          question: 'Why does the Master Mix export differ from deck playback?',
+          blocks: [
             {
               kind: 'paragraph',
-              text: 'Open SETTINGS and review the latency adjustment.',
+              text:
+                'Master Mix applies the selected peak ceiling during export. It is an export render, not a permanent mastered playback mode.',
             },
           ],
         },
       ],
-      hold: {
-        note:
-          'Click-level and import/export troubleshooting are held until final Orpheus 1.3 behavior is verified.',
-      },
     },
     {
       id: 'support',
@@ -461,6 +623,11 @@ export const orpheusDeckGuide: AppGuideConfig = {
               kind: 'links',
               items: [
                 { label: 'JUNKFEATHERS TECH', href: '/tech/' },
+                {
+                  label: 'JUNKFEATHERS TECH ON YOUTUBE',
+                  href: 'https://www.youtube.com/@JunkfeathersTech',
+                  external: true,
+                },
                 { label: 'MUSIC ARCHIVE', href: '/music/archive/' },
               ],
             },

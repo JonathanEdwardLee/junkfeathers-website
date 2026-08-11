@@ -37,6 +37,27 @@ const { blocks } = Astro.props;
         ))}
       </p>
     )}
+
+    {block.kind === 'image' && (
+      <figure class="guide-image">
+        <a
+          href={block.src}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open full-size image: ${block.caption}`}
+        >
+          <img
+            src={block.src}
+            alt={block.alt}
+            width={block.width}
+            height={block.height}
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+        <figcaption>{block.caption} <span aria-hidden="true">↗</span></figcaption>
+      </figure>
+    )}
   </>
 ))}
 
@@ -117,5 +138,42 @@ const { blocks } = Astro.props;
   .guide-inline-links a:focus-visible {
     outline: 2px solid var(--guide-white) !important;
     outline-offset: 3px;
+  }
+
+  .guide-image {
+    display: grid;
+    gap: 0.45rem;
+    width: min(100%, 320px);
+    margin: 0.3rem 0 0;
+  }
+
+  .guide-image a {
+    display: block;
+    border: 1px solid var(--guide-border);
+    background: #000;
+  }
+
+  .guide-image a:hover,
+  .guide-image a:focus {
+    border-color: var(--guide-white);
+  }
+
+  .guide-image a:focus-visible {
+    outline: 2px solid var(--guide-white) !important;
+    outline-offset: 3px;
+  }
+
+  .guide-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .guide-image figcaption {
+    color: var(--guide-text-dim);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
   }
 </style>

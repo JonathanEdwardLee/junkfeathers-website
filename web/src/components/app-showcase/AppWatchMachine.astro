@@ -1,0 +1,249 @@
+---
+import type { AppShowcaseWatch, AppShowcaseVideo } from '../../data/appShowcase';
+
+interface Props {
+  watch: AppShowcaseWatch;
+}
+
+const { watch } = Astro.props;
+---
+
+<section class="watch-machine" data-watch-machine aria-labelledby="orpheus-watch-heading">
+  <header class="watch-header">
+    <h2 id="orpheus-watch-heading">{watch.heading}</h2>
+    <p>{watch.lead}</p>
+  </header>
+
+  {watch.videos.length > 0 ? (
+    <div class="watch-list">
+      {watch.videos.map((video: AppShowcaseVideo, index: number) => (
+        <article class="watch-item" data-watch-item data-video-id={video.youtubeId}>
+          <div class="watch-poster" data-watch-poster>
+            <img
+              src={video.poster}
+              alt={video.posterAlt}
+              width={video.posterWidth}
+              height={video.posterHeight}
+              loading="lazy"
+              decoding="async"
+            />
+            <button
+              type="button"
+              class="watch-load"
+              data-watch-load
+              data-video-title={video.title}
+              aria-label={`Load privacy-enhanced YouTube player for ${video.title}`}
+            >
+              <span aria-hidden="true">▶</span>
+              LOAD PLAYER
+            </button>
+          </div>
+
+          <div class="watch-copy">
+            <span class="watch-index">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{video.title}</h3>
+              <p>{video.description}</p>
+            </div>
+          </div>
+
+          <a
+            class="watch-external"
+            href={video.youtubeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`${video.title} on YouTube (opens in a new tab)`}
+          >
+            OPEN ON YOUTUBE <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <p class="watch-empty">No videos available.</p>
+  )}
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-watch-machine]').forEach((machine) => {
+    machine.querySelectorAll<HTMLButtonElement>('[data-watch-load]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const item = button.closest<HTMLElement>('[data-watch-item]');
+        const poster = button.closest<HTMLElement>('[data-watch-poster]');
+        const videoId = item?.dataset.videoId;
+        if (!item || !poster || !videoId || item.dataset.playerLoaded === 'true') return;
+
+        const frame = document.createElement('iframe');
+        frame.className = 'watch-frame';
+        frame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+        frame.title = button.dataset.videoTitle
+          ? `${button.dataset.videoTitle} — YouTube video player`
+          : 'YouTube video player';
+        frame.loading = 'lazy';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.allow = 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        frame.allowFullscreen = true;
+
+        item.dataset.playerLoaded = 'true';
+        poster.replaceChildren(frame);
+        frame.focus();
+      });
+    });
+  });
+</script>
+
+<style>
+  .watch-machine,
+  .watch-list,
+  .watch-item,
+  .watch-header,
+  .watch-copy {
+    display: grid;
+  }
+
+  .watch-machine,
+  .watch-list {
+    gap: 1rem;
+  }
+
+  .watch-header {
+    gap: 0.45rem;
+  }
+
+  .watch-header h2,
+  .watch-header p,
+  .watch-copy h3,
+  .watch-copy p {
+    margin: 0;
+  }
+
+  .watch-header h2 {
+    color: #fff;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+  }
+
+  .watch-header p,
+  .watch-copy p,
+  .watch-empty {
+    color: var(--jf-gray-strong);
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
+  .watch-item {
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.65rem;
+    border: 1px solid #2a2a2a;
+    background: #050505;
+  }
+
+  .watch-poster {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 1px solid #4a4a4a;
+    background: #000;
+  }
+
+  .watch-poster img,
+  :global(.watch-frame) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+  }
+
+  .watch-load {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 48px;
+    padding: 0.7rem 0.85rem;
+    transform: translate(-50%, -50%);
+    border: 2px solid #fff;
+    background: #000;
+    color: #fff;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .watch-load:hover,
+  .watch-load:focus {
+    background: #fff;
+    color: #000;
+  }
+
+  .watch-load:focus-visible,
+  .watch-external:focus-visible,
+  :global(.watch-frame:focus-visible) {
+    outline: 2px solid #fff !important;
+    outline-offset: 3px;
+  }
+
+  .watch-copy {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.65rem;
+    align-items: start;
+  }
+
+  .watch-index {
+    color: #858585;
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .watch-copy h3 {
+    color: #fff;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .watch-copy p {
+    margin-top: 0.35rem;
+  }
+
+  .watch-external {
+    justify-self: start;
+    min-height: 44px;
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed #4a4a4a;
+    color: #858585;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  .watch-external:hover,
+  .watch-external:focus {
+    border-bottom-color: #fff;
+    color: #fff;
+  }
+
+  @media (min-width: 680px) {
+    .watch-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .watch-machine *,
+    .watch-machine *::before,
+    .watch-machine *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

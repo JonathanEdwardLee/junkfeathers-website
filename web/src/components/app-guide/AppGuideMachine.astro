@@ -18,7 +18,7 @@ const stamp = (index: number) => String(index + 1).padStart(2, '0');
 
     <nav class="guide-actions" aria-label={`${config.appName} routes`}>
       <a class="guide-action" href={config.showcaseLink.href}>{config.showcaseLink.label}</a>
-      <a class="guide-action guide-action--primary" href={config.supportLink.href}>
+      <a class="guide-action" href={config.supportLink.href}>
         {config.supportLink.label}
       </a>
       <a
@@ -113,7 +113,7 @@ const stamp = (index: number) => String(index + 1).padStart(2, '0');
   <footer class="guide-footer">
     <p class="guide-footer__note">Still stuck? The support channel goes straight to Junkfeathers.</p>
     <nav class="guide-actions" aria-label="Continue">
-      <a class="guide-action guide-action--primary" href={config.supportLink.href}>
+      <a class="guide-action" href={config.supportLink.href}>
         {config.supportLink.label}
       </a>
       <a class="guide-action" href={config.showcaseLink.href}>{config.showcaseLink.label}</a>
@@ -247,17 +247,6 @@ const stamp = (index: number) => String(index + 1).padStart(2, '0');
     border-color: var(--guide-white);
     background: #101010;
     color: var(--guide-white);
-  }
-
-  .guide-action--primary {
-    border-color: var(--guide-white);
-    background: var(--guide-white);
-    color: #000;
-  }
-
-  .guide-action--primary:hover {
-    background: #d9d9d9;
-    color: #000;
   }
 
   .guide-index {
