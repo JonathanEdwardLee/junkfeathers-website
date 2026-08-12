@@ -2,310 +2,389 @@ import { createHash } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { inflateRawSync } from 'node:zlib';
 
-export const COMPILER_VERSION = '1.0.0-beta.1';
-export const SCHEMA_VERSION = 'music-archive-v01.1';
-export const EXPECTED_SHA256 = '2BA6806D7D85A47BD8DB0529A0E029D2033999EBBF14D70D24525064AB6AF7FE';
-export const EXPECTED_TABS = [
+export const COMPILER_VERSION = '2.0.0-beta.1';
+export const SCHEMA_VERSION = 'music-archive-v02.0';
+export const EXPECTED_SHA256 = '7F3D648B6EFB0B65E2AD24AB0761DA481A6934D193B1B523344A5429F8633710';
+export const EXPECTED_SHEETS = [
   'Overview', 'Releases', 'Recordings', 'Contributors', 'Credits', 'Links', 'Sources',
   'Timeline', 'Unresolved', 'Projects', 'Project Memberships', 'Compositions',
   'Project Repertoire', 'Performance Sources', 'Web Archive Evidence', 'Name Variants',
   'Events', 'Event Participants', 'Search Facets', 'Lineup Eras', 'Biography Timeline',
-  'Song Index', 'Website v01 Contract',
+  'Song Index', 'Website v01 Contract', 'Website v02 Contract', 'Contributor Ranking',
+  'Song Contributions', 'Song Links', 'Archive Card Credits',
 ];
 
-const PUBLIC_COUNTS = { releases: 57, recordings: 276, songs: 197, knownSongs: 195, projects: 7, contributors: 39, links: 49 };
-const textDecoder = new TextDecoder('utf-8');
+const PUBLIC_KNOWN_SONGS = 215;
+const EXPECTED_PROJECTS = [
+  ['PRJ-SOLO-001', 'Junkfeathers'],
+  ['PRJ-BAND-001', 'Zero'],
+  ['PRJ-BAND-002', 'Floob'],
+  ['PRJ-BAND-003', 'Leadership Class'],
+  ['PRJ-PROJ-001', 'Bitfeathers'],
+  ['PRJ-BAND-004', 'Nora and Gnoll'],
+  ['PRJ-BAND-005', 'Spoke Pants of the Flowering Skillet'],
+];
+const MENU_PROJECT_IDS = EXPECTED_PROJECTS.map(([id]) => id).filter((id) => id !== 'PRJ-PROJ-001');
+const CONTEXTS = ['Solo', 'Band', 'Collaboration', 'Acoustic', 'Instrumental'];
+const MEDIA_ORDER = ['Bandcamp', 'YouTube', 'Spotify', 'Apple Music', 'Amazon Music'];
 
 function fail(message) {
   throw new Error(`ARCHIVE_VALIDATION_FAILED: ${message}`);
 }
 
-function unzip(buffer) {
-  const files = new Map();
-  let offset = 0;
-  while (offset + 30 <= buffer.length && buffer.readUInt32LE(offset) === 0x04034b50) {
-    const flags = buffer.readUInt16LE(offset + 6);
-    const method = buffer.readUInt16LE(offset + 8);
-    const compressedSize = buffer.readUInt32LE(offset + 18);
-    const nameLength = buffer.readUInt16LE(offset + 26);
-    const extraLength = buffer.readUInt16LE(offset + 28);
-    if (flags & 0x08) fail('XLSX uses unsupported ZIP data descriptors');
-    const name = buffer.subarray(offset + 30, offset + 30 + nameLength).toString('utf8');
-    const dataStart = offset + 30 + nameLength + extraLength;
-    const compressed = buffer.subarray(dataStart, dataStart + compressedSize);
-    const data = method === 0 ? compressed : method === 8 ? inflateRawSync(compressed) : fail(`unsupported ZIP method ${method}`);
-    files.set(name, data);
-    offset = dataStart + compressedSize;
-  }
-  return files;
-}
-
-function xmlText(value = '') {
-  return value
-    .replace(/<[^>]+>/g, '')
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'").replace(/&amp;/g, '&')
-    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)));
-}
-
-function colName(address) {
-  return address.match(/^[A-Z]+/)?.[0] ?? '';
-}
-
-function rowNumber(address) {
-  return Number(address.match(/\d+$/)?.[0] ?? 0);
-}
-
-function parseWorkbook(buffer) {
-  const zip = unzip(buffer);
-  const get = (name) => {
-    const file = zip.get(name);
-    if (!file) fail(`missing XLSX package entry ${name}`);
-    return textDecoder.decode(file);
-  };
-  const sharedStrings = [...get('xl/sharedStrings.xml').matchAll(/<(?:\w+:)?si\b[^>]*>([\s\S]*?)<\/(?:\w+:)?si>/g)]
-    .map((match) => [...match[1].matchAll(/<(?:\w+:)?t\b[^>]*>([\s\S]*?)<\/(?:\w+:)?t>/g)].map((part) => xmlText(part[1])).join(''));
-  const rels = new Map([...get('xl/_rels/workbook.xml.rels').matchAll(/<(?:\w+:)?Relationship\b([^>]+)\/?>(?:<\/(?:\w+:)?Relationship>)?/g)].map((match) => {
-    const attrs = match[1];
-    return [attrs.match(/Id="([^"]+)"/)?.[1], attrs.match(/Target="([^"]+)"/)?.[1]];
-  }));
-  const sheets = [...get('xl/workbook.xml').matchAll(/<(?:\w+:)?sheet\b([^>]+)\/?>(?:<\/(?:\w+:)?sheet>)?/g)].map((match) => {
-    const attrs = match[1];
-    const name = xmlText(attrs.match(/name="([^"]+)"/)?.[1] ?? '');
-    const relation = attrs.match(/r:id="([^"]+)"/)?.[1];
-    let target = rels.get(relation);
-    if (!target) fail(`missing worksheet relationship for ${name}`);
-    target = target.replace(/^\//, '');
-    if (!target.startsWith('xl/')) target = `xl/${target}`;
-    return { name, target };
-  });
-
-  const workbook = new Map();
-  for (const sheet of sheets) {
-    const xml = get(sheet.target);
-    const cellMap = new Map();
-    for (const match of xml.matchAll(/<(?:\w+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:\w+:)?c>)/g)) {
-      const attrs = match[1];
-      const body = match[2] ?? '';
-      const address = attrs.match(/\br="([A-Z]+\d+)"/)?.[1];
-      if (!address) continue;
-      const type = attrs.match(/\bt="([^"]+)"/)?.[1] ?? 'n';
-      const raw = body.match(/<(?:\w+:)?v>([\s\S]*?)<\/(?:\w+:)?v>/)?.[1];
-      let value;
-      if (type === 'inlineStr') value = [...body.matchAll(/<(?:\w+:)?t\b[^>]*>([\s\S]*?)<\/(?:\w+:)?t>/g)].map((part) => xmlText(part[1])).join('');
-      else if (raw !== undefined && type === 's') value = sharedStrings[Number(raw)];
-      else if (raw !== undefined && type === 'b') value = raw === '1';
-      else if (raw !== undefined) value = Number.isFinite(Number(raw)) ? Number(raw) : xmlText(raw);
-      if (value !== undefined) cellMap.set(address, { value, type });
-    }
-    const headers = new Map([...cellMap].filter(([address]) => rowNumber(address) === 1).map(([address, cell]) => [colName(address), String(cell.value)]));
-    const rowMaps = new Map();
-    for (const [address, cell] of cellMap) {
-      const row = rowNumber(address);
-      if (row <= 1) continue;
-      if (!rowMaps.has(row)) rowMaps.set(row, {});
-      rowMaps.get(row)[headers.get(colName(address)) ?? colName(address)] = cell.value;
-    }
-    workbook.set(sheet.name, { cellMap, rows: [...rowMaps].sort(([a], [b]) => a - b).map(([, row]) => row) });
-  }
-  return workbook;
-}
-
-function strings(value) {
-  if (value === undefined || value === null || value === '') return [];
-  return String(value).split(';').map((item) => item.trim()).filter(Boolean);
-}
-
-function excelDate(value) {
-  if (typeof value !== 'number' || value < 20000) return value === undefined ? null : String(value);
-  const epoch = Date.UTC(1899, 11, 30);
-  return new Date(epoch + value * 86400000).toISOString().slice(0, 10);
+function text(value) {
+  return value === undefined || value === null ? '' : String(value).trim();
 }
 
 function nullable(value) {
-  return value === undefined || value === '' ? null : value;
+  const valueText = text(value);
+  return valueText ? valueText : null;
 }
 
-function text(value) {
-  return value === undefined || value === null ? '' : String(value);
+function strings(value) {
+  return text(value).split(';').map((item) => item.trim()).filter(Boolean);
 }
 
-function validateIdList(rows, field, known, context, allowedTokens = new Set()) {
-  const tokenPattern = /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/;
-  for (const row of rows) {
-    for (const token of strings(row[field])) {
-      const base = token.split(':')[0];
-      if (allowedTokens.has(token) || allowedTokens.has(base)) continue;
-      if (!tokenPattern.test(base)) fail(`${context} has malformed ${field}: ${token}`);
-      if (!known.has(base)) fail(`${context} has broken ${field}: ${token}`);
+function unique(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function normalizeDate(value) {
+  const valueText = text(value);
+  if (!valueText) return null;
+  const isoPrefix = valueText.match(/^(\d{4}-\d{2}-\d{2})(?:[ T]00:00:00)?$/);
+  return isoPrefix ? isoPrefix[1] : valueText;
+}
+
+function normalizeYear(value, date) {
+  const numeric = Number(value);
+  if (Number.isFinite(numeric) && numeric >= 1000 && numeric <= 9999) return String(Math.trunc(numeric));
+  const valueText = text(value);
+  if (/^\d{4}$/.test(valueText)) return valueText;
+  return text(date).match(/^\d{4}/)?.[0] ?? null;
+}
+
+function parseMetadata(value) {
+  const valueText = text(value);
+  if (!valueText) return {};
+  try {
+    const parsed = JSON.parse(valueText);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function contextValues(value) {
+  const valueText = text(value);
+  if (!valueText) return [];
+  const fallback = valueText.startsWith('=') ? valueText.match(/,"([^"]*)"\)$/)?.[1] ?? '' : valueText;
+  return strings(fallback);
+}
+
+function rowsFrom(source, sheetName) {
+  const raw = source.sheets?.[sheetName];
+  if (!Array.isArray(raw) || !Array.isArray(raw[0])) fail(`missing or malformed ${sheetName} sheet`);
+  const headers = raw[0].map(text);
+  if (!headers.length || headers.some((header) => !header)) fail(`${sheetName} has an invalid header row`);
+  return raw.slice(1).filter((row) => Array.isArray(row) && row.some((cell) => text(cell))).map((row) => Object.fromEntries(headers.map((header, index) => [header, row[index]])));
+}
+
+function validateUniqueIds(rows, field, sheetName) {
+  const ids = rows.map((row) => text(row[field]));
+  if (ids.some((id) => !/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/.test(id))) fail(`${sheetName} has a malformed ${field}`);
+  if (new Set(ids).size !== ids.length) fail(`${sheetName} has duplicate ${field} values`);
+  return ids;
+}
+
+function validateUrl(value, context) {
+  try {
+    const url = new URL(text(value));
+    if (!['http:', 'https:'].includes(url.protocol) || !url.hostname) fail(`${context} has a non-public URL`);
+  } catch {
+    fail(`${context} has a malformed URL`);
+  }
+}
+
+function sourceRows(source) {
+  return Object.fromEntries([
+    'Releases', 'Recordings', 'Projects', 'Links', 'Name Variants', 'Song Index',
+    'Song Links', 'Archive Card Credits',
+  ].map((name) => [name, rowsFrom(source, name)]));
+}
+
+function validate(source, hash) {
+  if (hash !== EXPECTED_SHA256) fail(`source SHA-256 ${hash} does not match corrected frozen R1 input`);
+  if (source.source_title !== 'JUNKFEATHERS MUSIC ARCHIVE V02 — FROZEN') fail('source title mismatch');
+  if (source.source_version !== 'v02-frozen-2026-08-11') fail('source version mismatch');
+  const sheets = Object.keys(source.sheets ?? {});
+  if (sheets.length !== EXPECTED_SHEETS.length || sheets.some((name, index) => name !== EXPECTED_SHEETS[index])) fail(`28-sheet contract mismatch: ${JSON.stringify(sheets)}`);
+
+  const rows = sourceRows(source);
+  const releaseIds = new Set(validateUniqueIds(rows.Releases, 'Release ID', 'Releases'));
+  const recordingIds = new Set(validateUniqueIds(rows.Recordings, 'Recording ID', 'Recordings'));
+  const projectIds = validateUniqueIds(rows.Projects, 'Project ID', 'Projects');
+  const songIds = validateUniqueIds(rows['Song Index'], 'Song ID', 'Song Index');
+  const cardIds = validateUniqueIds(rows['Archive Card Credits'], 'Song ID', 'Archive Card Credits');
+  validateUniqueIds(rows.Links, 'Link ID', 'Links');
+  const songLinkIds = validateUniqueIds(rows['Song Links'], 'Song Link ID', 'Song Links');
+
+  if (rows.Releases.length !== 59 || rows.Recordings.length !== 320 || rows.Projects.length !== 7 || rows['Song Index'].length !== 220 || rows['Archive Card Credits'].length !== 220) fail('frozen v02 core row count mismatch');
+  if (songIds.some((id, index) => id !== cardIds[index])) fail('Archive Card Credits does not align with Song Index IDs');
+  if (EXPECTED_PROJECTS.some(([id, name], index) => projectIds[index] !== id || text(rows.Projects[index]['Project Name']) !== name)) fail('project identity/order mismatch');
+
+  const expectedSongLinkIds = Array.from({ length: 619 }, (_, index) => `SLNK-${String(index + 1).padStart(4, '0')}`);
+  if (songLinkIds.length !== 619 || songLinkIds.some((id, index) => id !== expectedSongLinkIds[index])) fail('Song Link IDs are not continuous SLNK-0001 through SLNK-0619');
+
+  const songIdSet = new Set(songIds);
+  const projectIdSet = new Set(projectIds);
+  for (const row of rows.Recordings) {
+    const releaseId = text(row['Release ID']);
+    if (releaseId && !releaseIds.has(releaseId)) fail(`recording ${row['Recording ID']} has an unknown release`);
+    const projectId = text(row['Project ID']);
+    if (projectId && projectId !== 'COLLAB' && !projectIdSet.has(projectId)) fail(`recording ${row['Recording ID']} has an unknown project`);
+  }
+  for (const row of rows['Song Index']) {
+    for (const projectId of strings(row['Project IDs / Context'])) if (projectId !== 'COLLAB' && !projectIdSet.has(projectId)) fail(`${row['Song ID']} has an unknown project`);
+    for (const appearance of strings(row['Known Appearance / Recording IDs'])) {
+      const id = appearance.split(':')[0];
+      if (!recordingIds.has(id) && !releaseIds.has(id)) fail(`${row['Song ID']} has an unknown appearance ${appearance}`);
     }
   }
+  for (const row of rows['Song Links']) {
+    if (!songIdSet.has(text(row['Song ID']))) fail(`${row['Song Link ID']} has an unknown Song ID`);
+    validateUrl(row.URL, row['Song Link ID']);
+  }
+  for (const row of rows.Links) validateUrl(row.URL, row['Link ID']);
+
+  const contexts = rows['Archive Card Credits'].flatMap((row) => contextValues(row['Music Context Tags']));
+  if (contexts.some((context) => !CONTEXTS.includes(context))) fail(`Archive Card Credits contains an unsupported Music Context value`);
+  const missingContext = CONTEXTS.find((context) => !contexts.includes(context));
+  if (missingContext) fail(`Archive Card Credits is missing Music Context ${missingContext}`);
+
+  const eligibility = rows['Song Index'].map((row) => text(row['Personal Counter Eligible?']));
+  if (eligibility.filter((value) => value === 'Yes').length !== PUBLIC_KNOWN_SONGS || eligibility.filter((value) => value === 'No').length !== 4 || eligibility.filter((value) => value.startsWith('Pending')).length !== 1) fail('215 Yes + 4 No + 1 pending Song Index contract mismatch');
+  const ode = rows['Song Index'].find((row) => row['Canonical Song Title'] === 'Ode to Shawn');
+  if (!ode || text(ode['Personal Counter Eligible?']) !== 'Pending — historical track identity unresolved') fail('Ode to Shawn pending/exclusion rule mismatch');
+
+  return rows;
 }
 
-function validate(workbook, hash) {
-  const tabs = [...workbook.keys()];
-  if (tabs.length !== EXPECTED_TABS.length || tabs.some((tab, index) => tab !== EXPECTED_TABS[index])) fail(`23-tab workbook contract mismatch: ${JSON.stringify(tabs)}`);
-  const rows = Object.fromEntries([...workbook].map(([name, sheet]) => [name, sheet.rows]));
-  const counts = {
-    releases: rows.Releases.length,
-    recordings: rows.Recordings.length,
-    songs: rows['Song Index'].length,
-    projects: rows.Projects.length,
-    links: rows.Links.length,
-  };
-  const contributorIds = rows.Contributors.map((row) => text(row['Contributor ID']));
-  counts.contributors = contributorIds.filter((id) => !['ART-001', 'CON-024'].includes(id)).length;
-  const contractCells = workbook.get('Website v01 Contract').cellMap;
-  counts.knownSongs = Number(contractCells.get('B8')?.value);
-  for (const [key, expected] of Object.entries(PUBLIC_COUNTS)) if (counts[key] !== expected) fail(`${key} count ${counts[key]} does not match ${expected}`);
-  if (Number(contractCells.get('B5')?.value) !== PUBLIC_COUNTS.releases || Number(contractCells.get('B6')?.value) !== PUBLIC_COUNTS.recordings || Number(contractCells.get('B7')?.value) !== PUBLIC_COUNTS.songs || Number(contractCells.get('B24')?.value) !== PUBLIC_COUNTS.projects || Number(contractCells.get('B25')?.value) !== PUBLIC_COUNTS.contributors || Number(contractCells.get('B26')?.value) !== PUBLIC_COUNTS.links) fail('Website v01.1 Contract count rows do not reconcile');
-
-  const exact162 = [];
-  for (const [sheetName, sheet] of workbook) for (const [address, cell] of sheet.cellMap) if (cell.value === 162 || cell.value === '162') exact162.push({ sheetName, address, ...cell });
-  if (exact162.length !== 1 || exact162[0].sheetName !== 'Recordings' || exact162[0].address !== 'G205' || exact162[0].value !== 162 || exact162[0].type !== 'n') fail('exact-value 162 audit failed');
-  if (workbook.get('Recordings').cellMap.get('F205')?.value !== '2:42') fail(`Recordings!G205 neighboring duration is not 2:42: ${JSON.stringify(workbook.get('Recordings').cellMap.get('F205'))}`);
-
-  const primaryFields = {
-    Releases: 'Release ID', Recordings: 'Recording ID', Contributors: 'Contributor ID', Credits: 'Credit ID', Links: 'Link ID', Sources: 'Source ID',
-    Projects: 'Project ID', 'Project Memberships': 'Membership ID', Compositions: 'Composition ID', 'Project Repertoire': 'Repertoire ID',
-    'Performance Sources': 'Performance Source ID', 'Web Archive Evidence': 'Archive Evidence ID', 'Name Variants': 'Variant ID', Events: 'Event ID',
-    'Event Participants': 'Participation ID', 'Lineup Eras': 'Lineup Era ID', 'Biography Timeline': 'Bio Event ID', 'Song Index': 'Song ID',
-  };
-  const known = new Set();
-  for (const [sheet, field] of Object.entries(primaryFields)) {
-    const seen = new Set();
-    for (const row of rows[sheet]) {
-      const id = text(row[field]);
-      if (!/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/.test(id)) fail(`${sheet} has malformed ${field}: ${id}`);
-      if (seen.has(id)) fail(`${sheet} has duplicate ${field}: ${id}`);
-      seen.add(id); known.add(id);
-    }
-  }
-  validateIdList(rows.Releases, 'Project ID', known, 'Releases');
-  validateIdList(rows.Recordings, 'Release ID', known, 'Recordings');
-  validateIdList(rows.Recordings, 'Composition ID', known, 'Recordings');
-  validateIdList(rows.Recordings, 'Project ID', known, 'Recordings');
-  validateIdList(rows.Credits, 'Recording ID', known, 'Credits');
-  validateIdList(rows.Credits, 'Release ID', known, 'Credits');
-  validateIdList(rows.Credits, 'Contributor ID', known, 'Credits');
-  validateIdList(rows['Project Memberships'], 'Project ID', known, 'Project Memberships');
-  validateIdList(rows['Project Memberships'], 'Contributor ID', known, 'Project Memberships');
-  validateIdList(rows['Project Repertoire'], 'Project ID', known, 'Project Repertoire');
-  validateIdList(rows['Project Repertoire'], 'Composition ID', known, 'Project Repertoire');
-  validateIdList(rows['Performance Sources'], 'Project ID', known, 'Performance Sources');
-  validateIdList(rows['Performance Sources'], 'Release ID', known, 'Performance Sources');
-  validateIdList(rows['Web Archive Evidence'], 'Project ID', known, 'Web Archive Evidence');
-  validateIdList(rows['Name Variants'], 'Canonical Entity ID', known, 'Name Variants');
-  validateIdList(rows.Events, 'Anchor Project ID', known, 'Events');
-  validateIdList(rows.Events, 'Linked Release IDs', known, 'Events');
-  validateIdList(rows.Events, 'Linked Performance Source IDs', known, 'Events');
-  validateIdList(rows['Event Participants'], 'Event ID', known, 'Event Participants');
-  validateIdList(rows['Event Participants'], 'Entity ID', known, 'Event Participants');
-  validateIdList(rows['Lineup Eras'], 'Project ID', known, 'Lineup Eras');
-  validateIdList(rows['Song Index'], 'Project IDs / Context', known, 'Song Index', new Set(['COLLAB']));
-  validateIdList(rows['Song Index'], 'Known Appearance / Recording IDs', known, 'Song Index');
-  validateIdList(rows['Song Index'], 'Composition IDs', known, 'Song Index');
-  for (const [sheetName, sheetRows] of Object.entries(rows)) {
-    const sourceFields = new Set(sheetRows.flatMap((row) => Object.keys(row)).filter((field) => /(?:^|Related )Source IDs$/.test(field)));
-    for (const field of sourceFields) validateIdList(sheetRows, field, known, sheetName);
-  }
-  for (const row of rows.Links) {
-    if (row['Entity Type'] !== 'Artist') validateIdList([row], 'Entity ID', known, `Links ${row['Link ID']}`);
-    try {
-      const url = new URL(text(row.URL));
-      if (!['http:', 'https:'].includes(url.protocol)) fail(`Links ${row['Link ID']} uses a non-public URL protocol`);
-    } catch { fail(`Links ${row['Link ID']} has malformed URL`); }
-  }
-  if (hash !== EXPECTED_SHA256) fail(`source SHA-256 ${hash} does not match frozen input`);
-  return { rows, counts };
-}
-
-function buildPublicData(rows, counts, hash) {
-  const excludedContributors = new Set(['ART-001', 'CON-024']);
-  const contributors = rows.Contributors.filter((row) => !excludedContributors.has(row['Contributor ID'])).map((row) => ({
-    id: row['Contributor ID'], name: row.Name, type: row.Type,
-  }));
-  const publicContributorIds = new Set(contributors.map((item) => item.id));
-  const releases = rows.Releases.map((row) => ({
-    id: row['Release ID'], projectId: nullable(row['Project ID']), artist: row['Primary Artist'], title: row['Release Title'], type: row['Release Type'],
-    date: excelDate(row['Release Date']), datePrecision: nullable(row['Date Precision']), year: nullable(row.Year), trackCount: nullable(row['Track Count']),
-    label: nullable(row['Label / Distributor']), evidence: row['Evidence Classification'], status: row['Archive Status'],
-    canonicalIntent: nullable(row['Canonical Intent / Website Treatment']), distribution: nullable(row['Distribution / Variation Notes']), format: nullable(row['Format / Medium']),
-  }));
-  const releaseProjects = new Map(releases.map((release) => [release.id, release.projectId]));
-  const recordings = rows.Recordings.map((row) => ({
-    id: row['Recording ID'], releaseId: row['Release ID'], projectId: row['Project ID'] ?? releaseProjects.get(row['Release ID']) ?? null, compositionId: nullable(row['Composition ID']), title: row['Track Title'],
-    version: nullable(row['Version Label']), duration: nullable(row.Duration), durationSeconds: nullable(row['Duration Seconds']), artist: row['Artist Credit'],
-    featured: nullable(row['Featured / Co-credited Artist']), instrumental: nullable(row['Instrumental?']), leadVocal: nullable(row['Lead Vocal']), role: nullable(row['Jonathan Role']),
-    recordingPeriod: nullable(row['Recording Period']), creationPeriod: nullable(row['Creation Period']), evidence: row['Evidence Classification'], status: row['Archive Status'],
-  }));
+function buildPublicData(source, rows, hash) {
   const projects = rows.Projects.map((row) => ({
-    id: row['Project ID'], name: row['Project Name'], type: row['Project Type'], section: row['Archive Section'], period: nullable(row['Known Active Period']),
-    datePrecision: nullable(row['Date Precision']), relationship: nullable(row['Jonathan Relationship / Role']), evidence: row['Evidence Classification'], status: row.Status,
+    id: text(row['Project ID']),
+    name: text(row['Project Name']),
+    type: text(row['Project Type']),
+    section: text(row['Archive Section']),
+    period: nullable(row['Known Active Period']),
+    datePrecision: nullable(row['Date Precision']),
+    relationship: nullable(row['Jonathan Relationship / Role']),
+    status: text(row.Status),
   }));
-  const credits = rows.Credits.filter((row) => publicContributorIds.has(row['Contributor ID'])).map((row) => ({
-    id: row['Credit ID'], recordingId: nullable(row['Recording ID']), releaseId: nullable(row['Release ID']), contributorId: row['Contributor ID'],
-    role: row['Credit Role'], instrument: nullable(row['Instrument / Function']), scope: row.Scope, evidence: row['Evidence Classification'],
+
+  const releases = rows.Releases.map((row) => {
+    const date = normalizeDate(row['Release Date']);
+    return {
+      id: text(row['Release ID']),
+      projectId: nullable(row['Project ID']),
+      artist: text(row['Primary Artist']),
+      title: text(row['Release Title']),
+      type: text(row['Release Type']),
+      date,
+      year: normalizeYear(row.Year, date),
+      datePrecision: nullable(row['Date Precision']),
+      status: text(row['Archive Status']),
+    };
+  });
+  const releaseMap = new Map(releases.map((release) => [release.id, release]));
+
+  const recordings = rows.Recordings.map((row) => ({
+    id: text(row['Recording ID']),
+    releaseId: nullable(row['Release ID']),
+    projectId: nullable(row['Project ID']) ?? releaseMap.get(text(row['Release ID']))?.projectId ?? null,
+    title: text(row['Track Title']),
+    version: nullable(row['Version Label']),
+    duration: nullable(row.Duration),
+    artist: text(row['Artist Credit']),
+    featured: nullable(row['Featured / Co-credited Artist']),
+    instrumental: nullable(row['Instrumental?']),
+    leadVocal: nullable(row['Lead Vocal']),
+    recordingPeriod: nullable(row['Recording Period']),
+    creationPeriod: nullable(row['Creation Period']),
+    status: text(row['Archive Status']),
   }));
-  const links = rows.Links.map((row) => ({
-    id: row['Link ID'], entityType: row['Entity Type'], entityId: row['Entity ID'], platform: row.Platform, type: row['Link Type'], url: row.URL,
-  }));
-  const events = rows.Events.map((row) => ({
-    id: row['Event ID'], projectId: row['Anchor Project ID'], date: excelDate(row['Event Date']), datePrecision: nullable(row['Date Precision']), name: row['Event Name'],
-    type: row['Event Type'], venue: nullable(row.Venue), city: nullable(row.City), region: nullable(row['Region / State']),
-    releaseIds: strings(row['Linked Release IDs']), performanceSourceIds: strings(row['Linked Performance Source IDs']), evidence: row['Evidence Classification'], status: row.Status,
-  }));
-  const participants = rows['Event Participants'].map((row) => ({
-    id: row['Participation ID'], eventId: row['Event ID'], entityType: row['Entity Type'], entityId: nullable(row['Entity ID']), name: row['Display Name / Act'],
-    role: row['Participation Role'], instrument: nullable(row['Instrument / Stage Role']), setOrder: nullable(row['Set Order']), evidence: row['Evidence Classification'],
-  }));
-  const songs = rows['Song Index'].map((row) => ({
-    id: row['Song ID'], title: row['Canonical Song Title'], aliases: strings(row['Search Aliases / Historical Titles']), projectIds: strings(row['Project IDs / Context']),
-    projectNames: strings(row['Project Names / Context']), appearanceIds: strings(row['Known Appearance / Recording IDs']), appearanceCount: Number(row['Known Appearance Count'] ?? 0),
-    relationship: row['Jonathan Relationship'], cover: row['Cover / External Composition?'] === 'Yes', personalCounterEligible: row['Personal Counter Eligible?'] === 'Yes',
-    evidence: row['Evidence / Confidence'], compositionIds: strings(row['Composition IDs']),
-  }));
+  const recordingMap = new Map(recordings.map((recording) => [recording.id, recording]));
+
+  const songLinks = rows['Song Links'].map((row) => {
+    const metadata = parseMetadata(row['Embed / Player Metadata']);
+    return {
+      id: text(row['Song Link ID']),
+      songId: text(row['Song ID']),
+      platform: text(row.Platform),
+      priority: Number(row['Platform Priority']) || MEDIA_ORDER.indexOf(text(row.Platform)) + 1 || 99,
+      url: text(row.URL),
+      linkLevel: text(row['Link Level']),
+      sourceEntityId: nullable(row['Source Entity ID']),
+      releaseId: nullable(row['Release ID']),
+      releaseTitle: nullable(row['Release Title']),
+      releaseDate: normalizeDate(row['Release Date']),
+      datePrecision: nullable(row['Date Precision']),
+      status: text(row.Status),
+      mediaId: nullable(row['Platform Media ID']),
+      embedUrl: nullable(metadata.embed_url),
+      artworkUrl: nullable(row['Artwork URL']),
+      supportContext: nullable(row['Purchase / Support Context']),
+      resolutionConfidence: nullable(row['Resolution Confidence']),
+    };
+  }).sort((left, right) => left.songId.localeCompare(right.songId) || left.priority - right.priority || left.id.localeCompare(right.id));
+  const linksBySong = new Map();
+  for (const link of songLinks) linksBySong.set(link.songId, [...(linksBySong.get(link.songId) ?? []), link]);
+
+  const compositionAliases = new Map();
+  for (const row of rows['Name Variants']) {
+    const canonicalId = text(row['Canonical Entity ID']);
+    if (!canonicalId.startsWith('CMP-') || text(row['Search Alias?']) !== 'Yes') continue;
+    compositionAliases.set(canonicalId, [...(compositionAliases.get(canonicalId) ?? []), text(row['Variant Name'])]);
+  }
+  const cards = new Map(rows['Archive Card Credits'].map((row) => [text(row['Song ID']), row]));
+
+  const songs = rows['Song Index'].map((row) => {
+    const id = text(row['Song ID']);
+    const card = cards.get(id);
+    if (!card) fail(`missing Archive Card Credits for ${id}`);
+    const appearanceIds = strings(row['Known Appearance / Recording IDs']);
+    const appearanceBases = appearanceIds.map((value) => value.split(':')[0]);
+    const recordingIds = unique([
+      ...appearanceBases.filter((value) => recordingMap.has(value)),
+      ...(linksBySong.get(id) ?? []).map((link) => link.sourceEntityId).filter((value) => recordingMap.has(value)),
+    ]);
+    const releaseIds = unique([
+      ...appearanceBases.filter((value) => releaseMap.has(value)),
+      ...recordingIds.map((value) => recordingMap.get(value)?.releaseId),
+      ...(linksBySong.get(id) ?? []).flatMap((link) => [link.releaseId, releaseMap.has(link.sourceEntityId) ? link.sourceEntityId : null]),
+    ]).filter((value) => releaseMap.has(value));
+    const aliases = unique([
+      ...strings(row['Search Aliases / Historical Titles']),
+      nullable(card['Alternate / Historical Title']),
+      ...strings(row['Composition IDs']).flatMap((compositionId) => compositionAliases.get(compositionId) ?? []),
+    ]).filter((alias) => alias !== text(row['Canonical Song Title']));
+    const projectIds = strings(row['Project IDs / Context']).filter((value) => value !== 'COLLAB');
+    const releaseSummaries = releaseIds.map((releaseId) => releaseMap.get(releaseId)).filter(Boolean).sort((left, right) => {
+      const leftYear = Number(left.year ?? '9999');
+      const rightYear = Number(right.year ?? '9999');
+      return leftYear - rightYear || text(left.date).localeCompare(text(right.date)) || left.id.localeCompare(right.id);
+    });
+    const primaryRelease = releaseSummaries.find((release) => release.date || release.year) ?? null;
+    return {
+      id,
+      title: text(row['Canonical Song Title']),
+      aliases,
+      projectIds,
+      projectNames: projectIds.map((projectId) => projects.find((project) => project.id === projectId)?.name).filter(Boolean),
+      appearanceIds,
+      recordingIds,
+      releaseIds,
+      linkIds: (linksBySong.get(id) ?? []).map((link) => link.id),
+      appearanceCount: Number(row['Known Appearance Count']) || 0,
+      relationship: text(row['Jonathan Relationship']),
+      eligibility: text(row['Personal Counter Eligible?']),
+      alternateTitle: nullable(card['Alternate / Historical Title']),
+      writing: nullable(card['Songwriter / Co-writer']),
+      lyrics: nullable(card['Lyrics / Lyrical Contribution']),
+      vocal: nullable(card['Vocal / Instrumental']),
+      acoustic: text(card['Acoustic?']) === 'Yes',
+      creditStatus: text(card['Credit Status']),
+      linerNotes: nullable(card['Founder Liner Notes / Story']),
+      decade: nullable(card['Decade / Era']),
+      contexts: contextValues(card['Music Context Tags']),
+      date: primaryRelease ? {
+        value: primaryRelease.date ?? primaryRelease.year,
+        precision: primaryRelease.datePrecision,
+        releaseId: primaryRelease.id,
+      } : null,
+    };
+  });
+
+  const latestReleaseId = 'REL-SOLO-018';
+  const latestSongIds = songs.filter((song) => song.releaseIds.includes(latestReleaseId)).map((song) => song.id);
+  const decades = unique(songs.map((song) => song.decade)).sort((left, right) => right.localeCompare(left));
+  const platforms = unique(songLinks.map((link) => link.platform)).sort((left, right) => {
+    const leftPriority = MEDIA_ORDER.indexOf(left);
+    const rightPriority = MEDIA_ORDER.indexOf(right);
+    if (leftPriority >= 0 || rightPriority >= 0) return (leftPriority < 0 ? MEDIA_ORDER.length : leftPriority) - (rightPriority < 0 ? MEDIA_ORDER.length : rightPriority);
+    return left.localeCompare(right);
+  });
   const data = {
-    meta: { schemaVersion: SCHEMA_VERSION, compilerVersion: COMPILER_VERSION, sourceSha256: hash, publicKnownSongs: counts.knownSongs, counts },
-    songs, recordings, releases, projects, contributors, credits, links, events, participants,
-    facets: {
-      entityTypes: ['song', 'release', 'project', 'event'],
-      projects: projects.map(({ id, name }) => ({ id, name })),
-      contributors: contributors.map(({ id, name }) => ({ id, name })),
-      platforms: [...new Set(links.map((link) => link.platform))].sort((a, b) => a.localeCompare(b)),
-      evidence: [...new Set([...songs.map((song) => song.evidence), ...releases.map((release) => release.evidence), ...events.map((event) => event.evidence)])].sort((a, b) => a.localeCompare(b)),
+    meta: {
+      schemaVersion: SCHEMA_VERSION,
+      compilerVersion: COMPILER_VERSION,
+      sourceVersion: source.source_version,
+      integrityRevision: 'R1-2026-08-12',
+      sourceSha256: hash,
+      publicKnownSongs: PUBLIC_KNOWN_SONGS,
+      counts: {
+        releases: releases.length,
+        recordings: recordings.length,
+        songs: songs.length,
+        projects: projects.length,
+        songLinks: songLinks.length,
+      },
+      latestView: { projectId: 'PRJ-SOLO-001', releaseId: latestReleaseId, releaseTitle: releaseMap.get(latestReleaseId)?.title ?? 'Latest Junkfeathers', songIds: latestSongIds },
     },
+    facets: {
+      decades,
+      projects: MENU_PROJECT_IDS.map((id) => {
+        const project = projects.find((item) => item.id === id);
+        return { id: project.id, name: project.name };
+      }),
+      platforms,
+    },
+    projects,
+    songs,
+    releases,
+    recordings,
+    songLinks,
   };
-  const serialized = JSON.stringify(data, null, 2) + '\n';
-  if (serialized.includes('"162"')) fail('generated archive contains forbidden exact text "162"');
-  for (const forbidden of ['Sources', 'Unresolved', 'Correction Basis', 'Current Personal']) if (serialized.includes(`"${forbidden}"`)) fail(`generated archive exposes forbidden field ${forbidden}`);
+
+  const serialized = `${JSON.stringify(data, null, 2)}\n`;
+  for (const forbidden of ['SOURCE/archive_v02_frozen_r1.json', 'JUNKFEATHERS_MUSIC_ARCHIVE_V02_FROZEN_R1.xlsx', 'DevAI Exchange', 'Later/current personal name — internal provenance only']) {
+    if (serialized.includes(forbidden)) fail(`generated archive exposes forbidden source material: ${forbidden}`);
+  }
   return { data, serialized };
 }
 
 export async function compileArchive(sourcePath, outputPath) {
-  if (!sourcePath) fail('an explicit workbook path is required');
-  const source = await readFile(resolve(sourcePath));
-  const hash = createHash('sha256').update(source).digest('hex').toUpperCase();
-  if (hash !== EXPECTED_SHA256) fail(`source SHA-256 ${hash} does not match frozen input`);
-  const workbook = parseWorkbook(source);
-  const { rows, counts } = validate(workbook, hash);
-  const { data, serialized } = buildPublicData(rows, counts, hash);
+  if (!sourcePath) fail('an explicit corrected frozen R1 JSON path is required');
+  const sourceBytes = await readFile(resolve(sourcePath));
+  const hash = createHash('sha256').update(sourceBytes).digest('hex').toUpperCase();
+  if (hash !== EXPECTED_SHA256) fail(`source SHA-256 ${hash} does not match corrected frozen R1 input`);
+  let source;
+  try { source = JSON.parse(sourceBytes); } catch { fail('source is not valid JSON'); }
+  const rows = validate(source, hash);
+  const { data, serialized } = buildPublicData(source, rows, hash);
   const summary = {
-    schemaVersion: SCHEMA_VERSION, compilerVersion: COMPILER_VERSION, sourceSha256: hash, status: 'valid', counts,
-    warnings: ['Name Variants excluded from v01.1 public output because publication status is intentionally conservative.', 'Internal notes and provenance sheets excluded by allowlist.'], errors: [],
+    schemaVersion: SCHEMA_VERSION,
+    compilerVersion: COMPILER_VERSION,
+    sourceVersion: source.source_version,
+    integrityRevision: 'R1-2026-08-12',
+    sourceSha256: hash,
+    status: 'valid',
+    counts: data.meta.counts,
+    publicKnownSongs: PUBLIC_KNOWN_SONGS,
+    songLinkContinuity: 'SLNK-0001..SLNK-0619',
+    warnings: [],
+    errors: [],
   };
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, serialized, 'utf8');
-  await writeFile(resolve(dirname(outputPath), 'validation.json'), JSON.stringify(summary, null, 2) + '\n', 'utf8');
+  await writeFile(resolve(dirname(outputPath), 'validation.json'), `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
   return { data, summary, bytes: Buffer.byteLength(serialized) };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const sourcePath = process.argv[2];
-  const outputPath = resolve(process.argv[3] ?? 'public/data/music-archive/v01/archive.json');
+  const outputPath = resolve(process.argv[3] ?? 'public/data/music-archive/v02/archive.json');
   compileArchive(sourcePath, outputPath).then(({ summary, bytes }) => {
     console.log(JSON.stringify({ ...summary, outputBytes: bytes }));
   }).catch((error) => {

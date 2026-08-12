@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "music-archive-v02.0",
+  "compilerVersion": "2.0.0-beta.1",
+  "sourceVersion": "v02-frozen-2026-08-11",
+  "integrityRevision": "R1-2026-08-12",
+  "sourceSha256": "7F3D648B6EFB0B65E2AD24AB0761DA481A6934D193B1B523344A5429F8633710",
+  "status": "valid",
+  "counts": {
+    "releases": 59,
+    "recordings": 320,
+    "songs": 220,
+    "projects": 7,
+    "songLinks": 619
+  },
+  "publicKnownSongs": 215,
+  "songLinkContinuity": "SLNK-0001..SLNK-0619",
+  "warnings": [],
+  "errors": []
+}
