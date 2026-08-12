@@ -1,21 +1,18 @@
 <section class="archive-machine" data-archive-machine>
   <div class="archive-console-top">
-  <header class="archive-header">
-    <div>
-      <p class="archive-kicker">JF / MUSIC CATALOG</p>
-      <h1>MUSIC ARCHIVE</h1>
-      <p class="archive-intro">Welcome to my Music Archive Machine — a collection of songs I've written, songs I've collaborated on with others, and also the music of the bands I've been in over the years. This machine is an ongoing project as I compile older projects with newer ones in one collection. Thank you for being here and enjoy!</p>
-    </div>
-    <div class="archive-counter" aria-label="195 known songs">
-      <strong>195</strong>
-      <span>KNOWN SONGS</span>
-    </div>
-  </header>
+    <header class="archive-header">
+      <div>
+        <p class="archive-kicker">JF / MUSIC CATALOG</p>
+        <h1>MUSIC ARCHIVE</h1>
+        <p class="archive-intro">Welcome to my Music Archive Machine &mdash; a collection of songs I've written, songs I've collaborated on with others, and also the music of the bands I've been in over the years. This machine is an ongoing project as I compile older projects with newer ones in one collection. Thank you for being here and enjoy!</p>
+      </div>
+      <div class="archive-counter" aria-label="215 known songs">
+        <strong>215</strong>
+        <span>KNOWN SONGS</span>
+      </div>
+    </header>
 
     <div class="archive-machine-art" aria-hidden="true">
-      <div class="archive-drum">
-        <span></span><span></span><span></span><span></span>
-      </div>
       <div class="archive-head">
         <i></i><i></i><i></i>
       </div>
@@ -23,7 +20,7 @@
         <span>01</span><span>03</span><span>05</span><span>07</span><span>10</span>
       </div>
       <div class="archive-art-status">
-        <span>INDEX / 010</span>
+        <span>INDEX / V02</span>
         <strong>READ HEAD ACTIVE</strong>
       </div>
     </div>
@@ -31,77 +28,103 @@
 
   <div class="archive-controls" aria-label="Archive search controls">
     <label class="archive-search-label" for="archive-search">SEARCH THE ARCHIVE</label>
-    <input id="archive-search" type="search" inputmode="search" autocomplete="off" placeholder="SONG, PROJECT, RELEASE, PERSON, PLACE…" data-archive-search disabled />
+    <input id="archive-search" type="search" inputmode="search" autocomplete="off" placeholder="SONG, PROJECT / BAND, RELEASE, HISTORICAL TITLE&hellip;" data-archive-search disabled />
 
     <div class="archive-filter-grid">
       <label>
-        <span>TYPE</span>
-        <select data-filter="type" disabled>
-          <option value="">ALL TYPES</option>
+        <span>DECADE</span>
+        <select data-filter="decade" disabled>
+          <option value="">ALL DECADES</option>
         </select>
       </label>
       <label>
-        <span>PROJECT</span>
+        <span>PROJECT / BAND</span>
         <select data-filter="project" disabled>
-          <option value="">ALL PROJECTS</option>
+          <option value="">ALL PROJECTS / BANDS</option>
         </select>
       </label>
       <label>
-        <span>CONTRIBUTOR</span>
-        <select data-filter="contributor" disabled>
-          <option value="">ALL CONTRIBUTORS</option>
-        </select>
-      </label>
-      <label>
-        <span>PLATFORM</span>
+        <span>STREAMING PLATFORM</span>
         <select data-filter="platform" disabled>
-          <option value="">ALL PLATFORMS</option>
+          <option value="">ALL STREAMING PLATFORMS</option>
         </select>
       </label>
     </div>
 
     <div class="archive-control-footer">
-      <p class="archive-result-count" role="status" aria-live="polite" data-result-count>LOADING ARCHIVE SIGNAL…</p>
+      <p class="archive-result-count" role="status" aria-live="polite" data-result-count>LOADING ARCHIVE SIGNAL&hellip;</p>
       <button type="button" class="archive-reset" data-reset disabled>RESET SEARCH</button>
     </div>
   </div>
 
   <div class="archive-output">
-  <div class="archive-state" data-loading-state>
-    <span class="archive-pulse" aria-hidden="true"></span>
-    VERIFYING PUBLIC CATALOG…
-  </div>
-  <div class="archive-state archive-state--error" data-error-state hidden>
-    ARCHIVE SIGNAL UNAVAILABLE. THE MUSIC PAGE IS STILL ONLINE; TRY THIS MACHINE AGAIN LATER.
-  </div>
-  <div class="archive-state" data-empty-state hidden>
-    ENTER A SEARCH OR USE A FILTER TO EXPLORE THE ARCHIVE.
-  </div>
-  <div class="archive-state" data-no-results hidden>
-    NO MATCHING SIGNAL. ADJUST THE SEARCH OR RESET THE FILTERS.
-  </div>
+    <div class="archive-state" data-loading-state>
+      <span class="archive-pulse" aria-hidden="true"></span>
+      VERIFYING PUBLIC CATALOG&hellip;
+    </div>
+    <div class="archive-state archive-state--error" data-error-state hidden>
+      ARCHIVE SIGNAL UNAVAILABLE. THE MUSIC PAGE IS STILL ONLINE; TRY THIS MACHINE AGAIN LATER.
+    </div>
+    <div class="archive-state" data-no-results hidden>
+      NO MATCHING SIGNAL. ADJUST THE SEARCH OR RESET THE FILTERS.
+    </div>
 
-  <div class="archive-results" data-results aria-label="Archive results"></div>
-  <p class="archive-limit-note" data-limit-note hidden></p>
+    <div class="archive-results" data-results aria-label="Archive results"></div>
+    <p class="archive-limit-note" data-limit-note hidden></p>
 
-  <noscript>
-    <p class="archive-noscript">Interactive archive search requires JavaScript. The existing music transmission remains available on the <a href="/music/">Music page <span aria-hidden="true">&#8599;</span></a>.</p>
-  </noscript>
+    <section class="archive-media-machine" aria-labelledby="archive-media-title" data-media-machine hidden>
+      <div class="archive-media-heading">
+        <div>
+          <p data-media-kicker>AUDIO MACHINE</p>
+          <h2 id="archive-media-title" tabindex="-1" data-media-title>SELECT A SIGNAL</h2>
+        </div>
+        <button type="button" data-media-close>CLOSE</button>
+      </div>
+      <p class="archive-media-status" role="status" aria-live="polite" data-media-status></p>
+      <div class="archive-media-screen" data-media-screen></div>
+      <div class="archive-media-context">
+        <p data-media-context></p>
+        <p data-media-notes></p>
+        <a href="#" target="_blank" rel="noopener noreferrer" data-media-external>OPEN SOURCE <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </section>
+
+    <noscript>
+      <p class="archive-noscript">Interactive archive search requires JavaScript. The existing music transmission remains available on the <a href="/music/">Music page <span aria-hidden="true">&#8599;</span></a>.</p>
+    </noscript>
   </div>
 </section>
 
 <script>
-  interface ArchiveLink { id: string; entityType: string; entityId: string; platform: string; type: string; url: string }
-  interface ArchiveCredit { recordingId: string | null; releaseId: string | null; contributorId: string; role: string; instrument: string | null }
-  interface ArchiveData {
-    meta: { publicKnownSongs: number };
-    songs: any[]; recordings: any[]; releases: any[]; projects: any[]; contributors: any[];
-    credits: ArchiveCredit[]; links: ArchiveLink[]; events: any[]; participants: any[];
+  interface ArchiveProject { id: string; name: string }
+  interface ArchiveRelease { id: string; title: string; artist: string; date: string | null; year: string | null; datePrecision: string | null }
+  interface ArchiveRecording { id: string; title: string; version: string | null; duration: string | null; artist: string; leadVocal: string | null }
+  interface ArchiveSongLink {
+    id: string; songId: string; platform: string; priority: number; url: string; linkLevel: string;
+    releaseTitle: string | null; mediaId: string | null; embedUrl: string | null; supportContext: string | null;
   }
-  interface SearchItem {
-    id: string; type: string; title: string; subtitle: string; meta: string[]; evidence: string;
-    searchText: string; projectIds: string[]; contributorIds: string[]; platforms: string[];
-    versions: any[]; links: ArchiveLink[]; sortDate?: string; sourceOrder?: number;
+  interface ArchiveSong {
+    id: string; title: string; aliases: string[]; projectIds: string[]; projectNames: string[];
+    recordingIds: string[]; releaseIds: string[]; linkIds: string[]; eligibility: string;
+    alternateTitle: string | null; writing: string | null; lyrics: string | null; vocal: string | null;
+    acoustic: boolean; creditStatus: string; linerNotes: string | null; decade: string | null;
+    contexts: string[]; date: { value: string; precision: string | null; releaseId: string } | null;
+  }
+  interface ArchiveData {
+    meta: {
+      publicKnownSongs: number;
+      counts: { songs: number; songLinks: number };
+      latestView: { projectId: string; releaseId: string; releaseTitle: string; songIds: string[] };
+    };
+    facets: { decades: string[]; projects: ArchiveProject[]; platforms: string[] };
+    projects: ArchiveProject[]; songs: ArchiveSong[]; releases: ArchiveRelease[];
+    recordings: ArchiveRecording[]; songLinks: ArchiveSongLink[];
+  }
+  interface SearchItem extends ArchiveSong {
+    searchText: string;
+    releases: ArchiveRelease[];
+    versions: ArchiveRecording[];
+    links: ArchiveSongLink[];
   }
 
   const machine = document.querySelector<HTMLElement>('[data-archive-machine]');
@@ -113,96 +136,137 @@
     const resultCount = machine.querySelector<HTMLElement>('[data-result-count]')!;
     const loadingState = machine.querySelector<HTMLElement>('[data-loading-state]')!;
     const errorState = machine.querySelector<HTMLElement>('[data-error-state]')!;
-    const emptyState = machine.querySelector<HTMLElement>('[data-empty-state]')!;
     const noResults = machine.querySelector<HTMLElement>('[data-no-results]')!;
     const limitNote = machine.querySelector<HTMLElement>('[data-limit-note]')!;
+    const mediaMachine = machine.querySelector<HTMLElement>('[data-media-machine]')!;
+    const mediaKicker = machine.querySelector<HTMLElement>('[data-media-kicker]')!;
+    const mediaTitle = machine.querySelector<HTMLElement>('[data-media-title]')!;
+    const mediaStatus = machine.querySelector<HTMLElement>('[data-media-status]')!;
+    const mediaScreen = machine.querySelector<HTMLElement>('[data-media-screen]')!;
+    const mediaContext = machine.querySelector<HTMLElement>('[data-media-context]')!;
+    const mediaNotes = machine.querySelector<HTMLElement>('[data-media-notes]')!;
+    const mediaExternal = machine.querySelector<HTMLAnchorElement>('[data-media-external]')!;
+    const mediaClose = machine.querySelector<HTMLButtonElement>('[data-media-close]')!;
     const resultLimit = 40;
-    const latestLimit = 10;
-    const latestProjectId = 'PRJ-SOLO-001';
-    const currentReleaseId = 'REL-SOLO-018';
+    const defaultLimit = 16;
+    const defaultDecade = '2020s';
+    const preferredPlatforms = ['Bandcamp', 'YouTube', 'Spotify', 'Apple Music', 'Amazon Music'];
+    let data: ArchiveData;
     let items: SearchItem[] = [];
-    let latestView = new URLSearchParams(window.location.search).get('view') !== 'all';
+    let itemById = new Map<string, SearchItem>();
+    let latestView = new URLSearchParams(window.location.search).get('view') === 'latest';
 
     const normalize = (value: unknown) => String(value ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
     const byId = <T extends { id: string }>(values: T[]) => new Map(values.map((value) => [value.id, value]));
-    const unique = (values: Array<string | null | undefined>) => [...new Set(values.filter(Boolean) as string[])];
     const option = (value: string, label: string) => {
       const element = document.createElement('option');
-      element.value = value; element.textContent = label; return element;
+      element.value = value;
+      element.textContent = label;
+      return element;
+    };
+    const appendText = (element: HTMLElement, label: string, value: string | null | undefined) => {
+      if (!value) return;
+      const item = document.createElement('li');
+      const key = document.createElement('span');
+      const content = document.createElement('strong');
+      key.textContent = label;
+      content.textContent = value;
+      item.append(key, content);
+      element.append(item);
+    };
+    const preferred = (item: SearchItem, mode: 'listen' | 'watch') => {
+      const links = mode === 'watch' ? item.links.filter((link) => link.platform === 'YouTube') : item.links.filter((link) => preferredPlatforms.includes(link.platform));
+      return [...links].sort((left, right) => left.priority - right.priority || left.id.localeCompare(right.id))[0] ?? null;
     };
 
-    const makeItems = (data: ArchiveData) => {
-      const recordings = byId(data.recordings);
-      const releases = byId(data.releases);
-      const projects = byId(data.projects);
-      const contributors = byId(data.contributors);
-      const creditsByRecording = new Map<string, ArchiveCredit[]>();
-      const creditsByRelease = new Map<string, ArchiveCredit[]>();
-      for (const credit of data.credits) {
-        if (credit.recordingId) creditsByRecording.set(credit.recordingId, [...(creditsByRecording.get(credit.recordingId) ?? []), credit]);
-        if (credit.releaseId) creditsByRelease.set(credit.releaseId, [...(creditsByRelease.get(credit.releaseId) ?? []), credit]);
+    const makeItems = (archive: ArchiveData) => {
+      const releases = byId(archive.releases);
+      const recordings = byId(archive.recordings);
+      const links = byId(archive.songLinks);
+      return archive.songs.map((song) => {
+        const songReleases = song.releaseIds.map((id) => releases.get(id)).filter((value): value is ArchiveRelease => Boolean(value));
+        const versions = song.recordingIds.map((id) => recordings.get(id)).filter((value): value is ArchiveRecording => Boolean(value));
+        const songLinks = song.linkIds.map((id) => links.get(id)).filter((value): value is ArchiveSongLink => Boolean(value));
+        return {
+          ...song,
+          releases: songReleases,
+          versions,
+          links: songLinks,
+          searchText: normalize([
+            song.title, ...song.aliases, ...song.projectNames,
+            ...songReleases.flatMap((release) => [release.title, release.artist]),
+            ...versions.flatMap((version) => [version.title, version.version, version.artist]),
+          ].join(' ')),
+        };
+      });
+    };
+
+    const card = (item: SearchItem) => {
+      const article = document.createElement('article');
+      article.className = 'archive-card';
+      article.dataset.songId = item.id;
+      const head = document.createElement('div');
+      head.className = 'archive-card-head';
+      const type = document.createElement('span');
+      type.className = 'archive-type';
+      type.textContent = item.eligibility === 'Yes' ? 'SONG' : item.eligibility.startsWith('Pending') ? 'ARCHIVE / PENDING' : 'ARCHIVE ENTRY';
+      const id = document.createElement('span');
+      id.className = 'archive-id';
+      id.textContent = item.id;
+      head.append(type, id);
+
+      const title = document.createElement('h2');
+      title.textContent = item.title;
+      const subtitle = document.createElement('p');
+      subtitle.className = 'archive-subtitle';
+      subtitle.textContent = item.projectNames.join(' / ');
+      const credits = document.createElement('ul');
+      credits.className = 'archive-meta';
+      const dateLabel = item.date ? [item.date.value, item.date.precision].filter(Boolean).join(' · ') : null;
+      appendText(credits, 'DATE', dateLabel);
+      appendText(credits, 'WRITING', item.writing);
+      appendText(credits, 'LYRICS', item.lyrics);
+      appendText(credits, item.vocal === 'Instrumental' ? 'VOICE' : 'SINGER(S)', item.vocal);
+      if (item.acoustic) appendText(credits, 'FORMAT', 'ACOUSTIC');
+      appendText(credits, 'RELEASE', item.releases.map((release) => release.title).filter((value, index, values) => values.indexOf(value) === index).slice(0, 3).join(' / '));
+      appendText(credits, 'VERSION', item.versions.map((version) => version.version).filter((value): value is string => Boolean(value)).filter((value, index, values) => values.indexOf(value) === index).slice(0, 2).join(' / '));
+
+      article.append(head, title);
+      if (item.alternateTitle) {
+        const alternate = document.createElement('p');
+        alternate.className = 'archive-alternate';
+        alternate.textContent = `ALSO KNOWN AS / ${item.alternateTitle}`;
+        article.append(alternate);
       }
-      const linksFor = (id: string) => data.links.filter((link) => link.entityId === id);
-      const creditTerms = (credits: ArchiveCredit[]) => credits.flatMap((credit) => {
-        const contributor = contributors.get(credit.contributorId);
-        return [contributor?.name, credit.role, credit.instrument].filter(Boolean);
-      });
-      const appearanceBase = (value: string) => value.split(':')[0];
+      if (item.projectNames.length) article.append(subtitle);
+      if (credits.childElementCount) article.append(credits);
 
-      const songItems: SearchItem[] = data.songs.map((song) => {
-        const appearances = unique(song.appearanceIds.map(appearanceBase));
-        const songRecordings = appearances.map((id: string) => recordings.get(id)).filter(Boolean);
-        const songReleases = appearances.map((id: string) => releases.get(id)).filter(Boolean);
-        const recordingCredits = songRecordings.flatMap((recording: any) => creditsByRecording.get(recording.id) ?? []);
-        const releaseCredits = songReleases.flatMap((release: any) => creditsByRelease.get(release.id) ?? []);
-        const relatedLinks = unique([...songRecordings.map((recording: any) => recording.id), ...songReleases.map((release: any) => release.id)]).flatMap(linksFor);
-        const projectNames = song.projectIds.map((id: string) => projects.get(id)?.name).filter(Boolean);
-        return {
-          id: song.id, type: 'song', title: song.title, subtitle: projectNames.join(' / ') || song.projectNames.join(' / '),
-          meta: [song.cover ? 'COVER / EXTERNAL COMPOSITION' : 'SONG FAMILY', `${song.appearanceCount} KNOWN APPEARANCE${song.appearanceCount === 1 ? '' : 'S'}`], evidence: song.evidence,
-          searchText: normalize([song.title, ...song.aliases, ...projectNames, ...songRecordings.flatMap((recording: any) => [recording.title, recording.version, recording.artist, recording.featured, recording.role]), ...songReleases.map((release: any) => release.title), ...creditTerms([...recordingCredits, ...releaseCredits]), ...relatedLinks.map((link) => link.platform)].join(' ')),
-          projectIds: song.projectIds, contributorIds: unique([...recordingCredits, ...releaseCredits].map((credit) => credit.contributorId)), platforms: unique(relatedLinks.map((link) => link.platform)),
-          versions: songRecordings, links: relatedLinks,
-        };
-      });
-
-      const releaseItems: SearchItem[] = data.releases.map((release, sourceOrder) => {
-        const releaseRecordings = data.recordings.filter((recording) => recording.releaseId === release.id);
-        const releaseCredits = [...(creditsByRelease.get(release.id) ?? []), ...releaseRecordings.flatMap((recording) => creditsByRecording.get(recording.id) ?? [])];
-        const releaseLinks = linksFor(release.id);
-        return {
-          id: release.id, type: 'release', title: release.title, subtitle: [release.artist, projects.get(release.projectId)?.name].filter(Boolean).join(' / '),
-          meta: [release.type, release.date ?? release.year ?? 'DATE UNKNOWN', release.datePrecision].filter(Boolean), evidence: release.evidence,
-          searchText: normalize([release.title, release.artist, release.type, release.date, release.year, release.datePrecision, release.label, release.status, ...releaseRecordings.flatMap((recording) => [recording.title, recording.version]), ...creditTerms(releaseCredits), ...releaseLinks.map((link) => link.platform)].join(' ')),
-          projectIds: [release.projectId].filter(Boolean), contributorIds: unique(releaseCredits.map((credit) => credit.contributorId)), platforms: unique(releaseLinks.map((link) => link.platform)),
-          versions: releaseRecordings, links: releaseLinks,
-          sortDate: release.date ?? (release.year ? `${release.year}-01-01` : ''), sourceOrder,
-        };
-      });
-
-      const projectItems: SearchItem[] = data.projects.map((project) => {
-        const projectRecordings = data.recordings.filter((recording) => recording.projectId === project.id);
-        const projectReleases = data.releases.filter((release) => release.projectId === project.id);
-        const projectCredits = [...projectRecordings.flatMap((recording) => creditsByRecording.get(recording.id) ?? []), ...projectReleases.flatMap((release) => creditsByRelease.get(release.id) ?? [])];
-        const projectLinks = unique([...projectRecordings.map((recording) => recording.id), ...projectReleases.map((release) => release.id), project.id]).flatMap(linksFor);
-        return {
-          id: project.id, type: 'project', title: project.name, subtitle: project.relationship ?? project.type,
-          meta: [project.type, project.period ?? 'PERIOD UNKNOWN', project.datePrecision].filter(Boolean), evidence: project.evidence,
-          searchText: normalize([project.name, project.type, project.period, project.relationship, ...projectReleases.map((release) => release.title), ...projectRecordings.map((recording) => recording.title), ...creditTerms(projectCredits), ...projectLinks.map((link) => link.platform)].join(' ')),
-          projectIds: [project.id], contributorIds: unique(projectCredits.map((credit) => credit.contributorId)), platforms: unique(projectLinks.map((link) => link.platform)), versions: projectRecordings, links: projectLinks,
-        };
-      });
-
-      const eventItems: SearchItem[] = data.events.map((event) => {
-        const eventParticipants = data.participants.filter((participant) => participant.eventId === event.id);
-        return {
-          id: event.id, type: 'event', title: event.name, subtitle: [event.venue, event.city, event.region].filter(Boolean).join(' / ') || projects.get(event.projectId)?.name || '',
-          meta: [event.type, event.date ?? 'DATE UNKNOWN', event.datePrecision].filter(Boolean), evidence: event.evidence,
-          searchText: normalize([event.name, event.type, event.date, event.datePrecision, event.venue, event.city, event.region, event.status, ...eventParticipants.flatMap((participant) => [participant.name, participant.role, participant.instrument])].join(' ')),
-          projectIds: [event.projectId].filter(Boolean), contributorIds: unique(eventParticipants.map((participant) => participant.entityId).filter((id) => contributors.has(id))), platforms: [], versions: [], links: [],
-        };
-      });
-      return [...songItems, ...releaseItems, ...projectItems, ...eventItems];
+      const listen = preferred(item, 'listen');
+      const watch = preferred(item, 'watch');
+      if (listen || watch) {
+        const actions = document.createElement('div');
+        actions.className = 'archive-actions';
+        if (listen) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.dataset.mediaAction = 'listen';
+          button.dataset.songId = item.id;
+          button.setAttribute('aria-label', `Listen to ${item.title}`);
+          button.textContent = 'LISTEN';
+          actions.append(button);
+        }
+        if (watch) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.dataset.mediaAction = 'watch';
+          button.dataset.songId = item.id;
+          button.setAttribute('aria-label', `Watch ${item.title}`);
+          button.textContent = 'WATCH';
+          actions.append(button);
+        }
+        article.append(actions);
+      }
+      return article;
     };
 
     const render = () => {
@@ -212,117 +276,117 @@
       const tokens = query.split(' ').filter(Boolean);
       const matching = items.filter((item) =>
         tokens.every((token) => item.searchText.includes(token)) &&
-        (!selected.type || item.type === selected.type) &&
+        (!selected.decade || item.decade === selected.decade) &&
         (!selected.project || item.projectIds.includes(selected.project)) &&
-        (!selected.contributor || item.contributorIds.includes(selected.contributor)) &&
-        (!selected.platform || item.platforms.includes(selected.platform))
+        (!selected.platform || item.links.some((link) => link.platform === selected.platform))
       );
-      const showingLatest = latestView && !query && selected.type === 'release' && selected.project === latestProjectId && !selected.contributor && !selected.platform;
-      const latestReleases = [...matching].sort((a, b) => {
-        if (a.id === currentReleaseId) return -1;
-        if (b.id === currentReleaseId) return 1;
-        const dateDifference = Date.parse(b.sortDate ?? '') - Date.parse(a.sortDate ?? '');
-        if (Number.isFinite(dateDifference) && dateDifference !== 0) return dateDifference;
-        if (a.sortDate && !b.sortDate) return -1;
-        if (!a.sortDate && b.sortDate) return 1;
-        return (b.sourceOrder ?? 0) - (a.sourceOrder ?? 0);
-      }).slice(0, latestLimit);
-      const display = showingLatest ? latestReleases : hasInput ? matching.slice(0, resultLimit) : items.filter((item) => item.type === 'song').slice(0, 16);
-      resultCount.textContent = showingLatest ? `${latestReleases.length} LATEST JUNKFEATHERS RELEASES` : hasInput ? `${matching.length} MATCH${matching.length === 1 ? '' : 'ES'}` : `197 SONG FAMILIES / SHOWING 16`;
-      emptyState.hidden = true;
-      noResults.hidden = showingLatest || !hasInput || matching.length > 0;
+      const showingLatest = latestView && !query && selected.project === data.meta.latestView.projectId && !selected.decade && !selected.platform;
+      const latestIds = new Set(data.meta.latestView.songIds);
+      const display = showingLatest
+        ? matching.filter((item) => latestIds.has(item.id))
+        : hasInput
+          ? matching.slice(0, resultLimit)
+          : items.filter((item) => item.eligibility === 'Yes' && !item.projectIds.includes('PRJ-PROJ-001')).slice(0, defaultLimit);
+      resultCount.textContent = showingLatest
+        ? `${data.meta.latestView.releaseTitle.toUpperCase()} / ${display.length} SONG${display.length === 1 ? '' : 'S'}`
+        : hasInput
+          ? `${matching.length} MATCH${matching.length === 1 ? '' : 'ES'}`
+          : `${data.meta.counts.songs} ARCHIVE ENTRIES / SHOWING ${display.length}`;
+      noResults.hidden = display.length > 0;
       limitNote.hidden = showingLatest || !hasInput || matching.length <= resultLimit;
       if (!limitNote.hidden) limitNote.textContent = `SHOWING FIRST ${resultLimit} OF ${matching.length} MATCHES. NARROW THE SEARCH FOR A SHORTER SIGNAL.`;
       results.replaceChildren(...display.map(card));
     };
 
-    const card = (item: SearchItem) => {
-      const article = document.createElement('article');
-      article.className = 'archive-card';
-      const head = document.createElement('div'); head.className = 'archive-card-head';
-      const type = document.createElement('span'); type.className = 'archive-type'; type.textContent = item.type.toUpperCase();
-      const id = document.createElement('span'); id.className = 'archive-id'; id.textContent = item.id;
-      const title = document.createElement('h2'); title.textContent = item.title;
-      const subtitle = document.createElement('p'); subtitle.className = 'archive-subtitle'; subtitle.textContent = item.subtitle;
-      const meta = document.createElement('ul'); meta.className = 'archive-meta';
-      for (const value of item.meta.filter(Boolean)) { const li = document.createElement('li'); li.textContent = value; meta.append(li); }
-      const evidence = document.createElement('p'); evidence.className = 'archive-evidence'; evidence.textContent = `EVIDENCE / ${item.evidence}`;
-      head.append(type, id); article.append(head, title); if (item.subtitle) article.append(subtitle); article.append(meta, evidence);
-      if (item.versions.length || item.links.length) {
-        const details = document.createElement('details');
-        const summary = document.createElement('summary'); summary.textContent = item.type === 'song' ? `VERSIONS + LINKS (${item.versions.length})` : `CATALOG DETAILS (${item.versions.length})`;
-        details.append(summary);
-        if (item.versions.length) {
-          const list = document.createElement('ul'); list.className = 'archive-versions';
-          for (const version of item.versions.slice(0, 30)) {
-            const li = document.createElement('li');
-            const name = document.createElement('span'); name.textContent = [version.title, version.version].filter(Boolean).join(' — ');
-            const duration = document.createElement('span'); duration.textContent = version.duration ?? 'DURATION UNKNOWN';
-            li.append(name, duration); list.append(li);
-          }
-          details.append(list);
-        }
-        if (item.links.length) {
-          const linkRow = document.createElement('div'); linkRow.className = 'archive-links';
-          for (const link of item.links) { const anchor = document.createElement('a'); anchor.href = link.url; anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; anchor.textContent = `${link.platform} ↗`; linkRow.append(anchor); }
-          details.append(linkRow);
-        }
-        article.append(details);
+    const youtubeId = (link: ArchiveSongLink) => link.mediaId || new URL(link.url).searchParams.get('v') || link.url.match(/youtu\.be\/([^?]+)/)?.[1] || null;
+    const loadMedia = (item: SearchItem, mode: 'listen' | 'watch') => {
+      const link = preferred(item, mode);
+      if (!link) return;
+      mediaMachine.hidden = false;
+      mediaKicker.textContent = mode === 'watch' ? 'VIDEO MACHINE' : 'AUDIO MACHINE';
+      mediaTitle.textContent = item.title;
+      mediaStatus.textContent = `${link.platform.toUpperCase()} / READY — PLAYBACK DOES NOT START AUTOMATICALLY`;
+      mediaContext.textContent = [item.projectNames.join(' / '), link.releaseTitle, link.linkLevel].filter(Boolean).join(' · ');
+      mediaNotes.textContent = item.linerNotes ?? '';
+      mediaNotes.hidden = !item.linerNotes;
+      mediaExternal.href = link.url;
+      mediaExternal.firstChild!.textContent = `OPEN ON ${link.platform.toUpperCase()} `;
+      mediaScreen.replaceChildren();
+
+      let embedUrl = link.embedUrl;
+      if (link.platform === 'YouTube') {
+        const id = youtubeId(link);
+        embedUrl = id ? `https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0` : null;
       }
-      return article;
+      if (embedUrl && ['Bandcamp', 'YouTube', 'Spotify'].includes(link.platform)) {
+        const frame = document.createElement('iframe');
+        frame.src = embedUrl;
+        frame.title = `${item.title} ${mode === 'watch' ? 'video' : 'audio'} player`;
+        frame.loading = 'lazy';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.allow = link.platform === 'YouTube' ? 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' : 'encrypted-media';
+        frame.allowFullscreen = link.platform === 'YouTube';
+        mediaScreen.append(frame);
+      } else {
+        const fallback = document.createElement('p');
+        fallback.textContent = `This source opens on ${link.platform}. Use the source link below when you are ready.`;
+        mediaScreen.append(fallback);
+      }
+
+      mediaTitle.focus({ preventScroll: true });
+      mediaMachine.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     };
 
-    fetch('/data/music-archive/v01/archive.json')
+    fetch('/data/music-archive/v02/archive.json')
       .then((response) => { if (!response.ok) throw new Error('archive data unavailable'); return response.json(); })
-      .then((data: ArchiveData) => {
-        if (data.meta.publicKnownSongs !== 195) throw new Error('public counter mismatch');
-        items = makeItems(data);
-        const typeFilter = filters.find((filter) => filter.dataset.filter === 'type')!;
-        for (const value of ['song', 'release', 'project', 'event']) typeFilter.append(option(value, value.toUpperCase()));
+      .then((archive: ArchiveData) => {
+        if (archive.meta.publicKnownSongs !== 215 || archive.meta.counts.songLinks !== 619) throw new Error('public v02 contract mismatch');
+        data = archive;
+        items = makeItems(archive);
+        itemById = byId(items);
+        const decadeFilter = filters.find((filter) => filter.dataset.filter === 'decade')!;
+        for (const decade of archive.facets.decades) decadeFilter.append(option(decade, decade.toUpperCase()));
         const projectFilter = filters.find((filter) => filter.dataset.filter === 'project')!;
-        for (const project of data.projects) projectFilter.append(option(project.id, project.name.toUpperCase()));
-        const contributorFilter = filters.find((filter) => filter.dataset.filter === 'contributor')!;
-        const appearanceCounts = new Map<string, number>();
-        for (const item of items) {
-          for (const contributorId of item.contributorIds) {
-            appearanceCounts.set(contributorId, (appearanceCounts.get(contributorId) ?? 0) + 1);
-          }
-        }
-        const pinnedContributor = data.contributors.find((contributor) => {
-          const name = contributor.name.toLowerCase();
-          return name.includes('jonathan') && name.includes('lee');
-        })?.id;
-        const sortedContributors = [...data.contributors].sort((left, right) => {
-          if (pinnedContributor) {
-            if (left.id === pinnedContributor) return -1;
-            if (right.id === pinnedContributor) return 1;
-          }
-          const appearanceDelta = (appearanceCounts.get(right.id) ?? 0) - (appearanceCounts.get(left.id) ?? 0);
-          if (appearanceDelta !== 0) return appearanceDelta;
-          return left.name.localeCompare(right.name);
-        });
-        for (const contributor of sortedContributors) {
-          contributorFilter.append(option(contributor.id, contributor.name.toUpperCase()));
-        }
+        for (const project of archive.facets.projects) projectFilter.append(option(project.id, project.name.toUpperCase()));
         const platformFilter = filters.find((filter) => filter.dataset.filter === 'platform')!;
-        for (const platform of [...new Set(data.links.map((link) => link.platform))].sort()) platformFilter.append(option(platform, platform.toUpperCase()));
-        typeFilter.value = 'release';
-        projectFilter.value = latestProjectId;
-        search.disabled = false; reset.disabled = false; filters.forEach((filter) => filter.disabled = false); loadingState.hidden = true;
+        for (const platform of archive.facets.platforms) platformFilter.append(option(platform, platform.toUpperCase()));
+        projectFilter.value = archive.meta.latestView.projectId;
+        if (!latestView) decadeFilter.value = defaultDecade;
+        search.disabled = false;
+        reset.disabled = false;
+        filters.forEach((filter) => { filter.disabled = false; });
+        loadingState.hidden = true;
         render();
       })
-      .catch(() => { loadingState.hidden = true; errorState.hidden = false; resultCount.textContent = 'ARCHIVE OFFLINE'; });
+      .catch(() => {
+        loadingState.hidden = true;
+        errorState.hidden = false;
+        resultCount.textContent = 'ARCHIVE OFFLINE';
+      });
 
     search.addEventListener('input', () => { latestView = false; render(); });
     filters.forEach((filter) => filter.addEventListener('change', () => { latestView = false; render(); }));
     reset.addEventListener('click', () => {
+      latestView = false;
       search.value = '';
       filters.forEach((filter) => { filter.value = ''; });
-      filters.find((filter) => filter.dataset.filter === 'type')!.value = 'release';
-      filters.find((filter) => filter.dataset.filter === 'project')!.value = latestProjectId;
-      latestView = true;
+      filters.find((filter) => filter.dataset.filter === 'decade')!.value = defaultDecade;
+      filters.find((filter) => filter.dataset.filter === 'project')!.value = data.meta.latestView.projectId;
+      mediaMachine.hidden = true;
+      mediaScreen.replaceChildren();
       render();
       search.focus();
+    });
+    results.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-media-action]');
+      const item = button?.dataset.songId ? itemById.get(button.dataset.songId) : null;
+      const mode = button?.dataset.mediaAction;
+      if (item && (mode === 'listen' || mode === 'watch')) loadMedia(item, mode);
+    });
+    mediaClose.addEventListener('click', () => {
+      mediaMachine.hidden = true;
+      mediaScreen.replaceChildren();
+      mediaStatus.textContent = '';
     });
   }
 </script>
@@ -341,17 +405,7 @@
     box-shadow: 5px 5px 0 #171717;
   }
   .archive-machine::before,
-  .archive-machine::after {
-    position: absolute;
-    z-index: 3;
-    top: 7px;
-    width: 5px;
-    height: 5px;
-    border: 1px solid var(--archive-mid);
-    border-radius: 50%;
-    background: #000;
-    content: '';
-  }
+  .archive-machine::after { position: absolute; z-index: 3; top: 7px; width: 5px; height: 5px; border: 1px solid var(--archive-mid); border-radius: 50%; background: #000; content: ''; }
   .archive-machine::before { left: 7px; }
   .archive-machine::after { right: 7px; }
   .archive-console-top { display: grid; border-bottom: 2px solid var(--archive-mid); background: #050505; }
@@ -362,102 +416,19 @@
   .archive-counter { display: grid; justify-items: start; border-left: 3px solid var(--archive-mid); padding-left: 1rem; }
   .archive-counter strong { font-size: clamp(2.8rem, 12vw, 4.5rem); line-height: .9; font-variant-numeric: tabular-nums; }
   .archive-counter span { color: var(--archive-white); font-weight: 700; letter-spacing: .14em; }
-  .archive-machine-art {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(100px, .8fr) minmax(120px, 1.2fr);
-    align-items: center;
-    gap: 1rem;
-    min-height: 190px;
-    padding: 1rem;
-    overflow: hidden;
-    border-top: 1px solid var(--archive-line);
-    background:
-      repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255,255,255,.026) 4px),
-      #070707;
-  }
-  .archive-drum {
-    position: relative;
-    place-self: center;
-    width: clamp(104px, 31vw, 142px);
-    aspect-ratio: 1;
-    border: 2px solid var(--archive-mid);
-    border-radius: 50%;
-    background: #040404;
-    box-shadow: inset 0 0 0 9px #090909, inset 0 0 0 11px var(--archive-dim);
-    animation: archive-drum-turn 22s linear infinite;
-  }
-  .archive-drum::before,
-  .archive-drum::after,
-  .archive-drum span {
-    position: absolute;
-    inset: 50% auto auto 50%;
-    width: 14px;
-    height: 35%;
-    border: 1px solid var(--archive-mid);
-    background: #020202;
-    content: '';
-    transform-origin: 50% 0;
-  }
-  .archive-drum::before { transform: rotate(0deg) translate(-50%, 9px); }
-  .archive-drum::after { transform: rotate(90deg) translate(-50%, 9px); }
-  .archive-drum span:first-child { transform: rotate(180deg) translate(-50%, 9px); }
-  .archive-drum span:nth-child(2) { transform: rotate(270deg) translate(-50%, 9px); }
-  .archive-drum span:nth-child(3) {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #bdbdbd;
-    transform: translate(-50%, -50%);
-  }
-  .archive-drum span:nth-child(4) { display: none; }
-  .archive-head {
-    align-self: stretch;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    padding: .75rem;
-    border: 1px solid var(--archive-dim);
-    background: #020202;
-  }
+  .archive-machine-art { position: relative; display: grid; align-items: stretch; min-height: 190px; padding: 1rem; overflow: hidden; border-top: 1px solid var(--archive-line); background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255,255,255,.026) 4px), #070707; }
+  .archive-head { align-self: stretch; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; padding: .75rem; border: 1px solid var(--archive-dim); background: #020202; }
   .archive-head i { position: relative; overflow: hidden; border-inline: 1px solid #202020; }
-  .archive-head i::after {
-    position: absolute;
-    inset: 68% 3px auto;
-    height: 25%;
-    background: #9a9a9a;
-    content: '';
-    animation: archive-head-read 3.8s ease-in-out infinite alternate;
-  }
+  .archive-head i::after { position: absolute; inset: 68% 3px auto; height: 25%; background: #9a9a9a; content: ''; animation: archive-head-read 3.8s ease-in-out infinite alternate; }
   .archive-head i:nth-child(2)::after { animation-delay: -1.8s; }
   .archive-head i:nth-child(3)::after { animation-delay: -2.7s; }
-  .archive-index-strip {
-    position: absolute;
-    right: 1rem;
-    bottom: 1rem;
-    display: flex;
-    gap: .32rem;
-    padding: .3rem .45rem;
-    border: 1px solid var(--archive-dim);
-    background: rgba(0,0,0,.9);
-    color: var(--archive-mid);
-    font-size: .55rem;
-    letter-spacing: .08em;
-  }
+  .archive-index-strip { position: absolute; right: 1rem; bottom: 1rem; display: flex; gap: .32rem; padding: .3rem .45rem; border: 1px solid var(--archive-dim); background: rgba(0,0,0,.9); color: var(--archive-mid); font-size: .55rem; letter-spacing: .08em; }
   .archive-index-strip span:last-child { color: var(--archive-white); }
-  .archive-art-status {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: grid;
-    justify-items: end;
-    color: var(--archive-mid);
-    font-size: .56rem;
-    letter-spacing: .1em;
-  }
+  .archive-art-status { position: absolute; top: 1rem; right: 1rem; display: grid; justify-items: end; color: var(--archive-mid); font-size: .56rem; letter-spacing: .1em; }
   .archive-art-status strong { color: var(--archive-white); }
   .archive-controls { padding: 1rem; border-bottom: 2px solid var(--archive-mid); background: #030303; }
-  .archive-search-label, .archive-filter-grid label span { display: block; margin-bottom: .35rem; color: var(--jf-gray-strong); font-size: .7rem; letter-spacing: .12em; }
+  .archive-search-label,
+  .archive-filter-grid label span { display: block; margin-bottom: .35rem; color: var(--jf-gray-strong); font-size: .7rem; letter-spacing: .12em; }
   input, select, button { border-radius: 0; font: inherit; }
   [data-archive-search] { width: 100%; min-height: 52px; padding: .75rem; border: 2px solid var(--archive-white); background: #000; color: #fff; font-size: 1rem; }
   [data-archive-search]::placeholder { color: var(--jf-gray-mid); }
@@ -465,48 +436,79 @@
   .archive-filter-grid select { width: 100%; min-height: 44px; padding: .55rem; border: 1px solid var(--jf-gray-strong); background: #080808; color: #fff; }
   .archive-control-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
   .archive-result-count { margin: 0; color: var(--archive-white); font-size: .78rem; font-weight: 700; letter-spacing: .1em; }
-  .archive-reset { min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); background: #000; color: #fff; cursor: pointer; }
-  .archive-reset:hover { background: #fff; color: #000; }
+  .archive-reset,
+  .archive-media-heading button,
+  .archive-actions button { min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); background: #000; color: #fff; cursor: pointer; }
+  .archive-reset:hover,
+  .archive-media-heading button:hover,
+  .archive-actions button:hover { background: #fff; color: #000; }
+  [data-archive-search]:focus-visible,
+  select:focus-visible,
+  button:focus-visible,
+  .archive-media-context a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .archive-output { padding: 1rem; }
-  .archive-state, .archive-noscript, .archive-limit-note { margin: 0 0 1rem; padding: 1rem; border: 1px dashed var(--archive-mid); color: var(--jf-gray-strong); }
+  .archive-state,
+  .archive-noscript,
+  .archive-limit-note { margin: 0 0 1rem; padding: 1rem; border: 1px dashed var(--archive-mid); color: var(--jf-gray-strong); }
   .archive-state--error { border-color: var(--archive-white); color: var(--archive-white); }
   .archive-pulse { display: inline-block; width: .65rem; height: .65rem; margin-right: .5rem; background: var(--archive-white); animation: archive-pulse 1s steps(2, end) infinite; }
   .archive-results { display: grid; gap: 1rem; }
-  .archive-results :global(.archive-card) { min-width: 0; padding: 1rem; border: 1px solid var(--jf-gray-soft); background: #030303; }
+  .archive-results :global(.archive-card) { min-width: 0; padding: 1rem; border: 1px solid var(--jf-gray-soft); background: #030303; overflow-wrap: anywhere; }
   .archive-results :global(.archive-card:hover) { border-color: var(--jf-gray-strong); }
   .archive-results :global(.archive-card-head) { display: flex; justify-content: space-between; gap: 1rem; color: var(--jf-gray-mid); font-size: .68rem; letter-spacing: .1em; }
   .archive-results :global(.archive-type) { color: var(--archive-white); font-weight: 700; }
   .archive-results :global(.archive-id) { text-align: right; }
   .archive-results :global(.archive-card h2) { margin: .55rem 0 .2rem; font-size: clamp(1.1rem, 5vw, 1.55rem); text-transform: none; }
   .archive-results :global(.archive-subtitle) { margin: 0; color: var(--jf-gray-strong); }
-  .archive-results :global(.archive-meta) { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin: .8rem 0; padding: 0; list-style: none; color: var(--jf-gray-mid); font-size: .72rem; }
-  .archive-results :global(.archive-meta li::before) { content: '[ '; }
-  .archive-results :global(.archive-meta li::after) { content: ' ]'; }
-  .archive-results :global(.archive-evidence) { margin: .75rem 0; color: var(--jf-gray-mid); font-size: .68rem; }
-  .archive-results :global(details) { border-top: 1px dashed var(--jf-gray-soft); padding-top: .65rem; }
-  .archive-results :global(summary) { min-height: 44px; padding: .65rem 0; color: var(--jf-gray-strong); cursor: pointer; font-size: .72rem; letter-spacing: .08em; }
-  .archive-results :global(.archive-versions) { margin: .25rem 0 .8rem; padding: 0; list-style: none; }
-  .archive-results :global(.archive-versions li) { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .75rem; padding: .4rem 0; border-top: 1px solid #222; color: var(--jf-gray-strong); font-size: .76rem; }
-  .archive-results :global(.archive-links) { display: flex; flex-wrap: wrap; gap: .65rem 1rem; }
-  .archive-results :global(.archive-links a),
-  .archive-noscript a { color: var(--archive-white); border-bottom: 1px dashed var(--archive-mid); font-size: .72rem; font-weight: 700; letter-spacing: .08em; }
-  .archive-results :global(.archive-links a:hover),
-  .archive-results :global(.archive-links a:focus),
-  .archive-noscript a:hover,
-  .archive-noscript a:focus { color: var(--archive-white); border-bottom-color: var(--archive-white); }
+  .archive-results :global(.archive-alternate) { margin: .25rem 0; color: var(--archive-mid); font-size: .68rem; letter-spacing: .06em; }
+  .archive-results :global(.archive-meta) { display: grid; gap: .35rem; margin: .8rem 0; padding: 0; list-style: none; font-size: .72rem; }
+  .archive-results :global(.archive-meta li) { display: grid; grid-template-columns: minmax(72px, .34fr) minmax(0, 1fr); gap: .65rem; padding-top: .35rem; border-top: 1px solid #222; }
+  .archive-results :global(.archive-meta span) { color: var(--archive-mid); }
+  .archive-results :global(.archive-meta strong) { color: var(--jf-gray-strong); font-weight: 400; }
+  .archive-results :global(.archive-actions) { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .85rem; padding-top: .75rem; border-top: 1px dashed var(--jf-gray-soft); }
+  .archive-results :global(.archive-actions button) { min-width: 92px; min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); border-radius: 0; background: #000; color: #fff; font: 700 .72rem/1 monospace; letter-spacing: .1em; cursor: pointer; }
+  .archive-results :global(.archive-actions button:hover) { background: #fff; color: #000; }
+  .archive-results :global(.archive-actions button:focus-visible) { outline: 3px solid #fff; outline-offset: 3px; }
+  .archive-media-machine { scroll-margin-top: 1rem; margin-top: 1.25rem; border: 2px solid var(--archive-mid); background: #030303; }
+  .archive-media-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--archive-mid); }
+  .archive-media-heading p { margin: 0 0 .25rem; color: var(--archive-mid); font-size: .68rem; letter-spacing: .14em; }
+  .archive-media-heading h2 { margin: 0; font-size: clamp(1.15rem, 5vw, 1.7rem); overflow-wrap: anywhere; }
+  .archive-media-status { margin: 0; padding: .75rem 1rem; border-bottom: 1px solid var(--archive-line); color: var(--jf-gray-strong); font-size: .68rem; letter-spacing: .08em; }
+  .archive-media-screen { min-height: 180px; display: grid; place-items: center; padding: .75rem; background: #000; }
+  .archive-media-screen :global(iframe) { width: 100%; min-height: 180px; border: 0; }
+  .archive-media-screen :global(p) { margin: 0; max-width: 46ch; color: var(--jf-gray-strong); text-align: center; }
+  .archive-media-context { padding: 1rem; overflow-wrap: anywhere; }
+  .archive-media-context p { margin: 0 0 .7rem; color: var(--jf-gray-strong); }
+  .archive-media-context p + p { color: var(--archive-mid); font-size: .76rem; }
+  .archive-media-context a,
+  .archive-noscript a { display: inline-flex; min-height: 44px; align-items: center; color: var(--archive-white); border-bottom: 1px dashed var(--archive-mid); font-size: .72rem; font-weight: 700; letter-spacing: .08em; }
+  .archive-media-context a:hover,
+  .archive-noscript a:hover { color: var(--archive-white); border-bottom-color: var(--archive-white); }
   [hidden] { display: none !important; }
   @media (min-width: 620px) {
     .archive-console-top { grid-template-columns: minmax(0, 1.35fr) minmax(230px, .65fr); }
     .archive-header { grid-template-columns: minmax(0, 1fr) auto; }
     .archive-machine-art { border-top: 0; border-left: 2px solid var(--archive-mid); }
-    .archive-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .archive-filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .archive-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .archive-media-screen :global(iframe) { min-height: 360px; }
   }
-  @media (min-width: 760px) { .archive-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  @media (max-width: 360px) { .archive-machine { width: calc(100% - 12px); } .archive-header, .archive-controls, .archive-output, .archive-results :global(.archive-card) { padding: .75rem; } }
-  @media (prefers-reduced-motion: reduce) { .archive-pulse, .archive-drum, .archive-head i::after { animation: none; } }
+  @media (max-width: 390px) {
+    .archive-media-heading { align-items: stretch; flex-direction: column; }
+    .archive-media-heading button { align-self: flex-start; }
+  }
+  @media (max-width: 360px) {
+    .archive-machine { width: calc(100% - 12px); }
+    .archive-header,
+    .archive-controls,
+    .archive-output,
+    .archive-results :global(.archive-card) { padding: .75rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .archive-pulse,
+    .archive-head i::after { animation: none; }
+  }
   @keyframes archive-pulse { 50% { opacity: .25; } }
-  @keyframes archive-drum-turn { to { transform: rotate(360deg); } }
   @keyframes archive-head-read {
     from { opacity: .3; transform: translateY(15%); }
     to { opacity: .9; transform: translateY(-180%); }

@@ -47,9 +47,6 @@ const firstRelease = {
 
     <aside class="archive-entry" aria-labelledby="archive-entry-title">
       <div class="archive-entry-art" aria-hidden="true">
-        <div class="archive-reel">
-          <span></span><span></span><span></span>
-        </div>
         <div class="archive-reader">
           <i></i><i></i><i></i><i></i><i></i>
         </div>
@@ -105,8 +102,6 @@ const firstRelease = {
   .archive-entry-art {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(88px, 0.8fr) minmax(110px, 1.2fr);
-    gap: 1rem;
     min-height: 180px;
     padding: 1rem;
     overflow: hidden;
@@ -115,43 +110,6 @@ const firstRelease = {
       repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255, 255, 255, 0.025) 4px),
       #070707;
   }
-
-  .archive-reel {
-    position: relative;
-    place-self: center;
-    width: clamp(88px, 29vw, 126px);
-    aspect-ratio: 1;
-    border: 2px solid var(--archive-mid);
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 9px #090909, inset 0 0 0 11px var(--archive-dim);
-    animation: archive-reel-turn 18s linear infinite;
-  }
-
-  .archive-reel::before,
-  .archive-reel::after,
-  .archive-reel span {
-    position: absolute;
-    inset: 50% auto auto 50%;
-    width: 12px;
-    height: 34%;
-    border: 1px solid var(--archive-mid);
-    background: #030303;
-    content: '';
-    transform-origin: 50% 0;
-  }
-
-  .archive-reel::before { transform: rotate(0deg) translate(-50%, 8px); }
-  .archive-reel::after { transform: rotate(120deg) translate(-50%, 8px); }
-  .archive-reel span:first-child { transform: rotate(240deg) translate(-50%, 8px); }
-  .archive-reel span:nth-child(2) {
-    inset: 50% auto auto 50%;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #c8c8c8;
-    transform: translate(-50%, -50%);
-  }
-  .archive-reel span:nth-child(3) { display: none; }
 
   .archive-reader {
     align-self: stretch;
@@ -250,11 +208,9 @@ const firstRelease = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .archive-reel,
     .archive-reader i::after { animation: none; }
   }
 
-  @keyframes archive-reel-turn { to { transform: rotate(360deg); } }
   @keyframes archive-reader-breathe {
     from { opacity: 0.28; transform: translateY(18%); }
     to { opacity: 0.88; transform: translateY(-210%); }
