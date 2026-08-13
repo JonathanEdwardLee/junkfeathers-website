@@ -1,38 +1,41 @@
 ---
-interface Track {
+interface VideoInfo {
+  label: string;
+  value: string;
+}
+
+interface VideoChannel {
+  number: number;
+  songId: string;
+  songLinkId: string;
+  youtubeId: string;
+  youtubeUrl: string;
   title: string;
-  duration: string;
-  bandcampUrl: string;
+  info: VideoInfo[];
 }
 
 interface Props {
   anchorId: string;
-  youtubeId: string;
-  youtubeUrl: string;
-  bandcampUrl: string;
-  spotifyUrl: string;
-  releaseTitle: string;
-  tracks: Track[];
+  channels: VideoChannel[];
 }
 
-const {
-  anchorId,
-  youtubeId,
-  youtubeUrl,
-  bandcampUrl,
-  spotifyUrl,
-  releaseTitle,
-  tracks,
-} = Astro.props;
+const { anchorId, channels } = Astro.props;
+if (channels.length !== 6) throw new Error('Video channel machine requires exactly six channels.');
 
+const initialChannel = channels[0];
 const screenId = `${anchorId}-screen`;
 const statusId = `${anchorId}-status`;
 ---
 
-<section class="video-transmission" id={anchorId} data-video-transmission data-youtube-id={youtubeId} data-release-title={releaseTitle}>
+<section
+  class="video-transmission"
+  id={anchorId}
+  data-video-transmission
+  data-channel-config={JSON.stringify(channels)}
+>
   <div class="transmission-heading" aria-hidden="true">
-    <span>LATEST // TRANSMISSION 001</span>
-    <span>NTSC-M</span>
+    <span>VIDEO // CHANNEL MACHINE</span>
+    <span data-channel-readout>CH 01 / STANDBY</span>
   </div>
 
   <div class="crt-machine">
@@ -41,15 +44,27 @@ const statusId = `${anchorId}-status`;
         <div class="crt-dormant" data-dormant-content>
           <div class="crt-noise" aria-hidden="true"></div>
           <div class="crt-scan" aria-hidden="true"></div>
-          <div class="crt-reticle" aria-hidden="true">
-            <span></span>
-          </div>
-          <p class="crt-standby">NO SIGNAL</p>
+          <div class="crt-reticle" aria-hidden="true"><span></span></div>
+          <p class="crt-standby">NO SIGNAL / CH 01</p>
         </div>
       </div>
     </div>
 
     <div class="crt-controls">
+      <div class="channel-bank" aria-label="Video channels">
+        {channels.map((channel, index) => (
+          <button
+            type="button"
+            aria-label={`Channel ${String(channel.number).padStart(2, '0')}: ${channel.title}`}
+            aria-pressed={index === 0 ? 'true' : 'false'}
+            data-channel-button
+            data-channel-index={index}
+          >
+            CH {String(channel.number).padStart(2, '0')}
+          </button>
+        ))}
+      </div>
+
       <div class="power-cluster">
         <button
           class="power-button"
@@ -66,7 +81,7 @@ const statusId = `${anchorId}-status`;
       </div>
 
       <p class="machine-status" id={statusId} role="status" aria-live="polite" data-machine-status>
-        STANDBY / SIGNAL COLD
+        CH 01 / SIGNAL COLD
       </p>
 
       <div class="vent-bank" aria-hidden="true">
@@ -76,69 +91,137 @@ const statusId = `${anchorId}-status`;
 
     <div class="release-panel">
       <div class="release-title-block">
-        <p class="release-index">JF-MUSIC / 001</p>
-        <h2>{releaseTitle}</h2>
+        <p class="release-index" data-channel-index-label>
+          CH 01 / {initialChannel.songLinkId}
+        </p>
+        <h2 data-channel-title>{initialChannel.title}</h2>
       </div>
 
-      <ol class="track-list" aria-label="Track sequence">
-        {tracks.map((track, index) => (
-          <li>
-            <span>{String(index + 1).padStart(2, '0')}</span>
-            <a href={track.bandcampUrl} target="_blank" rel="noopener noreferrer">
-              <span class="track-title">{track.title}</span>
-              <span class="track-duration">{track.duration}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
+      <div class="archive-readout">
+        <div class="archive-readout-head" aria-hidden="true">
+          <span>ARCHIVE DATA</span>
+          <span>VERIFIED SIGNAL</span>
+        </div>
+        <dl class="channel-info" data-channel-info>
+          {initialChannel.info.map((item) => (
+            <div>
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
 
-      <div class="release-links" aria-label="Listen on external services">
-        <a href={bandcampUrl} target="_blank" rel="noopener noreferrer">BANDCAMP ↗</a>
-        <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
-        <a href={spotifyUrl} target="_blank" rel="noopener noreferrer">SPOTIFY ↗</a>
+      <div class="release-links" aria-label="Video source">
+        <a href={initialChannel.youtubeUrl} target="_blank" rel="noopener noreferrer" data-youtube-link>
+          OPEN ON YOUTUBE ↗
+        </a>
       </div>
     </div>
   </div>
 </section>
 
 <script>
+  interface ChannelInfo {
+    label: string;
+    value: string;
+  }
+
+  interface ChannelData {
+    number: number;
+    songId: string;
+    songLinkId: string;
+    youtubeId: string;
+    youtubeUrl: string;
+    title: string;
+    info: ChannelInfo[];
+  }
+
   const transmissions = document.querySelectorAll<HTMLElement>('[data-video-transmission]');
 
   transmissions.forEach((transmission) => {
     const screen = transmission.querySelector<HTMLElement>('[data-crt-screen]');
-    const button = transmission.querySelector<HTMLButtonElement>('[data-power-button]');
-    const label = transmission.querySelector<HTMLElement>('[data-power-label]');
+    const powerButton = transmission.querySelector<HTMLButtonElement>('[data-power-button]');
+    const powerLabel = transmission.querySelector<HTMLElement>('[data-power-label]');
     const status = transmission.querySelector<HTMLElement>('[data-machine-status]');
-    const youtubeId = transmission.dataset.youtubeId;
-    const releaseTitle = transmission.dataset.releaseTitle;
+    const readout = transmission.querySelector<HTMLElement>('[data-channel-readout]');
+    const indexLabel = transmission.querySelector<HTMLElement>('[data-channel-index-label]');
+    const title = transmission.querySelector<HTMLElement>('[data-channel-title]');
+    const info = transmission.querySelector<HTMLElement>('[data-channel-info]');
+    const youtubeLink = transmission.querySelector<HTMLAnchorElement>('[data-youtube-link]');
+    const channelButtons = Array.from(
+      transmission.querySelectorAll<HTMLButtonElement>('[data-channel-button]'),
+    );
 
-    if (!screen || !button || !label || !status || !youtubeId || !releaseTitle) return;
+    let channels: ChannelData[] = [];
+    try {
+      channels = JSON.parse(transmission.dataset.channelConfig ?? '[]') as ChannelData[];
+    } catch {
+      return;
+    }
 
-    const dormantMarkup = screen.innerHTML;
+    if (
+      !screen
+      || !powerButton
+      || !powerLabel
+      || !status
+      || !readout
+      || !indexLabel
+      || !title
+      || !info
+      || !youtubeLink
+      || channels.length !== 6
+      || channelButtons.length !== channels.length
+    ) return;
+
+    let currentIndex = 0;
+    let poweredOn = false;
     let wakeTimer: number | undefined;
+    const dormantMarkup = screen.innerHTML;
 
-    const powerOff = () => {
+    const channelNumber = (channel: ChannelData) => String(channel.number).padStart(2, '0');
+
+    const clearWakeTimer = () => {
       if (wakeTimer !== undefined) window.clearTimeout(wakeTimer);
       wakeTimer = undefined;
-      screen.innerHTML = dormantMarkup;
-      screen.classList.remove('crt-screen--booting', 'crt-screen--online');
-      transmission.classList.remove('video-transmission--online');
-      button.setAttribute('aria-pressed', 'false');
-      label.textContent = 'POWER';
-      status.textContent = 'STANDBY / SIGNAL COLD';
     };
 
-    const powerOn = () => {
-      button.setAttribute('aria-pressed', 'true');
-      label.textContent = 'POWER OFF';
-      status.textContent = 'WAKING SIGNAL';
+    const renderStatic = (channel: ChannelData) => {
+      screen.innerHTML = dormantMarkup;
+      const standby = screen.querySelector<HTMLElement>('.crt-standby');
+      if (standby) standby.textContent = `NO SIGNAL / CH ${channelNumber(channel)}`;
+    };
+
+    const renderInfo = (channel: ChannelData) => {
+      const rows = channel.info.map((item) => {
+        const row = document.createElement('div');
+        const term = document.createElement('dt');
+        const detail = document.createElement('dd');
+        term.textContent = item.label;
+        detail.textContent = item.value;
+        row.append(term, detail);
+        return row;
+      });
+      info.replaceChildren(...rows);
+    };
+
+    const clearPlayer = () => {
+      clearWakeTimer();
+      screen.classList.remove('crt-screen--booting', 'crt-screen--online');
+      transmission.classList.remove('video-transmission--online');
+    };
+
+    const loadPlayer = (channel: ChannelData) => {
+      clearPlayer();
+      status.textContent = `CH ${channelNumber(channel)} / WAKING SIGNAL`;
+      readout.textContent = `CH ${channelNumber(channel)} / ONLINE`;
       screen.classList.add('crt-screen--booting');
 
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       wakeTimer = window.setTimeout(() => {
         const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube-nocookie.com/embed/${youtubeId}?playsinline=1&rel=0`;
-        iframe.title = `${releaseTitle} video player`;
+        iframe.src = `https://www.youtube-nocookie.com/embed/${channel.youtubeId}?playsinline=1&rel=0`;
+        iframe.title = `${channel.title} video player`;
         iframe.loading = 'lazy';
         iframe.allow = 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
         iframe.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -148,23 +231,64 @@ const statusId = `${anchorId}-status`;
         screen.classList.remove('crt-screen--booting');
         screen.classList.add('crt-screen--online');
         transmission.classList.add('video-transmission--online');
-        status.textContent = 'SIGNAL ONLINE / PLAYBACK READY';
+        status.textContent = `CH ${channelNumber(channel)} / PLAYER READY`;
         wakeTimer = undefined;
       }, reducedMotion ? 0 : 520);
     };
 
-    button.addEventListener('click', () => {
-      const isOn = button.getAttribute('aria-pressed') === 'true';
+    const renderChannel = () => {
+      const channel = channels[currentIndex];
+      channelButtons.forEach((button, index) => {
+        button.setAttribute('aria-pressed', String(index === currentIndex));
+      });
+      indexLabel.textContent = `CH ${channelNumber(channel)} / ${channel.songLinkId}`;
+      title.textContent = channel.title;
+      renderInfo(channel);
+      youtubeLink.href = channel.youtubeUrl;
+      if (poweredOn) loadPlayer(channel);
+      else {
+        clearPlayer();
+        renderStatic(channel);
+        readout.textContent = `CH ${channelNumber(channel)} / STANDBY`;
+        status.textContent = `CH ${channelNumber(channel)} / SIGNAL COLD`;
+      }
+    };
+
+    const selectChannel = (index: number) => {
+      currentIndex = index;
+      renderChannel();
+    };
+
+    const powerOff = () => {
+      poweredOn = false;
+      powerButton.setAttribute('aria-pressed', 'false');
+      powerLabel.textContent = 'POWER';
+      renderChannel();
+    };
+
+    const powerOn = () => {
+      poweredOn = true;
+      powerButton.setAttribute('aria-pressed', 'true');
+      powerLabel.textContent = 'POWER OFF';
+      renderChannel();
+    };
+
+    channelButtons.forEach((button, index) => {
+      button.addEventListener('click', () => selectChannel(index));
+    });
+
+    powerButton.addEventListener('click', () => {
+      const isOn = powerButton.getAttribute('aria-pressed') === 'true';
       if (isOn) powerOff();
       else powerOn();
     });
+
+    renderChannel();
   });
 </script>
 
 <style>
-  .video-transmission {
-    scroll-margin-top: 1rem;
-  }
+  .video-transmission { scroll-margin-top: 1rem; }
 
   .transmission-heading {
     display: flex;
@@ -215,24 +339,26 @@ const statusId = `${anchorId}-status`;
 
   .crt-dormant,
   .crt-noise,
-  .crt-scan,
-  .crt-reticle {
+  .crt-reticle,
+  .crt-scan {
     position: absolute;
     inset: 0;
   }
 
   .crt-dormant {
-    background:
-      radial-gradient(ellipse at center, #181818 0, #080808 52%, #010101 100%);
+    background: radial-gradient(ellipse at center, #242424 0, #101010 58%, #020202 100%);
   }
 
   .crt-noise {
-    opacity: 0.34;
+    opacity: 0.68;
     background-image:
-      repeating-radial-gradient(circle at 18% 31%, #aaa 0 0.4px, transparent 0.8px 3px),
-      repeating-radial-gradient(circle at 77% 66%, #777 0 0.5px, transparent 1px 4px);
-    background-size: 7px 9px, 11px 8px;
-    animation: signal-noise 0.22s steps(2, end) infinite;
+      radial-gradient(circle, rgba(255, 255, 255, 0.92) 0 0.7px, transparent 0.9px),
+      radial-gradient(circle, rgba(180, 180, 180, 0.8) 0 0.8px, transparent 1px),
+      radial-gradient(circle, rgba(255, 255, 255, 0.55) 0 0.6px, transparent 0.9px);
+    background-position: 0 0, 2px 1px, 1px 3px;
+    background-size: 4px 4px, 5px 5px, 7px 6px;
+    filter: contrast(1.4);
+    animation: signal-noise 0.14s steps(2, end) infinite;
   }
 
   .crt-scan {
@@ -245,15 +371,7 @@ const statusId = `${anchorId}-status`;
       rgba(255, 255, 255, 0.08) 4px,
       transparent 5px
     );
-  }
-
-  .crt-scan::after {
-    position: absolute;
-    inset-inline: 0;
-    height: 12%;
-    background: linear-gradient(transparent, rgba(255, 255, 255, 0.08), transparent);
-    content: '';
-    animation: scan-sweep 6s linear infinite;
+    pointer-events: none;
   }
 
   .crt-reticle {
@@ -272,36 +390,31 @@ const statusId = `${anchorId}-status`;
     content: '';
   }
 
-  .crt-reticle::before {
-    width: 1px;
-    height: 22%;
-  }
+  .crt-reticle::before { width: 1px; height: 22%; }
+  .crt-reticle::after { width: 18%; height: 1px; }
+  .crt-reticle span::before { inset: 9% auto auto 5%; width: 12%; height: 1px; }
+  .crt-reticle span::after { inset: 9% 5% auto auto; width: 12%; height: 1px; }
 
-  .crt-reticle::after {
-    width: 18%;
-    height: 1px;
-  }
-
-  .crt-reticle span::before {
-    inset: 9% auto auto 5%;
-    width: 12%;
-    height: 1px;
-  }
-
-  .crt-reticle span::after {
-    inset: 9% 5% auto auto;
-    width: 12%;
-    height: 1px;
+  .crt-scan::after {
+    position: absolute;
+    inset-inline: 0;
+    height: 12%;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.08), transparent);
+    content: '';
+    animation: scan-sweep 6s linear infinite;
   }
 
   .crt-standby {
     position: absolute;
     z-index: 4;
-    inset: auto 0 12%;
-    margin: 0;
+    inset: auto 0 7%;
+    width: fit-content;
+    margin: auto;
+    padding: 0.24rem 0.42rem;
+    background: rgba(0, 0, 0, 0.82);
     color: var(--jf-gray-strong);
-    font-size: clamp(0.65rem, 2.8vw, 0.82rem);
-    letter-spacing: 0.24em;
+    font-size: clamp(0.58rem, 2.5vw, 0.74rem);
+    letter-spacing: 0.16em;
     text-align: center;
   }
 
@@ -324,41 +437,60 @@ const statusId = `${anchorId}-status`;
 
   .crt-controls {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.85rem;
-    min-height: 72px;
-    padding: 0.65rem;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .channel-bank {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .channel-bank button,
+  .power-button {
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid var(--jf-gray-mid);
+    border-radius: 0;
+    background: #000;
+    color: var(--jf-gray-mid);
+    font: 700 0.68rem/1 monospace;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .channel-bank button:hover,
+  .channel-bank button[aria-pressed='true'],
+  .power-button:hover,
+  .power-button[aria-pressed='true'] {
+    border-color: var(--jf-fg);
+    background: var(--jf-fg);
+    color: var(--jf-bg);
+  }
+
+  .channel-bank button:focus-visible,
+  .power-button:focus-visible,
+  .release-links a:focus-visible {
+    outline: 3px solid var(--jf-fg);
+    outline-offset: 3px;
   }
 
   .power-cluster {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.45rem;
   }
 
   .power-button {
-    width: 106px;
-    min-height: 44px;
-    padding: 0.55rem 0.72rem;
-    border: 2px solid var(--jf-fg);
-    border-radius: 0;
-    background: #000;
+    width: 100%;
+    padding: 0.55rem 0.62rem;
+    border-width: 2px;
     color: var(--jf-fg);
-    font: 700 0.72rem/1 monospace;
-    letter-spacing: 0.07em;
-    cursor: pointer;
   }
 
-  .power-button:hover,
-  .power-button[aria-pressed='true'] {
-    background: var(--jf-fg);
-    color: var(--jf-bg);
-  }
-
-  .power-symbol {
-    margin-right: 0.3rem;
-  }
+  .power-symbol { margin-right: 0.25rem; }
 
   .power-light {
     width: 7px;
@@ -379,24 +511,24 @@ const statusId = `${anchorId}-status`;
     color: var(--jf-gray-mid);
     font-size: 0.62rem;
     letter-spacing: 0.08em;
-    text-align: center;
   }
 
   .vent-bank {
     display: flex;
+    justify-content: flex-end;
     gap: 4px;
   }
 
   .vent-bank span {
     display: block;
     width: 3px;
-    height: 27px;
+    height: 18px;
     background: var(--jf-gray-soft);
   }
 
   .release-panel {
     display: grid;
-    gap: 1.2rem;
+    gap: 1rem;
     padding: clamp(1rem, 4vw, 1.5rem);
     border-top: 2px solid var(--jf-fg);
     background: #030303;
@@ -412,50 +544,80 @@ const statusId = `${anchorId}-status`;
   .release-title-block h2 {
     margin: 0;
     font-size: clamp(1.25rem, 6vw, 2rem);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
+    overflow-wrap: anywhere;
   }
 
-  .track-list {
-    display: grid;
-    gap: 0.3rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    color: var(--jf-gray-strong);
-    font-size: 0.82rem;
+  .archive-readout {
+    position: relative;
+    padding: 0.55rem;
+    border: 1px solid var(--jf-gray-soft);
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255, 255, 255, 0.022) 4px),
+      #070707;
+    box-shadow: inset 0 0 0 3px #020202;
   }
 
-  .track-list li {
-    display: grid;
-    grid-template-columns: 2.4rem 1fr;
-    border-top: 1px solid #252525;
-    padding-top: 0.3rem;
+  .archive-readout::before,
+  .archive-readout::after {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border: 1px solid var(--jf-gray-mid);
+    border-radius: 50%;
+    background: #000;
+    content: '';
   }
 
-  .track-list span {
-    color: var(--jf-gray-soft);
-  }
+  .archive-readout::before { top: 6px; left: 6px; }
+  .archive-readout::after { top: 6px; right: 6px; }
 
-  .track-list a {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+  .archive-readout-head {
+    display: flex;
+    justify-content: space-between;
     gap: 0.75rem;
-    color: var(--jf-gray-strong);
-    border-bottom: 0;
-  }
-
-  .track-list a:hover,
-  .track-list a:focus {
-    color: var(--jf-fg);
-  }
-
-  .track-list .track-title {
-    color: inherit;
-  }
-
-  .track-list .track-duration {
+    padding: 0.2rem 0.8rem 0.55rem;
     color: var(--jf-gray-mid);
-    font-variant-numeric: tabular-nums;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .archive-readout-head span:last-child { color: var(--jf-fg); }
+
+  .channel-info {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    border: 1px solid #252525;
+    background: rgba(0, 0, 0, 0.74);
+    font-size: 0.72rem;
+  }
+
+  .channel-info div {
+    display: grid;
+    grid-template-columns: minmax(84px, 0.38fr) minmax(0, 1fr);
+    gap: 0.65rem;
+    min-height: 36px;
+    border-top: 1px solid #252525;
+  }
+
+  .channel-info div:first-child { border-top: 0; }
+
+  .channel-info dt {
+    display: flex;
+    align-items: center;
+    padding: 0.42rem 0.5rem;
+    border-right: 1px solid #252525;
+    color: var(--jf-gray-mid);
+    letter-spacing: 0.07em;
+  }
+
+  .channel-info dd {
+    min-width: 0;
+    margin: 0;
+    padding: 0.42rem 0.5rem;
+    color: var(--jf-gray-strong);
+    overflow-wrap: anywhere;
   }
 
   .release-links {
@@ -465,6 +627,9 @@ const statusId = `${anchorId}-status`;
   }
 
   .release-links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
     color: var(--jf-fg);
     border-color: var(--jf-gray-mid);
     font-size: 0.74rem;
@@ -472,10 +637,13 @@ const statusId = `${anchorId}-status`;
     letter-spacing: 0.12em;
   }
 
+  .release-links a:hover,
+  .release-links a:focus { color: var(--jf-fg); }
+
   @media (min-width: 620px) {
     .crt-machine {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 138px;
+      grid-template-columns: minmax(0, 1fr) 164px;
     }
 
     .crt-bezel {
@@ -484,59 +652,36 @@ const statusId = `${anchorId}-status`;
     }
 
     .crt-controls {
-      grid-template-columns: 1fr;
       align-content: space-between;
-      justify-items: stretch;
-      padding: 1rem 0.85rem;
+      padding: 0.85rem;
     }
 
-    .power-cluster {
-      justify-content: space-between;
-    }
-
-    .machine-status {
-      text-align: left;
-    }
-
-    .vent-bank {
-      justify-content: flex-end;
-    }
-
+    .channel-bank { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .release-panel {
       grid-column: 1 / -1;
-      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.85fr);
+      grid-template-columns: minmax(0, 0.85fr) minmax(260px, 1.15fr);
     }
-
-    .release-links {
-      grid-column: 1 / -1;
-    }
+    .release-links { grid-column: 1 / -1; }
   }
 
   @media (max-width: 390px) {
-    .crt-controls {
-      grid-template-columns: 1fr auto;
-    }
-
-    .machine-status {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      text-align: left;
-    }
+    .crt-controls { padding: 0.65rem; }
+    .channel-bank button,
+    .power-button { letter-spacing: 0.03em; }
+    .channel-info div { grid-template-columns: 78px minmax(0, 1fr); gap: 0.45rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .crt-noise,
     .crt-scan::after,
-    .crt-screen--booting::before {
-      animation: none;
-    }
+    .crt-screen--booting::before { animation: none; }
   }
 
   @keyframes signal-noise {
-    0% { transform: translate(0, 0); }
-    33% { transform: translate(-1px, 1px); }
-    66% { transform: translate(1px, -1px); }
-    100% { transform: translate(0, 1px); }
+    0% { opacity: 0.58; background-position: 0 0, 2px 1px, 1px 3px; transform: translate(0, 0); }
+    33% { opacity: 0.72; background-position: 2px -1px, -1px 3px, 4px 0; transform: translate(-1px, 1px); }
+    66% { opacity: 0.64; background-position: -2px 2px, 3px -2px, 0 4px; transform: translate(1px, -1px); }
+    100% { opacity: 0.7; background-position: 1px 3px, 0 -1px, -3px 2px; transform: translate(0, 1px); }
   }
 
   @keyframes scan-sweep {
