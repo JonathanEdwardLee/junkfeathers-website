@@ -1,31 +1,81 @@
 ---
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import VideoTransmission from '../components/VideoTransmission.astro';
 
-const firstRelease = {
-  youtubeId: 'UuIjMhftj58',
-  youtubeUrl: 'https://youtu.be/UuIjMhftj58',
-  bandcampUrl: 'https://junkfeathers.bandcamp.com/album/witches-and-goblins',
-  spotifyUrl: 'https://open.spotify.com/album/2sq5y9zmI2iBuugegbn0B9',
-  releaseTitle: 'Witches and Goblins',
-  tracks: [
-    {
-      title: 'Witches and Goblins',
-      duration: '2:52',
-      bandcampUrl: 'https://junkfeathers.bandcamp.com/track/witches-and-goblins',
-    },
-    {
-      title: 'The Vibe',
-      duration: '4:00',
-      bandcampUrl: 'https://junkfeathers.bandcamp.com/track/the-vibe',
-    },
-    {
-      title: 'Am I An Alien',
-      duration: '3:00',
-      bandcampUrl: 'https://junkfeathers.bandcamp.com/track/am-i-an-alien',
-    },
-  ],
-};
+interface ArchiveSong {
+  id: string;
+  title: string;
+  projectNames: string[];
+  relationship: string | null;
+  writing: string | null;
+  lyrics: string | null;
+  acoustic: boolean;
+  contexts: string[];
+  date: { value: string; precision: string } | null;
+}
+
+interface ArchiveSongLink {
+  id: string;
+  songId: string;
+  platform: string;
+  url: string;
+  releaseDate: string | null;
+  datePrecision: string | null;
+  mediaId: string | null;
+}
+
+const channelIds = [
+  { songId: 'SONG-0179', songLinkId: 'SLNK-0465', youtubeId: 'LFfqHiaahT8' },
+  { songId: 'SONG-0037', songLinkId: 'SLNK-0451', youtubeId: 'AELCwJDnyPk' },
+  { songId: 'SONG-0039', songLinkId: 'SLNK-0450', youtubeId: 'TLYebbum4BM' },
+  { songId: 'SONG-0001', songLinkId: 'SLNK-0458', youtubeId: 'X4watMNFBfw' },
+  { songId: 'SONG-0054', songLinkId: 'SLNK-0471', youtubeId: 'kQIljBxvemI' },
+  { songId: 'SONG-0053', songLinkId: 'SLNK-0470', youtubeId: 'Q25_KwBVur0' },
+] as const;
+
+const archive = JSON.parse(
+  readFileSync(resolve(process.cwd(), 'public/data/music-archive/v02/archive.json'), 'utf8'),
+) as { songs: ArchiveSong[]; songLinks: ArchiveSongLink[] };
+
+const channels = channelIds.map((channel, index) => {
+  const song = archive.songs.find((item) => item.id === channel.songId);
+  const link = archive.songLinks.find((item) => item.id === channel.songLinkId);
+  if (
+    !song
+    || !link
+    || link.songId !== channel.songId
+    || link.platform !== 'YouTube'
+    || link.mediaId !== channel.youtubeId
+  ) {
+    throw new Error(`Archive v02 video channel ${index + 1} failed ID resolution.`);
+  }
+
+  const featured = song.relationship?.match(/(?:^|;\s*)([^;]+?) featured(?:;|$)/i)?.[1] ?? null;
+  const releaseVersion = [song.date?.value, song.contexts.join(' / ')].filter(Boolean).join(' · ');
+  const videoDate = link.datePrecision?.toLowerCase().includes('video publish date')
+    ? link.releaseDate
+    : null;
+
+  return {
+    number: index + 1,
+    songId: song.id,
+    songLinkId: link.id,
+    youtubeId: link.mediaId,
+    youtubeUrl: link.url,
+    title: song.title,
+    info: [
+      { label: 'PROJECT', value: song.projectNames.join(' / ') },
+      { label: 'WRITING', value: song.writing },
+      { label: 'LYRICS', value: song.lyrics },
+      { label: 'FEAT.', value: featured },
+      { label: 'ACOUSTIC', value: song.acoustic ? 'YES' : null },
+      { label: 'RELEASE / VERSION', value: releaseVersion },
+      { label: 'VIDEO DATE', value: videoDate },
+    ].filter((item): item is { label: string; value: string } => Boolean(item.value)),
+  };
+});
 ---
 
 <Layout title="Music - Junkfeathers" description="A curated selection of Junkfeathers music.">
@@ -37,12 +87,7 @@ const firstRelease = {
 
     <VideoTransmission
       anchorId="first-video-module"
-      youtubeId={firstRelease.youtubeId}
-      youtubeUrl={firstRelease.youtubeUrl}
-      bandcampUrl={firstRelease.bandcampUrl}
-      spotifyUrl={firstRelease.spotifyUrl}
-      releaseTitle={firstRelease.releaseTitle}
-      tracks={firstRelease.tracks}
+      channels={channels}
     />
 
     <aside class="archive-entry" aria-labelledby="archive-entry-title">
