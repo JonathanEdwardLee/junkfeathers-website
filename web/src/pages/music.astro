@@ -4,76 +4,114 @@ import { resolve } from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import VideoTransmission from '../components/VideoTransmission.astro';
 
+interface ArchiveCredit { name: string; category: string; role: string }
+interface ArchiveFact { label: string; value: string; url?: string }
 interface ArchiveSong {
-  id: string;
-  title: string;
-  projectNames: string[];
-  relationship: string | null;
-  writing: string | null;
-  lyrics: string | null;
-  acoustic: boolean;
-  contexts: string[];
-  date: { value: string; precision: string } | null;
+  id: string; title: string; projectNames: string[]; writing: string | null; lyrics: string | null;
+  credits: ArchiveCredit[]; date: { value: string; precision: string } | null;
 }
-
 interface ArchiveSongLink {
-  id: string;
-  songId: string;
-  platform: string;
-  url: string;
-  releaseDate: string | null;
-  datePrecision: string | null;
-  mediaId: string | null;
+  id: string; songId: string; platform: string; url: string; releaseDate: string | null;
+  datePrecision: string | null; mediaId: string | null; linkLevel: string;
+}
+interface ArchiveRecording {
+  id: string; releaseId: string | null; projectId: string | null; version: string | null;
+  duration: string | null; artist: string; featured: string | null; leadVocal: string | null;
+}
+interface ArchiveRelease {
+  id: string; projectId: string | null; artist: string; title: string; type: string;
+  date: string | null; year: string | null; datePrecision: string | null;
+}
+interface ArchivePlayerChannel { id: string; songId: string; songLinkId: string; facts: ArchiveFact[] }
+interface ArchiveData {
+  meta: { schemaVersion: string; counts: { playerChannels: number } };
+  songs: ArchiveSong[]; songLinks: ArchiveSongLink[]; recordings: ArchiveRecording[];
+  releases: ArchiveRelease[]; playerChannels: ArchivePlayerChannel[];
 }
 
 const channelIds = [
-  { songId: 'SONG-0179', songLinkId: 'SLNK-0465', youtubeId: 'LFfqHiaahT8' },
-  { songId: 'SONG-0037', songLinkId: 'SLNK-0451', youtubeId: 'AELCwJDnyPk' },
-  { songId: 'SONG-0039', songLinkId: 'SLNK-0450', youtubeId: 'TLYebbum4BM' },
-  { songId: 'SONG-0001', songLinkId: 'SLNK-0458', youtubeId: 'X4watMNFBfw' },
-  { songId: 'SONG-0054', songLinkId: 'SLNK-0471', youtubeId: 'kQIljBxvemI' },
-  { songId: 'SONG-0053', songLinkId: 'SLNK-0470', youtubeId: 'Q25_KwBVur0' },
+  {
+    songId: 'SONG-0055', songLinkId: 'SLNK-0441', youtubeId: 'nkRq-vjhBUg',
+    recordingId: 'REC-SOLO-059', releaseId: 'REL-SOLO-014',
+    versionLabel: 'Junkfeathers / Double Eagle split-single recording',
+    supportUrl: 'https://tahrecords.bandcamp.com/album/junkfeathers-double-eagle-split-single',
+  },
+  {
+    songId: 'SONG-0052', songLinkId: 'SLNK-0492', youtubeId: 'FxcZc9OSzCU',
+    recordingId: 'REC-SOLO-056', releaseId: 'REL-SOLO-011',
+    versionLabel: 'Streaming single distribution variant',
+    youtubeUrlOverride: 'https://www.youtube.com/watch?v=FxcZc9OSzCU&list=OLAK5uy_lvVgnbLw8qlSq9XelASoBkEBPY5w9s-6o',
+  },
+  { songId: 'SONG-0039', songLinkId: 'SLNK-0620', youtubeId: 'ApKAcOuOiZ0', playerChannelId: 'PCH-0168', recordingId: 'REC-SOLO-043', releaseId: 'REL-SOLO-004' },
+  { songId: 'SONG-0223', songLinkId: 'SLNK-0458', youtubeId: 'X4watMNFBfw', playerChannelId: 'PCH-0026', releaseId: 'REL-SOLO-022' },
+  { songId: 'SONG-0054', songLinkId: 'SLNK-0471', youtubeId: 'kQIljBxvemI', playerChannelId: 'PCH-0019', recordingId: 'REC-SOLO-058', releaseId: 'REL-SOLO-013' },
+  { songId: 'SONG-0053', songLinkId: 'SLNK-0470', youtubeId: 'Q25_KwBVur0', playerChannelId: 'PCH-0018', recordingId: 'REC-SOLO-057', releaseId: 'REL-SOLO-012' },
 ] as const;
 
 const archive = JSON.parse(
-  readFileSync(resolve(process.cwd(), 'public/data/music-archive/v02/archive.json'), 'utf8'),
-) as { songs: ArchiveSong[]; songLinks: ArchiveSongLink[] };
+  readFileSync(resolve(process.cwd(), 'public/data/music-archive/v03/archive.json'), 'utf8'),
+) as ArchiveData;
+if (archive.meta.schemaVersion !== 'music-archive-v03.2' || archive.meta.counts.playerChannels !== 165) {
+  throw new Error('Music video channels require the verified Archive v03.2 artifact.');
+}
 
 const channels = channelIds.map((channel, index) => {
   const song = archive.songs.find((item) => item.id === channel.songId);
   const link = archive.songLinks.find((item) => item.id === channel.songLinkId);
-  if (
-    !song
-    || !link
-    || link.songId !== channel.songId
-    || link.platform !== 'YouTube'
-    || link.mediaId !== channel.youtubeId
-  ) {
-    throw new Error(`Archive v02 video channel ${index + 1} failed ID resolution.`);
-  }
-
-  const featured = song.relationship?.match(/(?:^|;\s*)([^;]+?) featured(?:;|$)/i)?.[1] ?? null;
-  const releaseVersion = [song.date?.value, song.contexts.join(' / ')].filter(Boolean).join(' · ');
-  const videoDate = link.datePrecision?.toLowerCase().includes('video publish date')
-    ? link.releaseDate
+  const recording = 'recordingId' in channel
+    ? archive.recordings.find((item) => item.id === channel.recordingId)
     : null;
+  const release = archive.releases.find((item) => item.id === channel.releaseId);
+  const playerChannel = 'playerChannelId' in channel
+    ? archive.playerChannels.find((item) => item.id === channel.playerChannelId)
+    : null;
+  if (
+    !song || !link || !release
+    || ('recordingId' in channel && !recording)
+    || ('playerChannelId' in channel && (!playerChannel || playerChannel.songId !== channel.songId || playerChannel.songLinkId !== channel.songLinkId))
+    || link.songId !== channel.songId || link.platform !== 'YouTube'
+    || link.mediaId !== channel.youtubeId || link.url !== `https://www.youtube.com/watch?v=${channel.youtubeId}`
+  ) throw new Error(`Archive v03.2 video channel ${index + 1} failed exact-version resolution.`);
+
+  const version = 'versionLabel' in channel
+    ? channel.versionLabel
+    : recording?.version || `${release.title} ${release.type.toLowerCase()} recording`;
+  const videoDate = link.releaseDate && link.datePrecision
+    ? `${link.releaseDate} — ${link.datePrecision.toLowerCase()}`
+    : link.datePrecision;
+  const derivedFacts: ArchiveFact[] = [
+    { label: 'PROJECT', value: song.projectNames.includes('Junkfeathers') ? 'Junkfeathers' : song.projectNames.join(' / ') },
+    { label: 'RELEASE', value: release.title },
+    { label: 'VERSION / SOURCE', value: version },
+    { label: 'DATE / PRECISION', value: videoDate || [release.date || release.year, release.datePrecision].filter(Boolean).join(' — ') },
+    { label: 'DURATION', value: recording?.duration || '' },
+    { label: 'ARTIST CREDIT', value: recording?.artist || release.artist },
+    { label: 'WRITING / COMPOSITION', value: song.writing || '' },
+    { label: 'LYRICS', value: song.lyrics || '' },
+    ...song.credits
+      .filter((credit) => !credit.role.includes('Leadership Class'))
+      .map((credit) => ({ label: credit.role.toUpperCase(), value: credit.name })),
+    { label: 'PLATFORM', value: 'YouTube' },
+  ].filter((fact) => Boolean(fact.value));
+  const exactFacts = playerChannel ? [...playerChannel.facts] : derivedFacts;
+  if (playerChannel && song.writing && !exactFacts.some((fact) => /MUSIC|WRITING|COMPOSITION/.test(fact.label))) {
+    exactFacts.splice(3, 0, { label: 'WRITING', value: song.writing });
+  }
+  if (playerChannel && song.lyrics && !exactFacts.some((fact) => fact.label === 'LYRICS')) {
+    exactFacts.splice(4, 0, { label: 'LYRICS', value: song.lyrics });
+  }
+  if ('supportUrl' in channel) exactFacts.push({
+    label: 'BUY / SUPPORT', value: 'THE VIBE — TAH RECORDS BANDCAMP', url: channel.supportUrl,
+  });
 
   return {
     number: index + 1,
     songId: song.id,
     songLinkId: link.id,
     youtubeId: link.mediaId,
-    youtubeUrl: link.url,
+    youtubeUrl: 'youtubeUrlOverride' in channel ? channel.youtubeUrlOverride : link.url,
     title: song.title,
-    info: [
-      { label: 'PROJECT', value: song.projectNames.join(' / ') },
-      { label: 'WRITING', value: song.writing },
-      { label: 'LYRICS', value: song.lyrics },
-      { label: 'FEAT.', value: featured },
-      { label: 'ACOUSTIC', value: song.acoustic ? 'YES' : null },
-      { label: 'RELEASE / VERSION', value: releaseVersion },
-      { label: 'VIDEO DATE', value: videoDate },
-    ].filter((item): item is { label: string; value: string } => Boolean(item.value)),
+    info: exactFacts,
   };
 });
 ---

@@ -20,7 +20,7 @@
         <span>01</span><span>03</span><span>05</span><span>07</span><span>10</span>
       </div>
       <div class="archive-art-status">
-        <span>INDEX / V02</span>
+        <span>INDEX / V03.2</span>
         <strong>READ HEAD ACTIVE</strong>
       </div>
     </div>
@@ -72,22 +72,41 @@
     <div class="archive-results" data-results aria-label="Archive results"></div>
     <p class="archive-limit-note" data-limit-note hidden></p>
 
-    <section class="archive-media-machine" aria-labelledby="archive-media-title" data-media-machine hidden>
-      <div class="archive-media-heading">
-        <div>
-          <p data-media-kicker>AUDIO MACHINE</p>
-          <h2 id="archive-media-title" tabindex="-1" data-media-title>SELECT A SIGNAL</h2>
+    <div class="archive-player-rack" aria-label="Persistent archive players">
+      <section class="archive-player archive-player--vhs" aria-labelledby="archive-vhs-title" data-player="vhs">
+        <div class="archive-player-heading">
+          <div><p>VHS VIDEO PLAYER</p><h2 id="archive-vhs-title" tabindex="-1" data-player-title>SELECT WATCH</h2></div>
+          <span data-player-channel>VHS / STANDBY</span>
         </div>
-        <button type="button" data-media-close>CLOSE</button>
-      </div>
-      <p class="archive-media-status" role="status" aria-live="polite" data-media-status></p>
-      <div class="archive-media-screen" data-media-screen></div>
-      <div class="archive-media-context">
-        <p data-media-context></p>
-        <p data-media-notes></p>
-        <a href="#" target="_blank" rel="noopener noreferrer" data-media-external>OPEN SOURCE <span aria-hidden="true">&#8599;</span></a>
-      </div>
-    </section>
+        <p class="archive-player-status" role="status" aria-live="polite" data-player-status>NO VIDEO CHANNEL SELECTED</p>
+        <div class="archive-player-screen" data-player-screen><p>VHS SIGNAL STANDBY</p></div>
+        <div class="archive-channel-controls" data-channel-controls hidden>
+          <button type="button" data-channel-step="-1" aria-label="Previous video channel">&#9664; PREV</button>
+          <span data-channel-position></span>
+          <button type="button" data-channel-step="1" aria-label="Next video channel">NEXT &#9654;</button>
+        </div>
+        <div class="archive-version-info" data-player-info><p>Choose WATCH on an archive card. The machine will stay with that exact project and recording context.</p></div>
+        <details class="archive-lyrics" data-player-lyrics hidden><summary>READ LYRICS</summary><div data-lyrics-content></div></details>
+        <details class="archive-stream-links" data-player-links hidden><summary>STREAM / LINKS</summary><div data-links-content></div></details>
+      </section>
+
+      <section class="archive-player archive-player--cassette" aria-labelledby="archive-cassette-title" data-player="cassette">
+        <div class="archive-player-heading">
+          <div><p>CASSETTE AUDIO PLAYER</p><h2 id="archive-cassette-title" tabindex="-1" data-player-title>SELECT LISTEN</h2></div>
+          <span data-player-channel>CASSETTE / STANDBY</span>
+        </div>
+        <p class="archive-player-status" role="status" aria-live="polite" data-player-status>NO AUDIO CHANNEL SELECTED</p>
+        <div class="archive-player-screen" data-player-screen><p>CASSETTE SIGNAL STANDBY</p></div>
+        <div class="archive-channel-controls" data-channel-controls hidden>
+          <button type="button" data-channel-step="-1" aria-label="Previous audio channel">&#9664; PREV</button>
+          <span data-channel-position></span>
+          <button type="button" data-channel-step="1" aria-label="Next audio channel">NEXT &#9654;</button>
+        </div>
+        <div class="archive-version-info" data-player-info><p>Choose LISTEN on an archive card. Bandcamp is selected first when the exact recording has supported playback.</p></div>
+        <details class="archive-lyrics" data-player-lyrics hidden><summary>READ LYRICS</summary><div data-lyrics-content></div></details>
+        <details class="archive-stream-links" data-player-links hidden><summary>STREAM / LINKS</summary><div data-links-content></div></details>
+      </section>
+    </div>
 
     <noscript>
       <p class="archive-noscript">Interactive archive search requires JavaScript. The existing music transmission remains available on the <a href="/music/">Music page <span aria-hidden="true">&#8599;</span></a>.</p>
@@ -110,15 +129,39 @@
     acoustic: boolean; creditStatus: string; linerNotes: string | null; decade: string | null;
     contexts: string[]; date: { value: string; precision: string | null; releaseId: string } | null;
   }
+  interface ArchivePlayerFact { label: string; value: string; url?: string }
+  interface ArchivePlayerLink { label: string; platform: string; url: string; level: string }
+  interface ArchivePlaybackCandidate {
+    kind: 'bandcamp-track' | 'bandcamp-album-fallback' | 'same-version';
+    label: string; embedUrl: string; registryId: string | null; attributionUrl: string;
+    releaseFallback: boolean;
+  }
+  interface ArchivePlayback {
+    kind: ArchivePlaybackCandidate['kind'] | 'external'; label: string; embedUrl: string | null;
+    registryId: string | null; attributionUrl: string; releaseFallback: boolean;
+    candidates: ArchivePlaybackCandidate[];
+  }
+  interface ArchiveLyric {
+    id: string; songId: string; title: string; version: string; text: string; authors: string;
+    sourceType: string; evidence: string; rights: string; sampleTreatment: string | null;
+  }
+  interface ArchivePlayerChannel {
+    id: string; songId: string; title: string; type: 'vhs' | 'cassette'; order: number; label: string;
+    recordingId: string; releaseId: string; versionLabel: string; platform: string; songLinkId: string;
+    playbackMethod: string; externalUrl: string; datePrecision: string; projectId: string; projectName: string;
+    mediaId: string | null; embedUrl: string | null; playback: ArchivePlayback; facts: ArchivePlayerFact[];
+    streamLinks: ArchivePlayerLink[]; lyrics: ArchiveLyric[];
+  }
   interface ArchiveData {
     meta: {
+      schemaVersion: string;
       publicKnownSongs: number;
-      counts: { songs: number; songLinks: number };
+      counts: { songs: number; songLinks: number; playerChannels: number; lyrics: number; bandcampEmbedRegistry: number };
       latestView: { projectId: string; releaseId: string; releaseTitle: string; songIds: string[] };
     };
     facets: { decades: string[]; projects: ArchiveProject[]; platforms: string[] };
     projects: ArchiveProject[]; songs: ArchiveSong[]; releases: ArchiveRelease[];
-    recordings: ArchiveRecording[]; songLinks: ArchiveSongLink[];
+    recordings: ArchiveRecording[]; songLinks: ArchiveSongLink[]; playerChannels: ArchivePlayerChannel[];
   }
   interface SearchItem extends ArchiveSong {
     searchText: string;
@@ -138,23 +181,15 @@
     const errorState = machine.querySelector<HTMLElement>('[data-error-state]')!;
     const noResults = machine.querySelector<HTMLElement>('[data-no-results]')!;
     const limitNote = machine.querySelector<HTMLElement>('[data-limit-note]')!;
-    const mediaMachine = machine.querySelector<HTMLElement>('[data-media-machine]')!;
-    const mediaKicker = machine.querySelector<HTMLElement>('[data-media-kicker]')!;
-    const mediaTitle = machine.querySelector<HTMLElement>('[data-media-title]')!;
-    const mediaStatus = machine.querySelector<HTMLElement>('[data-media-status]')!;
-    const mediaScreen = machine.querySelector<HTMLElement>('[data-media-screen]')!;
-    const mediaContext = machine.querySelector<HTMLElement>('[data-media-context]')!;
-    const mediaNotes = machine.querySelector<HTMLElement>('[data-media-notes]')!;
-    const mediaExternal = machine.querySelector<HTMLAnchorElement>('[data-media-external]')!;
-    const mediaClose = machine.querySelector<HTMLButtonElement>('[data-media-close]')!;
+    const playerElements = [...machine.querySelectorAll<HTMLElement>('[data-player]')];
     const resultLimit = 40;
     const defaultLimit = 16;
     const defaultDecade = '2020s';
-    const preferredPlatforms = ['Bandcamp', 'YouTube', 'Spotify', 'Apple Music', 'Amazon Music'];
     let data: ArchiveData;
     let items: SearchItem[] = [];
     let itemById = new Map<string, SearchItem>();
     let latestView = new URLSearchParams(window.location.search).get('view') === 'latest';
+    const playerState = new Map<'vhs' | 'cassette', { channels: ArchivePlayerChannel[]; index: number }>();
 
     const normalize = (value: unknown) => String(value ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
     const byId = <T extends { id: string }>(values: T[]) => new Map(values.map((value) => [value.id, value]));
@@ -174,10 +209,13 @@
       item.append(key, content);
       element.append(item);
     };
-    const preferred = (item: SearchItem, mode: 'listen' | 'watch') => {
-      const links = mode === 'watch' ? item.links.filter((link) => link.platform === 'YouTube') : item.links.filter((link) => preferredPlatforms.includes(link.platform));
-      return [...links].sort((left, right) => left.priority - right.priority || left.id.localeCompare(right.id))[0] ?? null;
+    const selectedProjectId = (item: SearchItem) => {
+      const selected = filters.find((filter) => filter.dataset.filter === 'project')?.value;
+      return selected && item.projectIds.includes(selected) ? selected : item.projectIds[0] ?? '';
     };
+    const matchingChannels = (item: SearchItem, type: 'vhs' | 'cassette') => data.playerChannels
+      .filter((channel) => channel.songId === item.id && channel.projectId === selectedProjectId(item) && channel.type === type)
+      .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id));
 
     const makeItems = (archive: ArchiveData) => {
       const releases = byId(archive.releases);
@@ -241,31 +279,20 @@
       if (item.projectNames.length) article.append(subtitle);
       if (credits.childElementCount) article.append(credits);
 
-      const listen = preferred(item, 'listen');
-      const watch = preferred(item, 'watch');
-      if (listen || watch) {
-        const actions = document.createElement('div');
-        actions.className = 'archive-actions';
-        if (listen) {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.dataset.mediaAction = 'listen';
-          button.dataset.songId = item.id;
-          button.setAttribute('aria-label', `Listen to ${item.title}`);
-          button.textContent = 'LISTEN';
-          actions.append(button);
-        }
-        if (watch) {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.dataset.mediaAction = 'watch';
-          button.dataset.songId = item.id;
-          button.setAttribute('aria-label', `Watch ${item.title}`);
-          button.textContent = 'WATCH';
-          actions.append(button);
-        }
-        article.append(actions);
+      const actions = document.createElement('div');
+      actions.className = 'archive-actions';
+      for (const [mode, type] of [['listen', 'cassette'], ['watch', 'vhs']] as const) {
+        const channels = matchingChannels(item, type);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.mediaAction = mode;
+        button.dataset.songId = item.id;
+        button.disabled = channels.length === 0;
+        button.setAttribute('aria-label', channels.length ? `${mode === 'watch' ? 'Watch' : 'Listen to'} ${item.title} in ${selectedProjectId(item) ? data.projects.find((project) => project.id === selectedProjectId(item))?.name ?? 'the selected project' : 'its archive context'}` : `${mode.toUpperCase()} unavailable for ${item.title} in this project context`);
+        button.textContent = mode.toUpperCase();
+        actions.append(button);
       }
+      article.append(actions);
       return article;
     };
 
@@ -298,49 +325,180 @@
       results.replaceChildren(...display.map(card));
     };
 
-    const youtubeId = (link: ArchiveSongLink) => link.mediaId || new URL(link.url).searchParams.get('v') || link.url.match(/youtu\.be\/([^?]+)/)?.[1] || null;
-    const loadMedia = (item: SearchItem, mode: 'listen' | 'watch') => {
-      const link = preferred(item, mode);
-      if (!link) return;
-      mediaMachine.hidden = false;
-      mediaKicker.textContent = mode === 'watch' ? 'VIDEO MACHINE' : 'AUDIO MACHINE';
-      mediaTitle.textContent = item.title;
-      mediaStatus.textContent = `${link.platform.toUpperCase()} / READY — PLAYBACK DOES NOT START AUTOMATICALLY`;
-      mediaContext.textContent = [item.projectNames.join(' / '), link.releaseTitle, link.linkLevel].filter(Boolean).join(' · ');
-      mediaNotes.textContent = item.linerNotes ?? '';
-      mediaNotes.hidden = !item.linerNotes;
-      mediaExternal.href = link.url;
-      mediaExternal.firstChild!.textContent = `OPEN ON ${link.platform.toUpperCase()} `;
-      mediaScreen.replaceChildren();
+    const playerElement = (type: 'vhs' | 'cassette') => machine.querySelector<HTMLElement>(`[data-player="${type}"]`)!;
+    const youtubeId = (channel: ArchivePlayerChannel) => channel.mediaId || (() => {
+      try { return new URL(channel.externalUrl).searchParams.get('v') || channel.externalUrl.match(/youtu\.be\/([^?]+)/)?.[1] || null; }
+      catch { return null; }
+    })();
+    const safeBandcampEmbedUrl = (value: string) => {
+      try {
+        const parsed = new URL(value);
+        return parsed.protocol === 'https:'
+          && parsed.hostname === 'bandcamp.com'
+          && parsed.pathname.startsWith('/EmbeddedPlayer/')
+          && !/[?&]autoplay=1\b/i.test(parsed.href)
+          ? parsed.href
+          : null;
+      } catch { return null; }
+    };
+    const safeSameVersionEmbedUrl = (value: string) => {
+      try {
+        const parsed = new URL(value);
+        return parsed.protocol === 'https:'
+          && parsed.hostname === 'open.spotify.com'
+          && parsed.pathname.startsWith('/embed/')
+          && !/[?&]autoplay=1\b/i.test(parsed.href)
+          ? parsed.href
+          : null;
+      } catch { return null; }
+    };
+    const cassettePlayback = (channel: ArchivePlayerChannel) => {
+      for (const candidate of channel.playback.candidates) {
+        const embedUrl = candidate.kind.startsWith('bandcamp-')
+          ? safeBandcampEmbedUrl(candidate.embedUrl)
+          : safeSameVersionEmbedUrl(candidate.embedUrl);
+        if (embedUrl) return { ...candidate, embedUrl };
+      }
+      return null;
+    };
+    const clearPlayback = () => {
+      for (const element of playerElements) element.querySelector<HTMLElement>('[data-player-screen]')?.replaceChildren();
+    };
+    const renderPlayer = (type: 'vhs' | 'cassette', focus = false) => {
+      const state = playerState.get(type);
+      if (!state?.channels.length) return;
+      const channel = state.channels[state.index];
+      const element = playerElement(type);
+      const title = element.querySelector<HTMLElement>('[data-player-title]')!;
+      const channelLabel = element.querySelector<HTMLElement>('[data-player-channel]')!;
+      const status = element.querySelector<HTMLElement>('[data-player-status]')!;
+      const screen = element.querySelector<HTMLElement>('[data-player-screen]')!;
+      const controls = element.querySelector<HTMLElement>('[data-channel-controls]')!;
+      const position = element.querySelector<HTMLElement>('[data-channel-position]')!;
+      const info = element.querySelector<HTMLElement>('[data-player-info]')!;
+      const lyricPanel = element.querySelector<HTMLDetailsElement>('[data-player-lyrics]')!;
+      const lyricContent = element.querySelector<HTMLElement>('[data-lyrics-content]')!;
+      const linkPanel = element.querySelector<HTMLDetailsElement>('[data-player-links]')!;
+      const linkContent = element.querySelector<HTMLElement>('[data-links-content]')!;
 
-      let embedUrl = link.embedUrl;
-      if (link.platform === 'YouTube') {
-        const id = youtubeId(link);
+      clearPlayback();
+      title.textContent = channel.title;
+      channelLabel.textContent = `${channel.id} / ${channel.label}`;
+      status.textContent = `${channel.projectName.toUpperCase()} / ${channel.platform.toUpperCase()} / READY — PLAYBACK NEVER STARTS AUTOMATICALLY`;
+      controls.hidden = state.channels.length < 2;
+      position.textContent = `CHANNEL ${state.index + 1} / ${state.channels.length}`;
+
+      const selectedPlayback = type === 'cassette' ? cassettePlayback(channel) : null;
+      let embedUrl = selectedPlayback?.embedUrl ?? null;
+      if (type === 'vhs') {
+        const id = youtubeId(channel);
         embedUrl = id ? `https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0` : null;
       }
-      if (embedUrl && ['Bandcamp', 'YouTube', 'Spotify'].includes(link.platform)) {
+      screen.classList.toggle('archive-player-screen--bandcamp', Boolean(selectedPlayback?.kind.startsWith('bandcamp-')));
+      status.textContent = `${channel.projectName.toUpperCase()} / ${(selectedPlayback?.label ?? channel.platform).toUpperCase()} / READY — PLAYBACK NEVER STARTS AUTOMATICALLY`;
+      if (embedUrl) {
         const frame = document.createElement('iframe');
         frame.src = embedUrl;
-        frame.title = `${item.title} ${mode === 'watch' ? 'video' : 'audio'} player`;
+        frame.title = `${channel.title} — ${channel.versionLabel} ${type === 'vhs' ? 'video' : 'audio'} player`;
         frame.loading = 'lazy';
         frame.referrerPolicy = 'strict-origin-when-cross-origin';
-        frame.allow = link.platform === 'YouTube' ? 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' : 'encrypted-media';
-        frame.allowFullscreen = link.platform === 'YouTube';
-        mediaScreen.append(frame);
+        frame.allow = type === 'vhs' ? 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' : 'encrypted-media';
+        frame.allowFullscreen = type === 'vhs';
+        screen.append(frame);
+        if (selectedPlayback?.kind.startsWith('bandcamp-')) {
+          const attribution = document.createElement('a');
+          attribution.className = 'archive-bandcamp-attribution';
+          attribution.href = selectedPlayback.attributionUrl;
+          attribution.target = '_blank';
+          attribution.rel = 'noopener noreferrer';
+          attribution.textContent = selectedPlayback.releaseFallback
+            ? 'BANDCAMP RELEASE PLAYER FALLBACK / OPEN RELEASE ↗'
+            : 'BANDCAMP EXACT TRACK / OPEN TRACK ↗';
+          screen.append(attribution);
+        }
       } else {
-        const fallback = document.createElement('p');
-        fallback.textContent = `This source opens on ${link.platform}. Use the source link below when you are ready.`;
-        mediaScreen.append(fallback);
+        const fallback = document.createElement('div');
+        fallback.className = 'archive-external-fallback';
+        const message = document.createElement('p');
+        message.textContent = 'ON-PAGE PLAYER UNAVAILABLE. THE EXACT PUBLIC SOURCE REMAINS AVAILABLE.';
+        const anchor = document.createElement('a');
+        anchor.href = channel.playback.attributionUrl || channel.externalUrl;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.textContent = `${channel.platform === 'Bandcamp' ? 'PLAY ON BANDCAMP' : `OPEN ${channel.platform.toUpperCase()}`} ↗`;
+        fallback.append(message, anchor);
+        screen.append(fallback);
       }
 
-      mediaTitle.focus({ preventScroll: true });
-      mediaMachine.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      const facts = document.createElement('dl');
+      for (const fact of channel.facts) {
+        const term = document.createElement('dt');
+        const value = document.createElement('dd');
+        term.textContent = fact.label;
+        if (fact.url) {
+          const anchor = document.createElement('a');
+          anchor.href = fact.url;
+          anchor.target = '_blank';
+          anchor.rel = 'noopener noreferrer';
+          anchor.textContent = `${fact.value} ↗`;
+          value.append(anchor);
+        } else value.textContent = fact.value;
+        facts.append(term, value);
+      }
+      info.replaceChildren(facts);
+
+      lyricContent.replaceChildren();
+      lyricPanel.hidden = channel.lyrics.length === 0;
+      lyricPanel.open = false;
+      for (const lyric of channel.lyrics) {
+        const credit = document.createElement('p');
+        credit.className = 'archive-lyric-credit';
+        credit.textContent = `LYRICS / ${lyric.authors} · ${lyric.version}`;
+        const copy = document.createElement('pre');
+        copy.textContent = lyric.text;
+        lyricContent.append(credit, copy);
+        if (lyric.sampleTreatment) {
+          const sample = document.createElement('p');
+          sample.className = 'archive-sample-note';
+          sample.textContent = lyric.sampleTreatment;
+          lyricContent.append(sample);
+        }
+      }
+
+      linkContent.replaceChildren();
+      linkPanel.hidden = channel.streamLinks.length === 0;
+      linkPanel.open = false;
+      const linkList = document.createElement('ul');
+      for (const link of channel.streamLinks) {
+        const row = document.createElement('li');
+        const anchor = document.createElement('a');
+        anchor.href = link.url;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.textContent = `${link.label.toUpperCase()} ↗`;
+        const level = document.createElement('span');
+        level.textContent = link.level;
+        row.append(anchor, level);
+        linkList.append(row);
+      }
+      linkContent.append(linkList);
+      if (focus) {
+        title.focus({ preventScroll: true });
+        element.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      }
+    };
+    const loadPlayer = (item: SearchItem, type: 'vhs' | 'cassette') => {
+      const channels = matchingChannels(item, type);
+      if (!channels.length) return;
+      const bandcampIndex = channels.findIndex((channel) => channel.platform === 'Bandcamp');
+      playerState.set(type, { channels, index: type === 'cassette' && bandcampIndex >= 0 ? bandcampIndex : 0 });
+      renderPlayer(type, true);
     };
 
-    fetch('/data/music-archive/v02/archive.json')
+    fetch('/data/music-archive/v03/archive.json', { cache: 'no-store' })
       .then((response) => { if (!response.ok) throw new Error('archive data unavailable'); return response.json(); })
       .then((archive: ArchiveData) => {
-        if (archive.meta.publicKnownSongs !== 215 || archive.meta.counts.songLinks !== 619) throw new Error('public v02 contract mismatch');
+        if (archive.meta.schemaVersion !== 'music-archive-v03.2' || archive.meta.publicKnownSongs !== 215 || archive.meta.counts.songLinks !== 620 || archive.meta.counts.playerChannels !== 165 || archive.meta.counts.lyrics !== 26 || archive.meta.counts.bandcampEmbedRegistry !== 139) throw new Error('public v03.2 contract mismatch');
         data = archive;
         items = makeItems(archive);
         itemById = byId(items);
@@ -372,8 +530,6 @@
       filters.forEach((filter) => { filter.value = ''; });
       filters.find((filter) => filter.dataset.filter === 'decade')!.value = defaultDecade;
       filters.find((filter) => filter.dataset.filter === 'project')!.value = data.meta.latestView.projectId;
-      mediaMachine.hidden = true;
-      mediaScreen.replaceChildren();
       render();
       search.focus();
     });
@@ -381,13 +537,17 @@
       const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-media-action]');
       const item = button?.dataset.songId ? itemById.get(button.dataset.songId) : null;
       const mode = button?.dataset.mediaAction;
-      if (item && (mode === 'listen' || mode === 'watch')) loadMedia(item, mode);
+      if (item && mode === 'listen') loadPlayer(item, 'cassette');
+      if (item && mode === 'watch') loadPlayer(item, 'vhs');
     });
-    mediaClose.addEventListener('click', () => {
-      mediaMachine.hidden = true;
-      mediaScreen.replaceChildren();
-      mediaStatus.textContent = '';
-    });
+    playerElements.forEach((element) => element.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-channel-step]');
+      const type = element.dataset.player as 'vhs' | 'cassette';
+      const state = playerState.get(type);
+      if (!button || !state?.channels.length) return;
+      state.index = (state.index + Number(button.dataset.channelStep) + state.channels.length) % state.channels.length;
+      renderPlayer(type);
+    }));
   }
 </script>
 
@@ -437,15 +597,14 @@
   .archive-control-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
   .archive-result-count { margin: 0; color: var(--archive-white); font-size: .78rem; font-weight: 700; letter-spacing: .1em; }
   .archive-reset,
-  .archive-media-heading button,
   .archive-actions button { min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); background: #000; color: #fff; cursor: pointer; }
   .archive-reset:hover,
-  .archive-media-heading button:hover,
   .archive-actions button:hover { background: #fff; color: #000; }
   [data-archive-search]:focus-visible,
   select:focus-visible,
   button:focus-visible,
-  .archive-media-context a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  summary:focus-visible,
+  .archive-stream-links a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .archive-output { padding: 1rem; }
   .archive-state,
   .archive-noscript,
@@ -469,20 +628,53 @@
   .archive-results :global(.archive-actions button) { min-width: 92px; min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); border-radius: 0; background: #000; color: #fff; font: 700 .72rem/1 monospace; letter-spacing: .1em; cursor: pointer; }
   .archive-results :global(.archive-actions button:hover) { background: #fff; color: #000; }
   .archive-results :global(.archive-actions button:focus-visible) { outline: 3px solid #fff; outline-offset: 3px; }
-  .archive-media-machine { scroll-margin-top: 1rem; margin-top: 1.25rem; border: 2px solid var(--archive-mid); background: #030303; }
-  .archive-media-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--archive-mid); }
-  .archive-media-heading p { margin: 0 0 .25rem; color: var(--archive-mid); font-size: .68rem; letter-spacing: .14em; }
-  .archive-media-heading h2 { margin: 0; font-size: clamp(1.15rem, 5vw, 1.7rem); overflow-wrap: anywhere; }
-  .archive-media-status { margin: 0; padding: .75rem 1rem; border-bottom: 1px solid var(--archive-line); color: var(--jf-gray-strong); font-size: .68rem; letter-spacing: .08em; }
-  .archive-media-screen { min-height: 180px; display: grid; place-items: center; padding: .75rem; background: #000; }
-  .archive-media-screen :global(iframe) { width: 100%; min-height: 180px; border: 0; }
-  .archive-media-screen :global(p) { margin: 0; max-width: 46ch; color: var(--jf-gray-strong); text-align: center; }
-  .archive-media-context { padding: 1rem; overflow-wrap: anywhere; }
-  .archive-media-context p { margin: 0 0 .7rem; color: var(--jf-gray-strong); }
-  .archive-media-context p + p { color: var(--archive-mid); font-size: .76rem; }
-  .archive-media-context a,
+  .archive-results :global(.archive-actions button:disabled) { border-color: #333; background: #111; color: #666; cursor: not-allowed; }
+  .archive-results :global(.archive-actions button:disabled:hover) { background: #111; color: #666; }
+  .archive-player-rack { display: grid; gap: 1.25rem; margin-top: 1.25rem; }
+  .archive-player { scroll-margin-top: 1rem; min-width: 0; border: 2px solid var(--archive-mid); background: #030303; box-shadow: inset 0 0 0 5px #080808; }
+  .archive-player--vhs { border-style: double; border-width: 5px; }
+  .archive-player-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; padding: 1rem; border-bottom: 1px solid var(--archive-mid); }
+  .archive-player-heading p { margin: 0 0 .25rem; color: var(--archive-mid); font-size: .66rem; letter-spacing: .14em; }
+  .archive-player-heading h2 { margin: 0; font-size: clamp(1.15rem, 5vw, 1.7rem); overflow-wrap: anywhere; }
+  .archive-player-heading > span { max-width: 45%; color: var(--jf-gray-strong); font-size: .62rem; letter-spacing: .08em; text-align: right; overflow-wrap: anywhere; }
+  .archive-player-status { margin: 0; padding: .65rem 1rem; border-bottom: 1px solid var(--archive-line); color: var(--jf-gray-strong); font-size: .64rem; letter-spacing: .08em; }
+  .archive-player-screen { display: grid; min-height: 160px; place-items: center; padding: .7rem; background: repeating-linear-gradient(0deg, #030303 0 3px, #0b0b0b 3px 4px); }
+  .archive-player-screen--bandcamp { grid-template-rows: minmax(150px, 1fr) auto; }
+  .archive-player--vhs .archive-player-screen { aspect-ratio: 16 / 9; min-height: 0; }
+  .archive-player-screen :global(iframe) { width: 100%; height: 100%; min-height: 150px; border: 0; background: #000; }
+  .archive-player-screen :global(p) { max-width: 44ch; margin: 0; padding: 1rem; color: var(--jf-gray-strong); font-size: .72rem; text-align: center; }
+  .archive-player-screen :global(.archive-bandcamp-attribution),
+  .archive-player-screen :global(.archive-external-fallback a) { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; color: #fff; border-bottom: 1px dashed var(--archive-mid); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-align: center; }
+  .archive-player-screen :global(.archive-bandcamp-attribution) { width: 100%; padding: .35rem .6rem 0; }
+  .archive-player-screen :global(.archive-external-fallback) { display: grid; place-items: center; }
+  .archive-player-screen :global(.archive-bandcamp-attribution:hover),
+  .archive-player-screen :global(.archive-external-fallback a:hover) { border-bottom-color: #fff; }
+  .archive-channel-controls { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .5rem; padding: .65rem; border-block: 1px solid var(--archive-line); }
+  .archive-channel-controls button { min-height: 44px; padding: .5rem .65rem; border: 1px solid var(--archive-mid); background: #000; color: #fff; cursor: pointer; }
+  .archive-channel-controls button:hover { background: #fff; color: #000; }
+  .archive-channel-controls span { color: var(--archive-mid); font-size: .62rem; letter-spacing: .08em; text-align: center; }
+  .archive-version-info { padding: 1rem; }
+  .archive-version-info > p { margin: 0; color: var(--jf-gray-strong); }
+  .archive-version-info :global(dl) { display: grid; grid-template-columns: minmax(105px, .35fr) minmax(0, 1fr); margin: 0; font-size: .72rem; }
+  .archive-version-info :global(dt),
+  .archive-version-info :global(dd) { margin: 0; padding: .42rem 0; border-top: 1px solid #222; overflow-wrap: anywhere; }
+  .archive-version-info :global(dt) { color: var(--archive-mid); }
+  .archive-version-info :global(dd) { color: var(--jf-gray-strong); }
+  .archive-version-info :global(dd a) { color: #fff; border-bottom: 1px dashed var(--archive-mid); }
+  .archive-lyrics,
+  .archive-stream-links { border-top: 1px dashed var(--archive-mid); }
+  .archive-lyrics summary,
+  .archive-stream-links summary { min-height: 44px; padding: .8rem 1rem; color: #fff; font-size: .7rem; font-weight: 700; letter-spacing: .1em; cursor: pointer; }
+  .archive-lyrics > div,
+  .archive-stream-links > div { padding: 0 1rem 1rem; }
+  .archive-lyrics :global(pre) { max-height: 28rem; margin: .75rem 0; padding: 1rem; overflow: auto; border: 1px solid var(--archive-line); background: #000; color: var(--jf-gray-strong); font: inherit; line-height: 1.65; white-space: pre-wrap; }
+  .archive-lyric-credit,
+  .archive-sample-note { color: var(--archive-mid); font-size: .68rem; }
+  .archive-stream-links :global(ul) { display: grid; gap: .6rem; margin: 0; padding: 0; list-style: none; }
+  .archive-stream-links :global(li) { display: grid; gap: .2rem; padding-top: .55rem; border-top: 1px solid var(--archive-line); }
+  .archive-stream-links :global(a) { color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .06em; overflow-wrap: anywhere; }
+  .archive-stream-links :global(span) { color: var(--archive-mid); font-size: .65rem; }
   .archive-noscript a { display: inline-flex; min-height: 44px; align-items: center; color: var(--archive-white); border-bottom: 1px dashed var(--archive-mid); font-size: .72rem; font-weight: 700; letter-spacing: .08em; }
-  .archive-media-context a:hover,
   .archive-noscript a:hover { color: var(--archive-white); border-bottom-color: var(--archive-white); }
   [hidden] { display: none !important; }
   @media (min-width: 620px) {
@@ -491,11 +683,6 @@
     .archive-machine-art { border-top: 0; border-left: 2px solid var(--archive-mid); }
     .archive-filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .archive-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .archive-media-screen :global(iframe) { min-height: 360px; }
-  }
-  @media (max-width: 390px) {
-    .archive-media-heading { align-items: stretch; flex-direction: column; }
-    .archive-media-heading button { align-self: flex-start; }
   }
   @media (max-width: 360px) {
     .archive-machine { width: calc(100% - 12px); }
