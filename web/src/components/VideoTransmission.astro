@@ -2,6 +2,7 @@
 interface VideoInfo {
   label: string;
   value: string;
+  url?: string;
 }
 
 interface VideoChannel {
@@ -106,7 +107,9 @@ const statusId = `${anchorId}-status`;
           {initialChannel.info.map((item) => (
             <div>
               <dt>{item.label}</dt>
-              <dd>{item.value}</dd>
+              <dd>
+                {item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer">{item.value} <span aria-hidden="true">&#8599;</span></a> : item.value}
+              </dd>
             </div>
           ))}
         </dl>
@@ -125,6 +128,7 @@ const statusId = `${anchorId}-status`;
   interface ChannelInfo {
     label: string;
     value: string;
+    url?: string;
   }
 
   interface ChannelData {
@@ -198,7 +202,14 @@ const statusId = `${anchorId}-status`;
         const term = document.createElement('dt');
         const detail = document.createElement('dd');
         term.textContent = item.label;
-        detail.textContent = item.value;
+        if (item.url) {
+          const link = document.createElement('a');
+          link.href = item.url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = `${item.value} ↗`;
+          detail.append(link);
+        } else detail.textContent = item.value;
         row.append(term, detail);
         return row;
       });
@@ -471,6 +482,7 @@ const statusId = `${anchorId}-status`;
 
   .channel-bank button:focus-visible,
   .power-button:focus-visible,
+  .channel-info a:focus-visible,
   .release-links a:focus-visible {
     outline: 3px solid var(--jf-fg);
     outline-offset: 3px;
@@ -619,6 +631,15 @@ const statusId = `${anchorId}-status`;
     color: var(--jf-gray-strong);
     overflow-wrap: anywhere;
   }
+
+  .channel-info a {
+    color: var(--jf-fg);
+    border-bottom: 1px dashed var(--jf-gray-mid);
+    font-weight: 700;
+  }
+
+  .channel-info a:hover,
+  .channel-info a:focus { color: var(--jf-fg); border-bottom-color: var(--jf-fg); }
 
   .release-links {
     display: flex;
