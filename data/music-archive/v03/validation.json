@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "music-archive-v03.2",
+  "compilerVersion": "3.2.0-beta.1",
+  "sourceVersion": "v03.2-handoff-2026-08-14",
+  "sourceSha256": "DD483F7E2B1D289E93A78F23F6918208391288F1D21A5CB29696C06D6EDC231F",
+  "sourceSheetCount": 34,
+  "status": "valid",
+  "counts": {
+    "releases": 59,
+    "recordings": 320,
+    "songs": 220,
+    "projects": 7,
+    "songLinks": 620,
+    "playerChannels": 165,
+    "lyrics": 26,
+    "bandcampEmbedRegistry": 139
+  },
+  "coverage": {
+    "sourceSheets": 34,
+    "originalPlayerChannels": 27,
+    "addedPlayerChannels": 138,
+    "playerChannels": 165,
+    "cassetteChannels": 135,
+    "vhsChannels": 30,
+    "eligibleBandcampDirectRecordingLinks": 124,
+    "eligibleBandcampDirectLinksWithoutChannel": 0,
+    "bandcampRegistryRows": 139,
+    "bandcampTrackRegistryRows": 124,
+    "bandcampAlbumRegistryRows": 15,
+    "noraGnollChannels": 52,
+    "noraGnollCassetteChannels": 52,
+    "noraGnollVhsChannels": 0,
+    "noraGnollLyrics": 13
+  },
+  "publicKnownSongs": 215,
+  "playerChannelContract": "165 concrete rows; 135 cassette + 30 VHS; stable IDs retained",
+  "bandcampPlaybackContract": "124 exact TRACK registry rows + 15 same-release ALBUM fallbacks; strict https://bandcamp.com/EmbeddedPlayer/ whitelist; no autoplay",
+  "rollbackArtifact": "/data/music-archive/v02/archive.json",
+  "warnings": [],
+  "errors": []
+}
