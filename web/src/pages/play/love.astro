@@ -1,0 +1,46 @@
+---
+import LovePlayMachine from '../../components/play/LovePlayMachine.astro';
+
+const title = 'LOVE — Junkfeathers PLAY (secret beta)';
+const description = 'Unlisted playable beta for Junkfeathers PLAY 001 — Love (feat. Tygertyger).';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main class="love-play-page">
+      <LovePlayMachine />
+    </main>
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    background: #000;
+    color: #fff;
+  }
+
+  .love-play-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    overflow-x: hidden;
+  }
+</style>

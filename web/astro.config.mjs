@@ -6,5 +6,9 @@ export default defineConfig({
   site: 'https://junkfeathers.com',
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()]
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/play/')
+    })
+  ]
 });
