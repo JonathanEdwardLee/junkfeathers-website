@@ -15,11 +15,13 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "play:test": "node --test scripts/play/love-phase1.test.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.3",
-    "astro": "6.4.8"
+    "astro": "6.4.8",
+    "phaser": "4.2.1"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",
