@@ -76,7 +76,7 @@ test('playback stays one iframe, no autoplay, and Bandcamp stays origin-locked',
   assert.doesNotMatch(importer, /fetch\s*\(|\.mp3\b|audio[_-]?url/i);
 });
 
-test('Multimedia Machine is a fixed sibling CRT with cassette watch art and no white buttons', () => {
+test('Multimedia Machine is a fixed sibling CRT with cassette watch art and no white card buttons', () => {
   assert.match(archiveMachine, /class="multimedia-machine"/);
   assert.match(archiveMachine, /AWAITING INPUT/);
   assert.match(archiveMachine, /mm-cassette-shell/);
@@ -86,13 +86,25 @@ test('Multimedia Machine is a fixed sibling CRT with cassette watch art and no w
   assert.match(archiveMachine, /openMachine\(openSong, channelId, 'INFO', true\)/);
   assert.doesNotMatch(archiveMachine, /aspect-ratio: 16 \/ 9/);
   assert.match(archiveMachine, /width: min\(100% - 1rem, 780px\)/);
-  assert.match(archiveMachine, /\.archive-stack :global\(button:not\(\.mm-version-link\)\)/);
+  assert.match(archiveMachine, /\.archive-stack :global\(button:not\(\.mm-version-link\):not\(\.machine-tab\)\)/);
   assert.match(archiveMachine, /className = 'archive-btn'/);
   assert.match(archiveMachine, /background: #000 !important;\s*\n\s*background-color: #000 !important;\s*\n\s*color: #fff !important;/);
-  assert.doesNotMatch(archiveMachine, /background: #fff;\s*color: #000/);
+  assert.match(archiveMachine, /\.mm-tabs \.machine-tab\[aria-selected='true'\]:not\(:disabled\) \{[\s\S]*background: #fff;[\s\S]*color: #000;/);
   assert.doesNotMatch(archiveMachine, /data-mm-close|mmClose|>CLOSE</);
   assert.doesNotMatch(archiveMachine, /#7cff7c|#aaffaa/i);
   assert.match(archiveMachine, /\.archive-machine::before,\s*\n\s*\.archive-machine::after,\s*\n\s*\.multimedia-machine::before,\s*\n\s*\.multimedia-machine::after \{[\s\S]*background: var\(--archive-white\)/);
+});
+
+test('Multimedia Machine keeps a fixed five-slot bar and disables unavailable surfaces', () => {
+  assert.match(archiveMachine, /SURFACE_ORDER: Surface\[\] = \['INFO', 'LISTEN', 'WATCH', 'LYRICS', 'VERSIONS'\]/);
+  assert.match(archiveMachine, /\(\['INFO', 'LISTEN', 'WATCH', 'LYRICS', 'VERSIONS'\] as const\)/);
+  assert.match(archiveMachine, /data-surface=\{surface\}/);
+  assert.match(archiveMachine, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
+  assert.match(archiveMachine, /white-space: nowrap/);
+  assert.match(archiveMachine, /tab\.disabled = !enabled/);
+  assert.match(archiveMachine, /if \(version && !surfaceEnabled\(openSurface, version\)\) openSurface = 'INFO'/);
+  assert.match(archiveMachine, /filter\(\(tab\) => !tab\.disabled\)/);
+  assert.doesNotMatch(archiveMachine, /mmTabs\.replaceChildren\(\)/);
 });
 
 test('new Archive copy avoids the restricted word and invented machine instructions', () => {
@@ -104,9 +116,9 @@ test('new Archive copy avoids the restricted word and invented machine instructi
   assert.match(archiveMachine, /overflow-x: hidden/);
 });
 
-test('Music-page Channel Machine remains on v03.2 and is untouched by the v04 importer', () => {
-  assert.match(musicPage, /music-archive-v03\.2/);
-  assert.match(musicPage, /public\/data\/music-archive\/v03\/archive\.json/);
+test('Music-page Channel Machine preserves youtube playback and is not rewritten by the v04 importer', () => {
+  assert.match(musicPage, /music-archive-v04\.0/);
+  assert.match(musicPage, /public\/data\/music-archive\/v04\/archive\.json/);
   assert.match(videoTransmission, /youtube-nocookie\.com/);
   assert.doesNotMatch(videoTransmission, /autoplay=1/);
   assert.equal(v03Importer.includes('music-archive-v03.2'), true);
