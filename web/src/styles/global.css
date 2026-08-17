@@ -11,8 +11,8 @@
   --jf-gray-mid: #8a8a8a;
   --jf-gray-soft: #4d4d4d;
   --jf-border-color: #ffffff;
-  --jf-link: #7cff7c;
-  --jf-link-hover: #aaffaa;
+  --jf-link: #ffffff;
+  --jf-link-hover: #ffffff;
 
   /* Borders */
   --jf-border-major: 3px;
@@ -46,6 +46,7 @@ html, body {
   max-width: 100vw;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+  accent-color: #fff;
 }
 
 .site-container {

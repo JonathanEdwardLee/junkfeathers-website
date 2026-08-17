@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "music-archive-v04.0",
+  "compilerVersion": "4.0.0-beta.1",
+  "sourceVersion": "v04-handoff-2026-08-16",
+  "sourceSha256": "1713BE9ED735A5F6273FAD98FDBC0610364F97EF1976084F6862FD8B7D246447",
+  "sourceSheetCount": 35,
+  "status": "valid",
+  "counts": {
+    "releases": 59,
+    "recordings": 333,
+    "songs": 220,
+    "projects": 7,
+    "songLinks": 640,
+    "playerChannels": 409,
+    "lyrics": 147,
+    "bandcampEmbedRegistry": 139
+  },
+  "coverage": {
+    "sourceSheets": 35,
+    "playerChannels": 409,
+    "cassetteChannels": 263,
+    "vhsChannels": 146,
+    "lyrics": 147,
+    "songLinks": 641,
+    "bandcampRegistryRows": 139,
+    "bandcampTrackRegistryRows": 124,
+    "bandcampAlbumRegistryRows": 15,
+    "p0Media": 0,
+    "p1Lyrics": 80,
+    "p2CreditsMetadata": 140
+  },
+  "publicKnownSongs": 215,
+  "rollbackArtifact": "/data/music-archive/v03/archive.json",
+  "warnings": [],
+  "errors": []
+}
