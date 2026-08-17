@@ -40,9 +40,21 @@ test('timeline scenes stay inside the audio duration', async () => {
   assert.match(source, /end: 87\.06/);
 });
 
-test('lyric and sample cues are capped at two lines in config', async () => {
+test('authored captions match the corrected LYR-0001 wording and keep sample cues separate', async () => {
   const source = await read('src/data/play/love-phase1.timeline.ts');
   assert.match(source, /block\.lines\.length > 2/);
+  assert.match(source, /Oh the things that we do for love,/);
+  assert.match(source, /oh the things that we give for love\./);
+  assert.match(source, /now he's losing his mind/);
+  assert.match(source, /Life isn't lived without some love,/);
+  assert.match(source, /so we simply lose our mind\./);
+  assert.doesNotMatch(source, /All the things that we do for love/);
+  assert.doesNotMatch(source, /But life isn't the end without some love/);
+  assert.doesNotMatch(source, /so it's simply lose our mind/);
+  assert.match(source, /kind: 'sample', start: 1\.12/);
+  assert.match(source, /When human beings are very young/);
+  assert.match(source, /end: 8\.727273/);
+  assert.match(source, /sampleBreak: 152\.52/);
 });
 
 test('one Phaser scene, no physics, optional hearts, no fail state', async () => {

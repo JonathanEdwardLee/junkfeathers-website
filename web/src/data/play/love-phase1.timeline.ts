@@ -140,8 +140,8 @@ export const LOVE_PHASE1 = {
     { id: 'l-10', kind: 'lyric', start: 38.62, end: 42.64, lines: ['but I was dying of boredom here,'] },
     { id: 'l-11', kind: 'lyric', start: 42.64, end: 44.5, lines: ['and I had to fly'] },
     { id: 'l-12', kind: 'lyric', start: 46.62, end: 49.4, lines: ['to a bluer sky.'] },
-    { id: 'l-13', kind: 'lyric', start: 54.06, end: 58.46, lines: ['All the things that we do for love,'] },
-    { id: 'l-14', kind: 'lyric', start: 62.94, end: 67.66, lines: ['all the things that we give for love.'] },
+    { id: 'l-13', kind: 'lyric', start: 54.06, end: 58.46, lines: ['Oh the things that we do for love,'] },
+    { id: 'l-14', kind: 'lyric', start: 62.94, end: 67.66, lines: ['oh the things that we give for love.'] },
     { id: 'l-15', kind: 'lyric', start: 70.4, end: 75.94, lines: ['He had been such a fool for love,'] },
     { id: 'l-16', kind: 'lyric', start: 78.54, end: 82.56, lines: ['and now he watched it disappear.'] },
     { id: 'l-17', kind: 'lyric', start: 88.06, end: 91.56, lines: ['All over the world,'] },
@@ -149,8 +149,8 @@ export const LOVE_PHASE1 = {
     { id: 'l-19', kind: 'lyric', start: 95.68, end: 99.56, lines: ['thirty-seven cities', 'and ninety hotels,'] },
     { id: 'l-20', kind: 'lyric', start: 100.88, end: 105.2, lines: ['but he never got there on time.'] },
     { id: 'l-21', kind: 'lyric', start: 106.3, end: 109.86, lines: ['He was losing his mind.'] },
-    { id: 'l-22', kind: 'lyric', start: 113.78, end: 119.68, lines: ['All the things that we do for love,'] },
-    { id: 'l-23', kind: 'lyric', start: 123.86, end: 128.74, lines: ['all the sins we commit for love.'] },
+    { id: 'l-22', kind: 'lyric', start: 113.78, end: 119.68, lines: ['Oh the things that we do for love,'] },
+    { id: 'l-23', kind: 'lyric', start: 123.86, end: 128.74, lines: ['oh the sins we commit for love.'] },
     { id: 'l-24', kind: 'lyric', start: 131.04, end: 137.94, lines: ['Oh, you are such a fool for love,'] },
     { id: 'l-25', kind: 'lyric', start: 139.66, end: 145.6, lines: ["and now he's losing his mind."] },
     { id: 'l-26', kind: 'lyric', start: 147.2, end: 151.4, lines: ['Love, love.'] },
@@ -201,10 +201,10 @@ export const LOVE_PHASE1 = {
       end: 191.0,
       lines: ['Little boys have a penis and testes.', 'Little girls have no penis and testes.']
     },
-    { id: 'l-30', kind: 'lyric', start: 203.52, end: 209.7, lines: ['All the things that we do for love,'] },
-    { id: 'l-31', kind: 'lyric', start: 213.26, end: 217.32, lines: ['all the sins we commit for love.'] },
-    { id: 'l-32', kind: 'lyric', start: 221.0, end: 226.4, lines: ["But life isn't the end without some love,"] },
-    { id: 'l-33', kind: 'lyric', start: 231.06, end: 235.42, lines: ["so it's simply lose our mind."] }
+    { id: 'l-30', kind: 'lyric', start: 203.52, end: 209.7, lines: ['Oh the things that we do for love,'] },
+    { id: 'l-31', kind: 'lyric', start: 213.26, end: 217.32, lines: ['oh the sins we commit for love.'] },
+    { id: 'l-32', kind: 'lyric', start: 221.0, end: 226.4, lines: ["Life isn't lived without some love,"] },
+    { id: 'l-33', kind: 'lyric', start: 231.06, end: 235.42, lines: ['so we simply lose our mind.'] }
   ] satisfies LyricBlock[],
   /**
    * Optional breakable hearts. They fade in the four corners on the one.

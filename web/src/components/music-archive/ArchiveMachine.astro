@@ -1,3 +1,4 @@
+<div class="archive-stack" data-archive-stack>
 <section class="archive-machine" data-archive-machine>
   <div class="archive-console-top">
     <header class="archive-header">
@@ -20,7 +21,7 @@
         <span>01</span><span>03</span><span>05</span><span>07</span><span>10</span>
       </div>
       <div class="archive-art-status">
-        <span>INDEX / V03.2</span>
+        <span>INDEX / V04</span>
         <strong>READ HEAD ACTIVE</strong>
       </div>
     </div>
@@ -34,26 +35,26 @@
       <label>
         <span>DECADE</span>
         <select data-filter="decade" disabled>
-          <option value="">ALL DECADES</option>
+          <option value="all">ALL DECADES</option>
         </select>
       </label>
       <label>
         <span>PROJECT / BAND</span>
         <select data-filter="project" disabled>
-          <option value="">ALL PROJECTS / BANDS</option>
+          <option value="all">ALL PROJECTS / BANDS</option>
         </select>
       </label>
       <label>
         <span>STREAMING PLATFORM</span>
         <select data-filter="platform" disabled>
-          <option value="">ALL STREAMING PLATFORMS</option>
+          <option value="all">ALL STREAMING PLATFORMS</option>
         </select>
       </label>
     </div>
 
     <div class="archive-control-footer">
-      <p class="archive-result-count" role="status" aria-live="polite" data-result-count>LOADING ARCHIVE SIGNAL&hellip;</p>
-      <button type="button" class="archive-reset" data-reset disabled>RESET SEARCH</button>
+      <p class="archive-result-count" role="status" aria-live="polite" data-result-count>LOADING ARCHIVE&hellip;</p>
+      <button type="button" class="archive-reset archive-btn" data-reset disabled>RESET SEARCH</button>
     </div>
   </div>
 
@@ -63,56 +64,57 @@
       VERIFYING PUBLIC CATALOG&hellip;
     </div>
     <div class="archive-state archive-state--error" data-error-state hidden>
-      ARCHIVE SIGNAL UNAVAILABLE. THE MUSIC PAGE IS STILL ONLINE; TRY THIS MACHINE AGAIN LATER.
+      ARCHIVE UNAVAILABLE. THE MUSIC PAGE IS STILL ONLINE; TRY THIS MACHINE AGAIN LATER.
     </div>
     <div class="archive-state" data-no-results hidden>
-      NO MATCHING SIGNAL. ADJUST THE SEARCH OR RESET THE FILTERS.
+      NO MATCHING SONGS. ADJUST THE SEARCH OR RESET THE FILTERS.
     </div>
 
     <div class="archive-results" data-results aria-label="Archive results"></div>
-    <p class="archive-limit-note" data-limit-note hidden></p>
-
-    <div class="archive-player-rack" aria-label="Persistent archive players">
-      <section class="archive-player archive-player--vhs" aria-labelledby="archive-vhs-title" data-player="vhs">
-        <div class="archive-player-heading">
-          <div><p>VHS VIDEO PLAYER</p><h2 id="archive-vhs-title" tabindex="-1" data-player-title>SELECT WATCH</h2></div>
-          <span data-player-channel>VHS / STANDBY</span>
-        </div>
-        <p class="archive-player-status" role="status" aria-live="polite" data-player-status>NO VIDEO CHANNEL SELECTED</p>
-        <div class="archive-player-screen" data-player-screen><p>VHS SIGNAL STANDBY</p></div>
-        <div class="archive-channel-controls" data-channel-controls hidden>
-          <button type="button" data-channel-step="-1" aria-label="Previous video channel">&#9664; PREV</button>
-          <span data-channel-position></span>
-          <button type="button" data-channel-step="1" aria-label="Next video channel">NEXT &#9654;</button>
-        </div>
-        <div class="archive-version-info" data-player-info><p>Choose WATCH on an archive card. The machine will stay with that exact project and recording context.</p></div>
-        <details class="archive-lyrics" data-player-lyrics hidden><summary>READ LYRICS</summary><div data-lyrics-content></div></details>
-        <details class="archive-stream-links" data-player-links hidden><summary>STREAM / LINKS</summary><div data-links-content></div></details>
-      </section>
-
-      <section class="archive-player archive-player--cassette" aria-labelledby="archive-cassette-title" data-player="cassette">
-        <div class="archive-player-heading">
-          <div><p>CASSETTE AUDIO PLAYER</p><h2 id="archive-cassette-title" tabindex="-1" data-player-title>SELECT LISTEN</h2></div>
-          <span data-player-channel>CASSETTE / STANDBY</span>
-        </div>
-        <p class="archive-player-status" role="status" aria-live="polite" data-player-status>NO AUDIO CHANNEL SELECTED</p>
-        <div class="archive-player-screen" data-player-screen><p>CASSETTE SIGNAL STANDBY</p></div>
-        <div class="archive-channel-controls" data-channel-controls hidden>
-          <button type="button" data-channel-step="-1" aria-label="Previous audio channel">&#9664; PREV</button>
-          <span data-channel-position></span>
-          <button type="button" data-channel-step="1" aria-label="Next audio channel">NEXT &#9654;</button>
-        </div>
-        <div class="archive-version-info" data-player-info><p>Choose LISTEN on an archive card. Bandcamp is selected first when the exact recording has supported playback.</p></div>
-        <details class="archive-lyrics" data-player-lyrics hidden><summary>READ LYRICS</summary><div data-lyrics-content></div></details>
-        <details class="archive-stream-links" data-player-links hidden><summary>STREAM / LINKS</summary><div data-links-content></div></details>
-      </section>
-    </div>
+    <nav class="archive-pager" data-archive-pager hidden aria-label="Archive result pages">
+      <button type="button" class="archive-btn" data-page-step="-1" aria-label="Previous page">PREV</button>
+      <label class="archive-page-label">
+        <span>PAGE</span>
+        <select data-page-select aria-label="Page number"></select>
+      </label>
+      <span data-page-count></span>
+      <button type="button" class="archive-btn" data-page-step="1" aria-label="Next page">NEXT</button>
+    </nav>
 
     <noscript>
       <p class="archive-noscript">Interactive archive search requires JavaScript. The existing music transmission remains available on the <a href="/music/">Music page <span aria-hidden="true">&#8599;</span></a>.</p>
     </noscript>
   </div>
 </section>
+
+<section class="multimedia-machine" data-multimedia-machine data-state="idle" aria-label="Multimedia Machine">
+  <div class="mm-heading">
+    <div>
+      <p>MULTIMEDIA MACHINE</p>
+      <h2 id="archive-mm-title" tabindex="-1" data-mm-title>STANDBY</h2>
+    </div>
+    <div class="mm-tools">
+      <span data-mm-readout></span>
+    </div>
+  </div>
+  <div class="mm-tabs" role="tablist" aria-label="Multimedia Machine surfaces" data-mm-tabs>
+    <button type="button" class="archive-btn" role="tab" data-surface="INFO" aria-selected="true" tabindex="0">INFO</button>
+  </div>
+  <div class="mm-stage">
+    <div class="mm-panel" data-mm-panel>
+      <div class="mm-crt" aria-live="polite">
+        <div class="mm-crt-noise" aria-hidden="true"></div>
+        <div class="mm-crt-scan" aria-hidden="true"></div>
+        <p class="mm-await">AWAITING INPUT<span class="mm-cursor" aria-hidden="true">_</span></p>
+      </div>
+    </div>
+  </div>
+  <aside class="mm-drawer" aria-label="Streaming destinations" data-mm-drawer>
+    <p>STREAMING</p>
+    <p>AWAITING INPUT</p>
+  </aside>
+</section>
+</div>
 
 <script>
   interface ArchiveProject { id: string; name: string }
@@ -122,15 +124,24 @@
     id: string; songId: string; platform: string; priority: number; url: string; linkLevel: string;
     releaseTitle: string | null; mediaId: string | null; embedUrl: string | null; supportContext: string | null;
   }
+  interface ArchiveDestination {
+    id: string; platform: string; url: string; kind: 'exact' | 'release-page' | 'smart-link'; label: string; level: string;
+  }
+  interface ArchiveVersion {
+    key: string; recordingId: string | null; releaseId: string | null; projectId: string; projectName: string;
+    label: string; datePrecision: string | null; listenChannelIds: string[]; watchChannelIds: string[];
+    lyricIds: string[]; lyricState: string; destinations: ArchiveDestination[];
+  }
   interface ArchiveSong {
     id: string; title: string; aliases: string[]; projectIds: string[]; projectNames: string[];
     recordingIds: string[]; releaseIds: string[]; linkIds: string[]; eligibility: string;
     alternateTitle: string | null; writing: string | null; lyrics: string | null; vocal: string | null;
     acoustic: boolean; creditStatus: string; linerNotes: string | null; decade: string | null;
     contexts: string[]; date: { value: string; precision: string | null; releaseId: string } | null;
+    credits: { name: string; category: string; role: string }[];
+    versions: ArchiveVersion[];
   }
   interface ArchivePlayerFact { label: string; value: string; url?: string }
-  interface ArchivePlayerLink { label: string; platform: string; url: string; level: string }
   interface ArchivePlaybackCandidate {
     kind: 'bandcamp-track' | 'bandcamp-album-fallback' | 'same-version';
     label: string; embedUrl: string; registryId: string | null; attributionUrl: string;
@@ -144,13 +155,14 @@
   interface ArchiveLyric {
     id: string; songId: string; title: string; version: string; text: string; authors: string;
     sourceType: string; evidence: string; rights: string; sampleTreatment: string | null;
+    publicEligible?: boolean; state?: string;
   }
   interface ArchivePlayerChannel {
     id: string; songId: string; title: string; type: 'vhs' | 'cassette'; order: number; label: string;
-    recordingId: string; releaseId: string; versionLabel: string; platform: string; songLinkId: string;
+    recordingId: string | null; releaseId: string | null; versionKey: string; versionLabel: string; platform: string; songLinkId: string;
     playbackMethod: string; externalUrl: string; datePrecision: string; projectId: string; projectName: string;
     mediaId: string | null; embedUrl: string | null; playback: ArchivePlayback; facts: ArchivePlayerFact[];
-    streamLinks: ArchivePlayerLink[]; lyrics: ArchiveLyric[];
+    lyrics: ArchiveLyric[];
   }
   interface ArchiveData {
     meta: {
@@ -161,17 +173,19 @@
     };
     facets: { decades: string[]; projects: ArchiveProject[]; platforms: string[] };
     projects: ArchiveProject[]; songs: ArchiveSong[]; releases: ArchiveRelease[];
-    recordings: ArchiveRecording[]; songLinks: ArchiveSongLink[]; playerChannels: ArchivePlayerChannel[];
+    recordings: ArchiveRecording[]; songLinks: ArchiveSongLink[]; lyrics: ArchiveLyric[]; playerChannels: ArchivePlayerChannel[];
   }
   interface SearchItem extends ArchiveSong {
     searchText: string;
     releases: ArchiveRelease[];
-    versions: ArchiveRecording[];
+    recordings: ArchiveRecording[];
     links: ArchiveSongLink[];
   }
+  type Surface = 'INFO' | 'LISTEN' | 'WATCH' | 'LYRICS' | 'VERSIONS';
 
   const machine = document.querySelector<HTMLElement>('[data-archive-machine]');
-  if (machine) {
+  const mm = document.querySelector<HTMLElement>('[data-multimedia-machine]');
+  if (machine && mm) {
     const search = machine.querySelector<HTMLInputElement>('[data-archive-search]')!;
     const filters = [...machine.querySelectorAll<HTMLSelectElement>('[data-filter]')];
     const reset = machine.querySelector<HTMLButtonElement>('[data-reset]')!;
@@ -180,16 +194,29 @@
     const loadingState = machine.querySelector<HTMLElement>('[data-loading-state]')!;
     const errorState = machine.querySelector<HTMLElement>('[data-error-state]')!;
     const noResults = machine.querySelector<HTMLElement>('[data-no-results]')!;
-    const limitNote = machine.querySelector<HTMLElement>('[data-limit-note]')!;
-    const playerElements = [...machine.querySelectorAll<HTMLElement>('[data-player]')];
-    const resultLimit = 40;
+    const pager = machine.querySelector<HTMLElement>('[data-archive-pager]')!;
+    const pageSelect = machine.querySelector<HTMLSelectElement>('[data-page-select]')!;
+    const pageCountLabel = machine.querySelector<HTMLElement>('[data-page-count]')!;
+    const pageButtons = [...machine.querySelectorAll<HTMLButtonElement>('[data-page-step]')];
+    const mmTitle = mm.querySelector<HTMLElement>('[data-mm-title]')!;
+    const mmReadout = mm.querySelector<HTMLElement>('[data-mm-readout]')!;
+    const mmTabs = mm.querySelector<HTMLElement>('[data-mm-tabs]')!;
+    const mmPanel = mm.querySelector<HTMLElement>('[data-mm-panel]')!;
+    const mmDrawer = mm.querySelector<HTMLElement>('[data-mm-drawer]')!;
+    const pageSize = 2;
     const defaultLimit = 16;
     const defaultDecade = '2020s';
+    let currentPage = 1;
     let data: ArchiveData;
     let items: SearchItem[] = [];
     let itemById = new Map<string, SearchItem>();
+    let channelById = new Map<string, ArchivePlayerChannel>();
+    let lyricById = new Map<string, ArchiveLyric>();
     let latestView = new URLSearchParams(window.location.search).get('view') === 'latest';
-    const playerState = new Map<'vhs' | 'cassette', { channels: ArchivePlayerChannel[]; index: number }>();
+    let openSong: SearchItem | null = null;
+    let openVersion: ArchiveVersion | null = null;
+    let openSurface: Surface = 'INFO';
+    let moreButton: HTMLButtonElement | null = null;
 
     const normalize = (value: unknown) => String(value ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
     const byId = <T extends { id: string }>(values: T[]) => new Map(values.map((value) => [value.id, value]));
@@ -213,9 +240,51 @@
       const selected = filters.find((filter) => filter.dataset.filter === 'project')?.value;
       return selected && item.projectIds.includes(selected) ? selected : item.projectIds[0] ?? '';
     };
-    const matchingChannels = (item: SearchItem, type: 'vhs' | 'cassette') => data.playerChannels
-      .filter((channel) => channel.songId === item.id && channel.projectId === selectedProjectId(item) && channel.type === type)
-      .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id));
+    const params = () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      return { song: searchParams.get('song'), channel: searchParams.get('channel') };
+    };
+    const writeParams = (songId: string | null, channelId: string | null, replace = false) => {
+      const url = new URL(window.location.href);
+      if (songId) url.searchParams.set('song', songId); else url.searchParams.delete('song');
+      if (channelId) url.searchParams.set('channel', channelId); else url.searchParams.delete('channel');
+      history[replace ? 'replaceState' : 'pushState']({ song: songId, channel: channelId }, '', url);
+    };
+    const defaultVersion = (item: SearchItem) => {
+      const projectId = selectedProjectId(item);
+      const inProject = item.versions.filter((version) => version.projectId === projectId);
+      const pool = inProject.length ? inProject : item.versions;
+      return pool.find((version) => version.listenChannelIds.length)
+        ?? pool.find((version) => version.watchChannelIds.length)
+        ?? pool[0]
+        ?? null;
+    };
+    const versionForChannel = (item: SearchItem, channelId: string | null) => {
+      if (!channelId) return defaultVersion(item);
+      const channel = channelById.get(channelId);
+      if (!channel || channel.songId !== item.id) return defaultVersion(item);
+      return item.versions.find((version) => version.listenChannelIds.includes(channelId) || version.watchChannelIds.includes(channelId)) ?? defaultVersion(item);
+    };
+    const surfacesFor = (version: ArchiveVersion | null): Surface[] => {
+      const surfaces: Surface[] = ['INFO'];
+      if (version?.listenChannelIds.length) surfaces.push('LISTEN');
+      if (version?.watchChannelIds.length) surfaces.push('WATCH');
+      if (version?.lyricState === 'public') surfaces.push('LYRICS');
+      if ((openSong?.versions.length ?? 0) > 1) surfaces.push('VERSIONS');
+      return surfaces;
+    };
+    const selectedChannel = (type: 'cassette' | 'vhs') => {
+      const ids = type === 'cassette' ? openVersion?.listenChannelIds ?? [] : openVersion?.watchChannelIds ?? [];
+      const requested = params().channel;
+      if (requested && ids.includes(requested)) return channelById.get(requested) ?? null;
+      const channels = ids.map((id) => channelById.get(id)).filter((value): value is ArchivePlayerChannel => Boolean(value))
+        .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id));
+      if (type === 'cassette') {
+        const bandcamp = channels.find((channel) => channel.platform === 'Bandcamp');
+        if (bandcamp) return bandcamp;
+      }
+      return channels[0] ?? null;
+    };
 
     const makeItems = (archive: ArchiveData) => {
       const releases = byId(archive.releases);
@@ -223,17 +292,17 @@
       const links = byId(archive.songLinks);
       return archive.songs.map((song) => {
         const songReleases = song.releaseIds.map((id) => releases.get(id)).filter((value): value is ArchiveRelease => Boolean(value));
-        const versions = song.recordingIds.map((id) => recordings.get(id)).filter((value): value is ArchiveRecording => Boolean(value));
+        const songRecordings = song.recordingIds.map((id) => recordings.get(id)).filter((value): value is ArchiveRecording => Boolean(value));
         const songLinks = song.linkIds.map((id) => links.get(id)).filter((value): value is ArchiveSongLink => Boolean(value));
         return {
           ...song,
           releases: songReleases,
-          versions,
+          recordings: songRecordings,
           links: songLinks,
           searchText: normalize([
             song.title, ...song.aliases, ...song.projectNames,
             ...songReleases.flatMap((release) => [release.title, release.artist]),
-            ...versions.flatMap((version) => [version.title, version.version, version.artist]),
+            ...songRecordings.flatMap((recording) => [recording.title, recording.version, recording.artist]),
           ].join(' ')),
         };
       });
@@ -267,7 +336,7 @@
       appendText(credits, item.vocal === 'Instrumental' ? 'VOICE' : 'SINGER(S)', item.vocal);
       if (item.acoustic) appendText(credits, 'FORMAT', 'ACOUSTIC');
       appendText(credits, 'RELEASE', item.releases.map((release) => release.title).filter((value, index, values) => values.indexOf(value) === index).slice(0, 3).join(' / '));
-      appendText(credits, 'VERSION', item.versions.map((version) => version.version).filter((value): value is string => Boolean(value)).filter((value, index, values) => values.indexOf(value) === index).slice(0, 2).join(' / '));
+      appendText(credits, 'VERSION', item.recordings.map((recording) => recording.version).filter((value): value is string => Boolean(value)).filter((value, index, values) => values.indexOf(value) === index).slice(0, 2).join(' / '));
 
       article.append(head, title);
       if (item.alternateTitle) {
@@ -281,51 +350,77 @@
 
       const actions = document.createElement('div');
       actions.className = 'archive-actions';
-      for (const [mode, type] of [['listen', 'cassette'], ['watch', 'vhs']] as const) {
-        const channels = matchingChannels(item, type);
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.dataset.mediaAction = mode;
-        button.dataset.songId = item.id;
-        button.disabled = channels.length === 0;
-        button.setAttribute('aria-label', channels.length ? `${mode === 'watch' ? 'Watch' : 'Listen to'} ${item.title} in ${selectedProjectId(item) ? data.projects.find((project) => project.id === selectedProjectId(item))?.name ?? 'the selected project' : 'its archive context'}` : `${mode.toUpperCase()} unavailable for ${item.title} in this project context`);
-        button.textContent = mode.toUpperCase();
-        actions.append(button);
-      }
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'archive-btn';
+      button.dataset.mediaAction = 'more';
+      button.dataset.songId = item.id;
+      button.setAttribute('aria-label', `More about ${item.title}`);
+      button.textContent = 'MORE';
+      actions.append(button);
       article.append(actions);
       return article;
     };
 
-    const render = () => {
+    const isAll = (value: string | undefined) => !value || value === 'all';
+    const currentCatalog = () => {
       const query = normalize(search.value);
       const selected = Object.fromEntries(filters.map((filter) => [filter.dataset.filter!, filter.value]));
-      const hasInput = Boolean(query || Object.values(selected).some(Boolean));
+      const decade = isAll(selected.decade) ? '' : selected.decade;
+      const project = isAll(selected.project) ? '' : selected.project;
+      const platform = isAll(selected.platform) ? '' : selected.platform;
+      const hasInput = Boolean(query || decade || project || platform);
       const tokens = query.split(' ').filter(Boolean);
       const matching = items.filter((item) =>
         tokens.every((token) => item.searchText.includes(token)) &&
-        (!selected.decade || item.decade === selected.decade) &&
-        (!selected.project || item.projectIds.includes(selected.project)) &&
-        (!selected.platform || item.links.some((link) => link.platform === selected.platform))
+        (!decade || item.decade === decade) &&
+        (!project || item.projectIds.includes(project)) &&
+        (!platform || item.links.some((link) => link.platform === platform))
       );
-      const showingLatest = latestView && !query && selected.project === data.meta.latestView.projectId && !selected.decade && !selected.platform;
+      const showingLatest = latestView && !query && project === data.meta.latestView.projectId && !decade && !platform;
       const latestIds = new Set(data.meta.latestView.songIds);
-      const display = showingLatest
+      const catalog = showingLatest
         ? matching.filter((item) => latestIds.has(item.id))
         : hasInput
-          ? matching.slice(0, resultLimit)
+          ? matching
           : items.filter((item) => item.eligibility === 'Yes' && !item.projectIds.includes('PRJ-PROJ-001')).slice(0, defaultLimit);
-      resultCount.textContent = showingLatest
-        ? `${data.meta.latestView.releaseTitle.toUpperCase()} / ${display.length} SONG${display.length === 1 ? '' : 'S'}`
-        : hasInput
-          ? `${matching.length} MATCH${matching.length === 1 ? '' : 'ES'}`
-          : `${data.meta.counts.songs} ARCHIVE ENTRIES / SHOWING ${display.length}`;
-      noResults.hidden = display.length > 0;
-      limitNote.hidden = showingLatest || !hasInput || matching.length <= resultLimit;
-      if (!limitNote.hidden) limitNote.textContent = `SHOWING FIRST ${resultLimit} OF ${matching.length} MATCHES. NARROW THE SEARCH FOR A SHORTER SIGNAL.`;
-      results.replaceChildren(...display.map(card));
+      return { catalog, matching, showingLatest, hasInput };
     };
 
-    const playerElement = (type: 'vhs' | 'cassette') => machine.querySelector<HTMLElement>(`[data-player="${type}"]`)!;
+    const pageToSong = (item: SearchItem) => {
+      const index = currentCatalog().catalog.findIndex((entry) => entry.id === item.id);
+      if (index >= 0) currentPage = Math.floor(index / pageSize) + 1;
+    };
+
+    const render = () => {
+      const { catalog, matching, showingLatest, hasInput } = currentCatalog();
+      const pageCount = Math.max(1, Math.ceil(catalog.length / pageSize));
+      if (currentPage > pageCount) currentPage = pageCount;
+      if (currentPage < 1) currentPage = 1;
+      const display = catalog.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+      resultCount.textContent = showingLatest
+        ? `${data.meta.latestView.releaseTitle.toUpperCase()} / ${catalog.length} SONG${catalog.length === 1 ? '' : 'S'}`
+        : hasInput
+          ? `${matching.length} MATCH${matching.length === 1 ? '' : 'ES'}`
+          : `${data.meta.counts.songs} ARCHIVE ENTRIES / SHOWING ${catalog.length}`;
+      noResults.hidden = catalog.length > 0;
+      pager.hidden = catalog.length <= pageSize;
+      if (pageSelect.options.length !== pageCount || pageSelect.options[0]?.value !== '1') {
+        pageSelect.replaceChildren(...Array.from({ length: pageCount }, (_, index) => option(String(index + 1), String(index + 1))));
+      }
+      pageSelect.value = String(currentPage);
+      pageCountLabel.textContent = `/ ${pageCount}`;
+      pageButtons.forEach((button) => {
+        const step = Number(button.dataset.pageStep);
+        button.disabled = (step < 0 && currentPage <= 1) || (step > 0 && currentPage >= pageCount);
+      });
+      results.replaceChildren(...display.map(card));
+      display.forEach((item) => {
+        const cardEl = results.querySelector<HTMLElement>(`[data-song-id="${item.id}"]`);
+        cardEl?.classList.toggle('archive-card--open', openSong?.id === item.id);
+      });
+    };
+
     const youtubeId = (channel: ArchivePlayerChannel) => channel.mediaId || (() => {
       try { return new URL(channel.externalUrl).searchParams.get('v') || channel.externalUrl.match(/youtu\.be\/([^?]+)/)?.[1] || null; }
       catch { return null; }
@@ -361,77 +456,66 @@
       }
       return null;
     };
-    const clearPlayback = () => {
-      for (const element of playerElements) element.querySelector<HTMLElement>('[data-player-screen]')?.replaceChildren();
+    const clearPlayback = () => { mmPanel.replaceChildren(); };
+
+    const idleScreen = () => {
+      const screen = document.createElement('div');
+      screen.className = 'mm-crt';
+      screen.setAttribute('aria-live', 'polite');
+      const noise = document.createElement('div');
+      noise.className = 'mm-crt-noise';
+      noise.setAttribute('aria-hidden', 'true');
+      const scan = document.createElement('div');
+      scan.className = 'mm-crt-scan';
+      scan.setAttribute('aria-hidden', 'true');
+      const line = document.createElement('p');
+      line.className = 'mm-await';
+      line.append('AWAITING INPUT');
+      const cursor = document.createElement('span');
+      cursor.className = 'mm-cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      cursor.textContent = '_';
+      line.append(cursor);
+      screen.append(noise, scan, line);
+      return screen;
     };
-    const renderPlayer = (type: 'vhs' | 'cassette', focus = false) => {
-      const state = playerState.get(type);
-      if (!state?.channels.length) return;
-      const channel = state.channels[state.index];
-      const element = playerElement(type);
-      const title = element.querySelector<HTMLElement>('[data-player-title]')!;
-      const channelLabel = element.querySelector<HTMLElement>('[data-player-channel]')!;
-      const status = element.querySelector<HTMLElement>('[data-player-status]')!;
-      const screen = element.querySelector<HTMLElement>('[data-player-screen]')!;
-      const controls = element.querySelector<HTMLElement>('[data-channel-controls]')!;
-      const position = element.querySelector<HTMLElement>('[data-channel-position]')!;
-      const info = element.querySelector<HTMLElement>('[data-player-info]')!;
-      const lyricPanel = element.querySelector<HTMLDetailsElement>('[data-player-lyrics]')!;
-      const lyricContent = element.querySelector<HTMLElement>('[data-lyrics-content]')!;
-      const linkPanel = element.querySelector<HTMLDetailsElement>('[data-player-links]')!;
-      const linkContent = element.querySelector<HTMLElement>('[data-links-content]')!;
+    const renderIdle = () => {
+      mm.dataset.state = 'idle';
+      mmTitle.textContent = 'STANDBY';
+      mmReadout.textContent = '';
+      mmTabs.replaceChildren();
+      const tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = 'archive-btn';
+      tab.setAttribute('role', 'tab');
+      tab.dataset.surface = 'INFO';
+      tab.setAttribute('aria-selected', 'true');
+      tab.tabIndex = 0;
+      tab.textContent = 'INFO';
+      mmTabs.append(tab);
+      mmPanel.replaceChildren(idleScreen());
+      const heading = document.createElement('p');
+      heading.textContent = 'STREAMING';
+      const empty = document.createElement('p');
+      empty.textContent = 'AWAITING INPUT';
+      mmDrawer.replaceChildren(heading, empty);
+    };
+    const crtWrap = (content: HTMLElement, extraClass = '') => {
+      const screen = document.createElement('div');
+      screen.className = `mm-crt${extraClass ? ` ${extraClass}` : ''}`;
+      const scan = document.createElement('div');
+      scan.className = 'mm-crt-scan';
+      scan.setAttribute('aria-hidden', 'true');
+      const body = document.createElement('div');
+      body.className = 'mm-crt-body';
+      body.append(content);
+      screen.append(scan, body);
+      return screen;
+    };
 
-      clearPlayback();
-      title.textContent = channel.title;
-      channelLabel.textContent = `${channel.id} / ${channel.label}`;
-      status.textContent = `${channel.projectName.toUpperCase()} / ${channel.platform.toUpperCase()} / READY — PLAYBACK NEVER STARTS AUTOMATICALLY`;
-      controls.hidden = state.channels.length < 2;
-      position.textContent = `CHANNEL ${state.index + 1} / ${state.channels.length}`;
-
-      const selectedPlayback = type === 'cassette' ? cassettePlayback(channel) : null;
-      let embedUrl = selectedPlayback?.embedUrl ?? null;
-      if (type === 'vhs') {
-        const id = youtubeId(channel);
-        embedUrl = id ? `https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0` : null;
-      }
-      screen.classList.toggle('archive-player-screen--bandcamp', Boolean(selectedPlayback?.kind.startsWith('bandcamp-')));
-      status.textContent = `${channel.projectName.toUpperCase()} / ${(selectedPlayback?.label ?? channel.platform).toUpperCase()} / READY — PLAYBACK NEVER STARTS AUTOMATICALLY`;
-      if (embedUrl) {
-        const frame = document.createElement('iframe');
-        frame.src = embedUrl;
-        frame.title = `${channel.title} — ${channel.versionLabel} ${type === 'vhs' ? 'video' : 'audio'} player`;
-        frame.loading = 'lazy';
-        frame.referrerPolicy = 'strict-origin-when-cross-origin';
-        frame.allow = type === 'vhs' ? 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' : 'encrypted-media';
-        frame.allowFullscreen = type === 'vhs';
-        screen.append(frame);
-        if (selectedPlayback?.kind.startsWith('bandcamp-')) {
-          const attribution = document.createElement('a');
-          attribution.className = 'archive-bandcamp-attribution';
-          attribution.href = selectedPlayback.attributionUrl;
-          attribution.target = '_blank';
-          attribution.rel = 'noopener noreferrer';
-          attribution.textContent = selectedPlayback.releaseFallback
-            ? 'BANDCAMP RELEASE PLAYER FALLBACK / OPEN RELEASE ↗'
-            : 'BANDCAMP EXACT TRACK / OPEN TRACK ↗';
-          screen.append(attribution);
-        }
-      } else {
-        const fallback = document.createElement('div');
-        fallback.className = 'archive-external-fallback';
-        const message = document.createElement('p');
-        message.textContent = 'ON-PAGE PLAYER UNAVAILABLE. THE EXACT PUBLIC SOURCE REMAINS AVAILABLE.';
-        const anchor = document.createElement('a');
-        anchor.href = channel.playback.attributionUrl || channel.externalUrl;
-        anchor.target = '_blank';
-        anchor.rel = 'noopener noreferrer';
-        anchor.textContent = `${channel.platform === 'Bandcamp' ? 'PLAY ON BANDCAMP' : `OPEN ${channel.platform.toUpperCase()}`} ↗`;
-        fallback.append(message, anchor);
-        screen.append(fallback);
-      }
-
-      const facts = document.createElement('dl');
-      for (const fact of channel.facts) {
+    const factsList = (facts: ArchivePlayerFact[]) => {
+      const list = document.createElement('dl');
+      for (const fact of facts) {
         const term = document.createElement('dt');
         const value = document.createElement('dd');
         term.textContent = fact.label;
@@ -443,65 +527,305 @@
           anchor.textContent = `${fact.value} ↗`;
           value.append(anchor);
         } else value.textContent = fact.value;
-        facts.append(term, value);
+        list.append(term, value);
       }
-      info.replaceChildren(facts);
+      return list;
+    };
 
-      lyricContent.replaceChildren();
-      lyricPanel.hidden = channel.lyrics.length === 0;
-      lyricPanel.open = false;
-      for (const lyric of channel.lyrics) {
-        const credit = document.createElement('p');
-        credit.className = 'archive-lyric-credit';
-        credit.textContent = `LYRICS / ${lyric.authors} · ${lyric.version}`;
-        const copy = document.createElement('pre');
-        copy.textContent = lyric.text;
-        lyricContent.append(credit, copy);
-        if (lyric.sampleTreatment) {
-          const sample = document.createElement('p');
-          sample.className = 'archive-sample-note';
-          sample.textContent = lyric.sampleTreatment;
-          lyricContent.append(sample);
+    const infoFacts = () => {
+      const channel = selectedChannel('cassette') ?? selectedChannel('vhs');
+      const facts = channel?.facts?.length ? [...channel.facts] : [];
+      if (!facts.length && openSong) {
+        const rows: ArchivePlayerFact[] = [
+          { label: 'PROJECT', value: openSong.projectNames.join(' / ') },
+          { label: 'DATE', value: openSong.date ? [openSong.date.value, openSong.date.precision].filter(Boolean).join(' · ') : '' },
+          { label: 'WRITING', value: openSong.writing ?? '' },
+          { label: 'LYRICS', value: openSong.lyrics ?? '' },
+          { label: 'RELEASE', value: openSong.releases.map((release) => release.title).filter(Boolean).join(' / ') },
+        ].filter((fact) => fact.value);
+        facts.push(...rows);
+      }
+      if (openVersion && openVersion.lyricState !== 'public' && !facts.some((fact) => fact.label === 'LYRICS' && fact.value === 'LYRICS NOT AVAILABLE')) {
+        facts.push({ label: 'LYRICS', value: 'LYRICS NOT AVAILABLE' });
+      }
+      if (openVersion?.recordingId) facts.unshift({ label: 'RECORDING ID', value: openVersion.recordingId });
+      if (openVersion?.releaseId) facts.unshift({ label: 'RELEASE ID', value: openVersion.releaseId });
+      facts.unshift({ label: 'SONG ID', value: openSong?.id ?? '' });
+      return facts.filter((fact) => fact.value);
+    };
+
+    const renderPlayer = (type: 'vhs' | 'cassette') => {
+      const channel = selectedChannel(type);
+      const stage = document.createElement('div');
+      stage.className = type === 'vhs' ? 'mm-watch' : 'mm-cassette';
+      const screen = document.createElement('div');
+      screen.className = type === 'vhs' ? 'mm-watch-screen' : 'mm-cassette-window';
+      const status = document.createElement('p');
+      status.className = 'mm-player-status';
+      if (!channel) {
+        const message = document.createElement('p');
+        message.textContent = type === 'vhs' ? 'NO VERIFIED WATCH SOURCE' : 'NO VERIFIED LISTEN SOURCE';
+        screen.append(message);
+        status.textContent = 'STANDBY';
+        if (type === 'vhs') {
+          const bezel = document.createElement('div');
+          bezel.className = 'mm-watch-bezel';
+          bezel.append(screen);
+          stage.append(status, bezel);
+        } else {
+          stage.append(status, cassetteShell(screen));
+        }
+        mmPanel.append(stage);
+        return;
+      }
+      const selectedPlayback = type === 'cassette' ? cassettePlayback(channel) : null;
+      let embedUrl = selectedPlayback?.embedUrl ?? null;
+      if (type === 'vhs') {
+        const id = youtubeId(channel);
+        embedUrl = id ? `https://www.youtube-nocookie.com/embed/${id}?playsinline=1&rel=0` : null;
+      }
+      if (embedUrl) {
+        const frame = document.createElement('iframe');
+        frame.src = embedUrl;
+        frame.title = `${channel.title} — ${channel.versionLabel} ${type === 'vhs' ? 'video' : 'audio'} player`;
+        frame.loading = 'lazy';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.allow = type === 'vhs' ? 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' : 'encrypted-media';
+        frame.allowFullscreen = type === 'vhs';
+        screen.append(frame);
+        if (selectedPlayback?.kind.startsWith('bandcamp-')) {
+          const attribution = document.createElement('a');
+          attribution.className = 'mm-bandcamp-attribution';
+          attribution.href = selectedPlayback.attributionUrl;
+          attribution.target = '_blank';
+          attribution.rel = 'noopener noreferrer';
+          attribution.textContent = selectedPlayback.releaseFallback
+            ? 'BANDCAMP RELEASE PLAYER FALLBACK / OPEN RELEASE ↗'
+            : 'BANDCAMP EXACT TRACK / OPEN TRACK ↗';
+          screen.append(attribution);
+        }
+      } else {
+        const message = document.createElement('p');
+        message.textContent = type === 'vhs' ? 'NO VERIFIED WATCH SOURCE' : 'NO VERIFIED ON-PAGE LISTEN PLAYER';
+        screen.append(message);
+        const url = channel.playback.attributionUrl || channel.externalUrl;
+        if (url) {
+          const anchor = document.createElement('a');
+          anchor.href = url;
+          anchor.target = '_blank';
+          anchor.rel = 'noopener noreferrer';
+          anchor.textContent = `${channel.platform === 'Bandcamp' ? 'PLAY ON BANDCAMP' : `OPEN ${channel.platform.toUpperCase()}`} ↗`;
+          screen.append(anchor);
         }
       }
+      status.textContent = `${channel.id} / ${channel.projectName.toUpperCase()} / ${channel.platform.toUpperCase()}`;
+      if (type === 'vhs') {
+        const bezel = document.createElement('div');
+        bezel.className = 'mm-watch-bezel';
+        bezel.append(screen);
+        stage.append(status, bezel);
+      } else {
+        stage.append(status, cassetteShell(screen));
+      }
+      mmPanel.append(stage);
+    };
+    const cassetteShell = (windowEl: HTMLElement) => {
+      const deck = document.createElement('div');
+      deck.className = 'mm-cassette-deck';
+      const grille = document.createElement('div');
+      grille.className = 'mm-cassette-grille';
+      grille.setAttribute('aria-hidden', 'true');
+      for (let index = 0; index < 14; index += 1) grille.append(document.createElement('i'));
+      const shell = document.createElement('div');
+      shell.className = 'mm-cassette-shell';
+      const screws = document.createElement('div');
+      screws.className = 'mm-cassette-screws';
+      screws.setAttribute('aria-hidden', 'true');
+      screws.append(document.createElement('i'), document.createElement('i'), document.createElement('i'), document.createElement('i'));
+      const reels = document.createElement('div');
+      reels.className = 'mm-cassette-reels';
+      reels.setAttribute('aria-hidden', 'true');
+      const left = document.createElement('span');
+      const right = document.createElement('span');
+      reels.append(left, right);
+      const teeth = document.createElement('div');
+      teeth.className = 'mm-cassette-teeth';
+      teeth.setAttribute('aria-hidden', 'true');
+      for (let index = 0; index < 8; index += 1) teeth.append(document.createElement('i'));
+      shell.append(screws, reels, windowEl, teeth);
+      const transport = document.createElement('div');
+      transport.className = 'mm-cassette-transport';
+      transport.setAttribute('aria-hidden', 'true');
+      for (let index = 0; index < 5; index += 1) transport.append(document.createElement('b'));
+      deck.append(grille, shell, transport);
+      return deck;
+    };
 
-      linkContent.replaceChildren();
-      linkPanel.hidden = channel.streamLinks.length === 0;
-      linkPanel.open = false;
-      const linkList = document.createElement('ul');
-      for (const link of channel.streamLinks) {
+    const renderLyrics = () => {
+      const lyric = (openVersion?.lyricIds ?? []).map((id) => lyricById.get(id)).find((item) => item?.state === 'public' && item.text);
+      if (!lyric) {
+        const message = document.createElement('p');
+        message.textContent = 'LYRICS NOT AVAILABLE';
+        mmPanel.append(crtWrap(message));
+        return;
+      }
+      const credit = document.createElement('p');
+      credit.className = 'mm-lyric-credit';
+      credit.textContent = `LYRICS / ${lyric.authors} · ${lyric.version}`;
+      const copy = document.createElement('pre');
+      copy.textContent = lyric.text;
+      const body = document.createElement('div');
+      body.append(credit, copy);
+      if (lyric.sampleTreatment) {
+        const sample = document.createElement('p');
+        sample.className = 'mm-sample-note';
+        sample.textContent = lyric.sampleTreatment;
+        body.append(sample);
+      }
+      mmPanel.append(crtWrap(body));
+    };
+
+    const renderVersions = () => {
+      const list = document.createElement('div');
+      list.className = 'archive-mm-versions';
+      for (const version of openSong?.versions ?? []) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'mm-version-link';
+        button.dataset.versionKey = version.key;
+        if (version.key === openVersion?.key) button.setAttribute('aria-current', 'true');
+        button.textContent = [version.projectName, version.label, version.recordingId || version.releaseId, version.datePrecision].filter(Boolean).join(' / ');
+        list.append(button);
+      }
+      mmPanel.append(crtWrap(list));
+    };
+
+    const renderDrawer = () => {
+      mmDrawer.replaceChildren();
+      const heading = document.createElement('p');
+      heading.textContent = 'STREAMING';
+      const list = document.createElement('ul');
+      const destinations = openVersion?.destinations ?? [];
+      if (!destinations.length) {
+        const empty = document.createElement('p');
+        empty.textContent = 'NO VERIFIED STREAMING DESTINATION';
+        mmDrawer.append(heading, empty);
+        return;
+      }
+      for (const destination of destinations) {
         const row = document.createElement('li');
         const anchor = document.createElement('a');
-        anchor.href = link.url;
+        const label = destination.kind === 'smart-link' ? 'SMART LINK'
+          : destination.kind === 'release-page' ? 'RELEASE PAGE'
+          : 'EXACT TRACK';
+        anchor.href = destination.url;
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
-        anchor.textContent = `${link.label.toUpperCase()} ↗`;
+        anchor.textContent = `${destination.platform.toUpperCase()} / ${label} ↗`;
         const level = document.createElement('span');
-        level.textContent = link.level;
+        level.textContent = label;
         row.append(anchor, level);
-        linkList.append(row);
+        list.append(row);
       }
-      linkContent.append(linkList);
-      if (focus) {
-        title.focus({ preventScroll: true });
-        element.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-      }
-    };
-    const loadPlayer = (item: SearchItem, type: 'vhs' | 'cassette') => {
-      const channels = matchingChannels(item, type);
-      if (!channels.length) return;
-      const bandcampIndex = channels.findIndex((channel) => channel.platform === 'Bandcamp');
-      playerState.set(type, { channels, index: type === 'cassette' && bandcampIndex >= 0 ? bandcampIndex : 0 });
-      renderPlayer(type, true);
+      mmDrawer.append(heading, list);
     };
 
-    fetch('/data/music-archive/v03/archive.json', { cache: 'no-store' })
+    const renderSurface = () => {
+      clearPlayback();
+      if (openSurface === 'INFO') mmPanel.append(crtWrap(factsList(infoFacts()), 'mm-crt--info'));
+      else if (openSurface === 'LISTEN') renderPlayer('cassette');
+      else if (openSurface === 'WATCH') renderPlayer('vhs');
+      else if (openSurface === 'LYRICS') renderLyrics();
+      else renderVersions();
+    };
+
+    const renderTabs = () => {
+      const surfaces = surfacesFor(openVersion);
+      if (!surfaces.includes(openSurface)) openSurface = 'INFO';
+      mmTabs.replaceChildren();
+      for (const surface of surfaces) {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'archive-btn';
+        tab.setAttribute('role', 'tab');
+        tab.id = `archive-mm-tab-${surface.toLowerCase()}`;
+        tab.dataset.surface = surface;
+        tab.setAttribute('aria-selected', String(surface === openSurface));
+        tab.tabIndex = surface === openSurface ? 0 : -1;
+        tab.textContent = surface;
+        mmTabs.append(tab);
+      }
+    };
+
+    const renderMachine = (focus = false) => {
+      if (!openSong || !openVersion) {
+        renderIdle();
+        return;
+      }
+      mm.dataset.state = 'open';
+      mmTitle.textContent = openSong.title;
+      const channel = selectedChannel(openSurface === 'WATCH' ? 'vhs' : 'cassette') ?? selectedChannel('vhs') ?? selectedChannel('cassette');
+      mmReadout.textContent = [openSong.id, openVersion.releaseId, channel?.id, openVersion.projectName].filter(Boolean).join(' / ');
+      renderTabs();
+      renderSurface();
+      renderDrawer();
+      if (focus) {
+        mmTitle.focus({ preventScroll: true });
+        mm.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      }
+    };
+
+    const closeMachine = (recordHistory = true) => {
+      openSong = null;
+      openVersion = null;
+      openSurface = 'INFO';
+      clearPlayback();
+      renderIdle();
+      if (recordHistory) writeParams(null, null);
+      moreButton?.focus();
+    };
+
+    const openMachine = (item: SearchItem, channelId: string | null, surface: Surface | null, recordHistory = true, replace = false) => {
+      const version = versionForChannel(item, channelId);
+      if (!version) return;
+      openSong = item;
+      openVersion = version;
+      const validChannelId = channelId && (version.listenChannelIds.includes(channelId) || version.watchChannelIds.includes(channelId))
+        ? channelId : null;
+      const channel = validChannelId ? channelById.get(validChannelId) ?? null : null;
+      openSurface = surface ?? (channel?.type === 'vhs' ? 'WATCH' : channel?.type === 'cassette' ? 'LISTEN' : 'INFO');
+      const surfaces = surfacesFor(version);
+      if (!surfaces.includes(openSurface)) openSurface = 'INFO';
+      if (recordHistory) writeParams(item.id, validChannelId, replace);
+      pageToSong(item);
+      render();
+      moreButton = results.querySelector<HTMLButtonElement>(`[data-song-id="${item.id}"]`);
+      renderMachine(true);
+    };
+
+    const applyDeepLink = (recordHistory = false) => {
+      const { song, channel } = params();
+      if (!song) {
+        if (openSong) closeMachine(false);
+        return;
+      }
+      const item = itemById.get(song);
+      if (!item) {
+        if (openSong) closeMachine(false);
+        return;
+      }
+      openMachine(item, channel, channel ? null : 'INFO', recordHistory, true);
+    };
+
+    fetch('/data/music-archive/v04/archive.json', { cache: 'no-store' })
       .then((response) => { if (!response.ok) throw new Error('archive data unavailable'); return response.json(); })
       .then((archive: ArchiveData) => {
-        if (archive.meta.schemaVersion !== 'music-archive-v03.2' || archive.meta.publicKnownSongs !== 215 || archive.meta.counts.songLinks !== 620 || archive.meta.counts.playerChannels !== 165 || archive.meta.counts.lyrics !== 26 || archive.meta.counts.bandcampEmbedRegistry !== 139) throw new Error('public v03.2 contract mismatch');
+        if (archive.meta.schemaVersion !== 'music-archive-v04.0' || archive.meta.publicKnownSongs !== 215 || archive.meta.counts.playerChannels !== 409 || archive.meta.counts.lyrics !== 147 || archive.meta.counts.bandcampEmbedRegistry !== 139) throw new Error('public v04 contract mismatch');
         data = archive;
         items = makeItems(archive);
         itemById = byId(items);
+        channelById = byId(archive.playerChannels);
+        lyricById = byId(archive.lyrics);
         const decadeFilter = filters.find((filter) => filter.dataset.filter === 'decade')!;
         for (const decade of archive.facets.decades) decadeFilter.append(option(decade, decade.toUpperCase()));
         const projectFilter = filters.find((filter) => filter.dataset.filter === 'project')!;
@@ -515,6 +839,7 @@
         filters.forEach((filter) => { filter.disabled = false; });
         loadingState.hidden = true;
         render();
+        applyDeepLink(false);
       })
       .catch(() => {
         loadingState.hidden = true;
@@ -522,52 +847,161 @@
         resultCount.textContent = 'ARCHIVE OFFLINE';
       });
 
-    search.addEventListener('input', () => { latestView = false; render(); });
-    filters.forEach((filter) => filter.addEventListener('change', () => { latestView = false; render(); }));
+    search.addEventListener('input', () => { latestView = false; currentPage = 1; render(); });
+    filters.forEach((filter) => filter.addEventListener('change', () => {
+      latestView = false;
+      currentPage = 1;
+      const decadeFilter = filters.find((item) => item.dataset.filter === 'decade')!;
+      const projectFilter = filters.find((item) => item.dataset.filter === 'project')!;
+      const project = isAll(projectFilter.value) ? '' : projectFilter.value;
+      const decade = isAll(decadeFilter.value) ? '' : decadeFilter.value;
+      if (project && decade && !items.some((item) => item.projectIds.includes(project) && item.decade === decade)) {
+        decadeFilter.value = 'all';
+      }
+      render();
+    }));
     reset.addEventListener('click', () => {
       latestView = false;
+      currentPage = 1;
       search.value = '';
-      filters.forEach((filter) => { filter.value = ''; });
+      filters.forEach((filter) => { filter.value = 'all'; });
       filters.find((filter) => filter.dataset.filter === 'decade')!.value = defaultDecade;
       filters.find((filter) => filter.dataset.filter === 'project')!.value = data.meta.latestView.projectId;
       render();
       search.focus();
     });
-    results.addEventListener('click', (event) => {
-      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-media-action]');
-      const item = button?.dataset.songId ? itemById.get(button.dataset.songId) : null;
-      const mode = button?.dataset.mediaAction;
-      if (item && mode === 'listen') loadPlayer(item, 'cassette');
-      if (item && mode === 'watch') loadPlayer(item, 'vhs');
+    pageSelect.addEventListener('change', () => {
+      currentPage = Number(pageSelect.value) || 1;
+      render();
     });
-    playerElements.forEach((element) => element.addEventListener('click', (event) => {
-      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-channel-step]');
-      const type = element.dataset.player as 'vhs' | 'cassette';
-      const state = playerState.get(type);
-      if (!button || !state?.channels.length) return;
-      state.index = (state.index + Number(button.dataset.channelStep) + state.channels.length) % state.channels.length;
-      renderPlayer(type);
+    pageButtons.forEach((button) => button.addEventListener('click', () => {
+      currentPage += Number(button.dataset.pageStep);
+      render();
     }));
+    results.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-media-action="more"]');
+      const item = button?.dataset.songId ? itemById.get(button.dataset.songId) : null;
+      if (!item || !button) return;
+      moreButton = button;
+      openMachine(item, null, 'INFO');
+    });
+    mmTabs.addEventListener('click', (event) => {
+      const tab = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-surface]');
+      const surface = tab?.dataset.surface as Surface | undefined;
+      if (!surface || !openSong || !openVersion) return;
+      openSurface = surface;
+      renderMachine();
+    });
+    mmTabs.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      const tabs = [...mmTabs.querySelectorAll<HTMLButtonElement>('[data-surface]')];
+      const index = tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true');
+      const next = tabs[(index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+      next?.click();
+      next?.focus();
+      event.preventDefault();
+    });
+    mmPanel.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-version-key]');
+      const key = button?.dataset.versionKey;
+      const version = openSong?.versions.find((item) => item.key === key);
+      if (!openSong || !version) return;
+      const channelId = version.listenChannelIds[0] ?? version.watchChannelIds[0] ?? null;
+      openMachine(openSong, channelId, 'INFO', true);
+    });
+    machine.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && mm.dataset.state === 'open') {
+        event.preventDefault();
+        closeMachine(true);
+      }
+    });
+    mm.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && mm.dataset.state === 'open') {
+        event.preventDefault();
+        closeMachine(true);
+      }
+    });
+    window.addEventListener('popstate', () => applyDeepLink(false));
   }
 </script>
 
 <style>
-  .archive-machine {
+  .archive-stack {
     --archive-white: #fff;
     --archive-mid: #858585;
     --archive-dim: #4a4a4a;
     --archive-line: #2a2a2a;
+    color-scheme: dark;
+  }
+  .archive-stack :global(button:not(.mm-version-link)),
+  .archive-stack :global(.archive-btn),
+  .archive-stack :global(.mm-drawer a),
+  .archive-stack :global(.mm-bandcamp-attribution),
+  .archive-stack :global(.mm-cassette-window a),
+  .archive-stack :global(.mm-watch-screen a) {
+    appearance: none;
+    -webkit-appearance: none;
+    min-height: 44px;
+    padding: .55rem .8rem;
+    border: 2px solid #fff;
+    border-radius: 0;
+    background: #000 !important;
+    background-color: #000 !important;
+    color: #fff !important;
+    font: 700 .72rem/1 monospace;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .archive-stack :global(button:not(.mm-version-link):hover),
+  .archive-stack :global(button:not(.mm-version-link):focus),
+  .archive-stack :global(button:not(.mm-version-link):focus-visible),
+  .archive-stack :global(button:not(.mm-version-link)[aria-selected='true']),
+  .archive-stack :global(.archive-btn:hover),
+  .archive-stack :global(.archive-btn:focus),
+  .archive-stack :global(.archive-btn[aria-selected='true']),
+  .archive-stack :global(.archive-btn[aria-pressed='true']),
+  .archive-stack :global(.mm-drawer a:hover),
+  .archive-stack :global(.mm-bandcamp-attribution:hover),
+  .archive-stack :global(.mm-cassette-window a:hover),
+  .archive-stack :global(.mm-watch-screen a:hover) {
+    background: #000 !important;
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #fff;
+  }
+  .archive-stack :global(button:not(.mm-version-link)[aria-selected='true']),
+  .archive-stack :global(.archive-btn[aria-selected='true']) {
+    box-shadow: inset 0 0 0 1px #fff;
+  }
+  .archive-stack :global(button:disabled),
+  .archive-stack :global(button:disabled:hover) {
+    border-color: #4a4a4a;
+    background: #000 !important;
+    color: #4a4a4a !important;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .archive-machine,
+  .multimedia-machine {
     position: relative;
     width: min(100% - 1rem, 780px);
-    margin: clamp(1rem, 4vw, 2.5rem) auto;
     border: var(--jf-border-major) solid var(--archive-mid);
     background: #020202;
     box-shadow: 5px 5px 0 #171717;
+    overflow-x: hidden;
   }
+  .archive-machine { margin: clamp(1rem, 4vw, 2.5rem) auto 1.25rem; }
+  .multimedia-machine { margin: 0 auto clamp(2.75rem, 9vw, 5rem); }
   .archive-machine::before,
-  .archive-machine::after { position: absolute; z-index: 3; top: 7px; width: 5px; height: 5px; border: 1px solid var(--archive-mid); border-radius: 50%; background: #000; content: ''; }
-  .archive-machine::before { left: 7px; }
-  .archive-machine::after { right: 7px; }
+  .archive-machine::after,
+  .multimedia-machine::before,
+  .multimedia-machine::after { position: absolute; z-index: 3; top: 7px; width: 5px; height: 5px; border: 1px solid var(--archive-white); border-radius: 50%; background: var(--archive-white); content: ''; }
+  .archive-machine::before,
+  .multimedia-machine::before { left: 7px; }
+  .archive-machine::after,
+  .multimedia-machine::after { right: 7px; }
   .archive-console-top { display: grid; border-bottom: 2px solid var(--archive-mid); background: #050505; }
   .archive-header { display: grid; gap: 1.5rem; align-items: end; padding: clamp(1rem, 4vw, 1.75rem); }
   .archive-kicker { margin: 0; color: var(--archive-mid); font-size: .7rem; letter-spacing: .16em; }
@@ -596,108 +1030,376 @@
   .archive-filter-grid select { width: 100%; min-height: 44px; padding: .55rem; border: 1px solid var(--jf-gray-strong); background: #080808; color: #fff; }
   .archive-control-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
   .archive-result-count { margin: 0; color: var(--archive-white); font-size: .78rem; font-weight: 700; letter-spacing: .1em; }
-  .archive-reset,
-  .archive-actions button { min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); background: #000; color: #fff; cursor: pointer; }
-  .archive-reset:hover,
-  .archive-actions button:hover { background: #fff; color: #000; }
   [data-archive-search]:focus-visible,
   select:focus-visible,
   button:focus-visible,
-  summary:focus-visible,
-  .archive-stream-links a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
-  .archive-output { padding: 1rem; }
+  .mm-drawer :global(a:focus-visible),
+  .mm-panel :global(a:focus-visible) { outline: 3px solid #fff; outline-offset: 3px; }
+  .archive-output {
+    display: flex;
+    flex-direction: column;
+    height: 24.5rem;
+    max-height: 24.5rem;
+    padding: 1rem;
+    min-height: 0;
+    overflow: hidden;
+  }
   .archive-state,
-  .archive-noscript,
-  .archive-limit-note { margin: 0 0 1rem; padding: 1rem; border: 1px dashed var(--archive-mid); color: var(--jf-gray-strong); }
+  .archive-noscript { margin: 0 0 1rem; padding: 1rem; border: 1px dashed var(--archive-mid); color: var(--jf-gray-strong); }
   .archive-state--error { border-color: var(--archive-white); color: var(--archive-white); }
   .archive-pulse { display: inline-block; width: .65rem; height: .65rem; margin-right: .5rem; background: var(--archive-white); animation: archive-pulse 1s steps(2, end) infinite; }
-  .archive-results { display: grid; gap: 1rem; }
-  .archive-results :global(.archive-card) { min-width: 0; padding: 1rem; border: 1px solid var(--jf-gray-soft); background: #030303; overflow-wrap: anywhere; }
-  .archive-results :global(.archive-card:hover) { border-color: var(--jf-gray-strong); }
+  .archive-results {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .archive-results :global(.archive-card) {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    min-width: 0;
+    min-height: 0;
+    padding: .85rem;
+    overflow: auto;
+    border: 1px solid var(--jf-gray-soft);
+    background: #030303;
+    overflow-wrap: anywhere;
+  }
+  .archive-results :global(.archive-card:hover),
+  .archive-results :global(.archive-card--open) { border-color: var(--archive-white); }
   .archive-results :global(.archive-card-head) { display: flex; justify-content: space-between; gap: 1rem; color: var(--jf-gray-mid); font-size: .68rem; letter-spacing: .1em; }
   .archive-results :global(.archive-type) { color: var(--archive-white); font-weight: 700; }
   .archive-results :global(.archive-id) { text-align: right; }
-  .archive-results :global(.archive-card h2) { margin: .55rem 0 .2rem; font-size: clamp(1.1rem, 5vw, 1.55rem); text-transform: none; }
+  .archive-results :global(.archive-card h2) { margin: .45rem 0 .15rem; font-size: clamp(1rem, 4vw, 1.35rem); text-transform: none; }
   .archive-results :global(.archive-subtitle) { margin: 0; color: var(--jf-gray-strong); }
   .archive-results :global(.archive-alternate) { margin: .25rem 0; color: var(--archive-mid); font-size: .68rem; letter-spacing: .06em; }
-  .archive-results :global(.archive-meta) { display: grid; gap: .35rem; margin: .8rem 0; padding: 0; list-style: none; font-size: .72rem; }
+  .archive-results :global(.archive-meta) { display: grid; gap: .35rem; margin: .6rem 0; padding: 0; list-style: none; font-size: .72rem; min-height: 0; overflow: auto; }
   .archive-results :global(.archive-meta li) { display: grid; grid-template-columns: minmax(72px, .34fr) minmax(0, 1fr); gap: .65rem; padding-top: .35rem; border-top: 1px solid #222; }
   .archive-results :global(.archive-meta span) { color: var(--archive-mid); }
   .archive-results :global(.archive-meta strong) { color: var(--jf-gray-strong); font-weight: 400; }
-  .archive-results :global(.archive-actions) { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .85rem; padding-top: .75rem; border-top: 1px dashed var(--jf-gray-soft); }
-  .archive-results :global(.archive-actions button) { min-width: 92px; min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-gray-strong); border-radius: 0; background: #000; color: #fff; font: 700 .72rem/1 monospace; letter-spacing: .1em; cursor: pointer; }
-  .archive-results :global(.archive-actions button:hover) { background: #fff; color: #000; }
-  .archive-results :global(.archive-actions button:focus-visible) { outline: 3px solid #fff; outline-offset: 3px; }
-  .archive-results :global(.archive-actions button:disabled) { border-color: #333; background: #111; color: #666; cursor: not-allowed; }
-  .archive-results :global(.archive-actions button:disabled:hover) { background: #111; color: #666; }
-  .archive-player-rack { display: grid; gap: 1.25rem; margin-top: 1.25rem; }
-  .archive-player { scroll-margin-top: 1rem; min-width: 0; border: 2px solid var(--archive-mid); background: #030303; box-shadow: inset 0 0 0 5px #080808; }
-  .archive-player--vhs { border-style: double; border-width: 5px; }
-  .archive-player-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; padding: 1rem; border-bottom: 1px solid var(--archive-mid); }
-  .archive-player-heading p { margin: 0 0 .25rem; color: var(--archive-mid); font-size: .66rem; letter-spacing: .14em; }
-  .archive-player-heading h2 { margin: 0; font-size: clamp(1.15rem, 5vw, 1.7rem); overflow-wrap: anywhere; }
-  .archive-player-heading > span { max-width: 45%; color: var(--jf-gray-strong); font-size: .62rem; letter-spacing: .08em; text-align: right; overflow-wrap: anywhere; }
-  .archive-player-status { margin: 0; padding: .65rem 1rem; border-bottom: 1px solid var(--archive-line); color: var(--jf-gray-strong); font-size: .64rem; letter-spacing: .08em; }
-  .archive-player-screen { display: grid; min-height: 160px; place-items: center; padding: .7rem; background: repeating-linear-gradient(0deg, #030303 0 3px, #0b0b0b 3px 4px); }
-  .archive-player-screen--bandcamp { grid-template-rows: minmax(150px, 1fr) auto; }
-  .archive-player--vhs .archive-player-screen { aspect-ratio: 16 / 9; min-height: 0; }
-  .archive-player-screen :global(iframe) { width: 100%; height: 100%; min-height: 150px; border: 0; background: #000; }
-  .archive-player-screen :global(p) { max-width: 44ch; margin: 0; padding: 1rem; color: var(--jf-gray-strong); font-size: .72rem; text-align: center; }
-  .archive-player-screen :global(.archive-bandcamp-attribution),
-  .archive-player-screen :global(.archive-external-fallback a) { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; color: #fff; border-bottom: 1px dashed var(--archive-mid); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-align: center; }
-  .archive-player-screen :global(.archive-bandcamp-attribution) { width: 100%; padding: .35rem .6rem 0; }
-  .archive-player-screen :global(.archive-external-fallback) { display: grid; place-items: center; }
-  .archive-player-screen :global(.archive-bandcamp-attribution:hover),
-  .archive-player-screen :global(.archive-external-fallback a:hover) { border-bottom-color: #fff; }
-  .archive-channel-controls { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .5rem; padding: .65rem; border-block: 1px solid var(--archive-line); }
-  .archive-channel-controls button { min-height: 44px; padding: .5rem .65rem; border: 1px solid var(--archive-mid); background: #000; color: #fff; cursor: pointer; }
-  .archive-channel-controls button:hover { background: #fff; color: #000; }
-  .archive-channel-controls span { color: var(--archive-mid); font-size: .62rem; letter-spacing: .08em; text-align: center; }
-  .archive-version-info { padding: 1rem; }
-  .archive-version-info > p { margin: 0; color: var(--jf-gray-strong); }
-  .archive-version-info :global(dl) { display: grid; grid-template-columns: minmax(105px, .35fr) minmax(0, 1fr); margin: 0; font-size: .72rem; }
-  .archive-version-info :global(dt),
-  .archive-version-info :global(dd) { margin: 0; padding: .42rem 0; border-top: 1px solid #222; overflow-wrap: anywhere; }
-  .archive-version-info :global(dt) { color: var(--archive-mid); }
-  .archive-version-info :global(dd) { color: var(--jf-gray-strong); }
-  .archive-version-info :global(dd a) { color: #fff; border-bottom: 1px dashed var(--archive-mid); }
-  .archive-lyrics,
-  .archive-stream-links { border-top: 1px dashed var(--archive-mid); }
-  .archive-lyrics summary,
-  .archive-stream-links summary { min-height: 44px; padding: .8rem 1rem; color: #fff; font-size: .7rem; font-weight: 700; letter-spacing: .1em; cursor: pointer; }
-  .archive-lyrics > div,
-  .archive-stream-links > div { padding: 0 1rem 1rem; }
-  .archive-lyrics :global(pre) { max-height: 28rem; margin: .75rem 0; padding: 1rem; overflow: auto; border: 1px solid var(--archive-line); background: #000; color: var(--jf-gray-strong); font: inherit; line-height: 1.65; white-space: pre-wrap; }
-  .archive-lyric-credit,
-  .archive-sample-note { color: var(--archive-mid); font-size: .68rem; }
-  .archive-stream-links :global(ul) { display: grid; gap: .6rem; margin: 0; padding: 0; list-style: none; }
-  .archive-stream-links :global(li) { display: grid; gap: .2rem; padding-top: .55rem; border-top: 1px solid var(--archive-line); }
-  .archive-stream-links :global(a) { color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .06em; overflow-wrap: anywhere; }
-  .archive-stream-links :global(span) { color: var(--archive-mid); font-size: .65rem; }
+  .archive-results :global(.archive-actions) { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: auto; padding-top: .75rem; border-top: 1px dashed var(--jf-gray-soft); }
+  .archive-results :global(.archive-actions button) { min-width: 92px; font: 700 .72rem/1 monospace; }
+  .archive-pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .55rem;
+    margin: .75rem 0 0;
+  }
+  .archive-page-label { display: flex; align-items: center; gap: .45rem; color: var(--archive-white); font-size: .72rem; letter-spacing: .1em; }
+  .archive-pager select { min-height: 44px; min-width: 4.5rem; padding: .4rem .55rem; border: 2px solid var(--archive-white); background: #000; color: #fff; }
+  .archive-pager [data-page-count] { color: var(--archive-white); font-size: .72rem; letter-spacing: .1em; }
+  .multimedia-machine {
+    scroll-margin-top: 1rem;
+    display: grid;
+    grid-template-rows: auto auto auto 8rem;
+  }
+  .mm-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; padding: 1rem; border-bottom: 1px solid var(--archive-mid); }
+  .mm-heading p { margin: 0 0 .25rem; color: var(--archive-mid); font-size: .66rem; letter-spacing: .14em; }
+  .mm-heading h2 { margin: 0; font-size: clamp(1.15rem, 5vw, 1.7rem); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .mm-tools { display: grid; justify-items: end; gap: .45rem; max-width: 48%; }
+  .mm-tools span { color: var(--jf-gray-strong); font-size: .62rem; letter-spacing: .08em; text-align: right; overflow-wrap: anywhere; }
+  .mm-tabs { display: flex; flex-wrap: wrap; gap: .45rem; padding: .65rem; border-bottom: 1px solid var(--archive-line); }
+  .mm-stage {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    min-height: 0;
+    padding: .75rem;
+    background: #050505;
+  }
+  .mm-panel { display: grid; width: 100%; height: 100%; min-width: 0; min-height: 0; }
+  .mm-panel :global(.mm-crt),
+  .mm-panel :global(.mm-watch),
+  .mm-panel :global(.mm-cassette) { width: 100%; height: 100%; min-height: 0; }
+  .mm-panel :global(.mm-crt) {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    border: 2px solid var(--jf-gray-mid);
+    border-radius: 6%;
+    background: radial-gradient(ellipse at center, #242424 0, #101010 58%, #020202 100%);
+    box-shadow: inset 0 0 32px #000;
+  }
+  .mm-panel :global(.mm-crt-noise),
+  .mm-panel :global(.mm-crt-scan) { position: absolute; inset: 0; pointer-events: none; }
+  .mm-panel :global(.mm-crt-noise) {
+    opacity: .55;
+    background-image:
+      radial-gradient(circle, rgba(255, 255, 255, 0.92) 0 0.7px, transparent 0.9px),
+      radial-gradient(circle, rgba(180, 180, 180, 0.8) 0 0.8px, transparent 1px);
+    background-size: 4px 4px, 6px 5px;
+    animation: mm-noise 0.14s steps(2, end) infinite;
+  }
+  .mm-panel :global(.mm-crt-scan) {
+    z-index: 2;
+    opacity: .4;
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(255, 255, 255, 0.08) 4px, transparent 5px);
+  }
+  .mm-panel :global(.mm-crt-scan)::after {
+    position: absolute;
+    inset-inline: 0;
+    height: 12%;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.08), transparent);
+    content: '';
+    animation: mm-scan 6s linear infinite;
+  }
+  .mm-panel :global(.mm-await) {
+    position: relative;
+    z-index: 3;
+    align-self: center;
+    justify-self: center;
+    margin: 0;
+    color: var(--jf-gray-strong);
+    font-size: clamp(.7rem, 2.5vw, .9rem);
+    letter-spacing: .16em;
+  }
+  .mm-panel :global(.mm-cursor) { display: inline-block; margin-left: .15rem; animation: mm-cursor 1s steps(2, end) infinite; }
+  .mm-panel :global(.mm-crt-body) {
+    position: relative;
+    z-index: 3;
+    min-height: 0;
+    height: 100%;
+    overflow: auto;
+    padding: .85rem;
+  }
+  .mm-panel :global(dl) { display: grid; grid-template-columns: minmax(105px, .35fr) minmax(0, 1fr); margin: 0; font-size: .72rem; }
+  .mm-panel :global(dt),
+  .mm-panel :global(dd) { margin: 0; padding: .42rem 0; border-top: 1px solid #222; overflow-wrap: anywhere; }
+  .mm-panel :global(dt) { color: var(--archive-mid); }
+  .mm-panel :global(dd) { color: var(--jf-gray-strong); }
+  .mm-panel :global(dd a) { color: #fff; border-bottom: 1px dashed var(--archive-mid); }
+  .mm-panel :global(pre) { margin: .75rem 0; padding: 0; overflow: visible; border: 0; background: transparent; color: var(--jf-gray-strong); font: inherit; line-height: 1.65; white-space: pre-wrap; }
+  .mm-panel :global(.mm-lyric-credit),
+  .mm-panel :global(.mm-sample-note) { color: var(--archive-mid); font-size: .68rem; }
+  .mm-panel :global(.mm-player-status) {
+    position: relative;
+    z-index: 4;
+    margin: 0;
+    padding: .35rem .45rem;
+    color: var(--jf-gray-strong);
+    font-size: .64rem;
+    letter-spacing: .08em;
+    pointer-events: none;
+  }
+  .mm-panel :global(.mm-watch),
+  .mm-panel :global(.mm-cassette) {
+    display: grid;
+    grid-template: 1fr / 1fr;
+    min-height: 0;
+  }
+  .mm-panel :global(.mm-watch > *),
+  .mm-panel :global(.mm-cassette > *) { grid-area: 1 / 1; }
+  .mm-panel :global(.mm-watch .mm-player-status),
+  .mm-panel :global(.mm-cassette .mm-player-status) { align-self: start; justify-self: start; }
+  .mm-panel :global(.mm-watch-bezel) {
+    display: grid;
+    min-height: 0;
+    padding: .7rem;
+    border: 2px solid var(--jf-fg);
+    background:
+      linear-gradient(135deg, transparent 12px, #0d0d0d 0) top left,
+      linear-gradient(225deg, transparent 12px, #0d0d0d 0) top right,
+      linear-gradient(45deg, transparent 12px, #0d0d0d 0) bottom left,
+      linear-gradient(-45deg, transparent 12px, #0d0d0d 0) bottom right;
+    background-size: 51% 51%;
+    background-repeat: no-repeat;
+  }
+  .mm-panel :global(.mm-watch-screen) {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border: 2px solid var(--jf-gray-mid);
+    border-radius: 6%;
+    background: #020202;
+    box-shadow: inset 0 0 32px #000;
+  }
+  .mm-panel :global(.mm-watch-screen iframe) { width: 100%; height: 100%; border: 0; background: #000; }
+  .mm-panel :global(.mm-watch-screen p),
+  .mm-panel :global(.mm-cassette-window p) { max-width: 44ch; margin: auto; padding: 1rem; color: var(--jf-gray-strong); font-size: .72rem; text-align: center; }
+  .mm-panel :global(.mm-cassette-deck) {
+    display: grid;
+    grid-template-rows: minmax(3.5rem, .28fr) minmax(0, 1fr) minmax(3.2rem, .22fr);
+    min-height: 0;
+    padding: .65rem;
+    border: 2px solid var(--archive-white);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 11px, rgba(255, 255, 255, 0.03) 11px 12px),
+      #0a0a0a;
+    box-shadow: inset 0 0 0 6px #111;
+  }
+  .mm-panel :global(.mm-cassette-grille) {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 4px;
+    min-height: 0;
+    padding: .35rem .2rem .55rem;
+  }
+  .mm-panel :global(.mm-cassette-grille i) {
+    flex: 1;
+    border: 1px solid #2a2a2a;
+    background: linear-gradient(#1c1c1c, #050505);
+  }
+  .mm-panel :global(.mm-cassette-shell) {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: 0;
+    padding: .75rem .9rem .6rem;
+    border: 2px solid var(--archive-white);
+    border-radius: 14px 14px 12px 12px;
+    background: linear-gradient(#1a1a1a, #0a0a0a);
+    box-shadow: inset 0 0 0 6px #111, 0 8px 0 #050505;
+  }
+  .mm-panel :global(.mm-cassette-screws) { position: absolute; inset: 8px; pointer-events: none; }
+  .mm-panel :global(.mm-cassette-screws i) {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--archive-white);
+    border-radius: 50%;
+    background: var(--archive-white);
+  }
+  .mm-panel :global(.mm-cassette-screws i:nth-child(1)) { top: 0; left: 0; }
+  .mm-panel :global(.mm-cassette-screws i:nth-child(2)) { top: 0; right: 0; }
+  .mm-panel :global(.mm-cassette-screws i:nth-child(3)) { bottom: 0; left: 0; }
+  .mm-panel :global(.mm-cassette-screws i:nth-child(4)) { bottom: 0; right: 0; }
+  .mm-panel :global(.mm-cassette-reels) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 .6rem .5rem;
+  }
+  .mm-panel :global(.mm-cassette-reels span) {
+    width: clamp(48px, 12vw, 78px);
+    height: clamp(48px, 12vw, 78px);
+    border: 2px solid var(--archive-mid);
+    border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, #2a2a2a 0 12deg, #111 12deg 24deg);
+    box-shadow: inset 0 0 0 10px #050505;
+    animation: mm-reel 4.8s linear infinite;
+  }
+  .mm-panel :global(.mm-cassette-window) {
+    display: grid;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid var(--archive-dim);
+    background: #000;
+  }
+  .mm-panel :global(.mm-cassette-window iframe) { width: 100%; min-height: 120px; height: 100%; border: 0; background: #000; }
+  .mm-panel :global(.mm-cassette-teeth) {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding-top: .45rem;
+  }
+  .mm-panel :global(.mm-cassette-teeth i) {
+    width: 10px;
+    height: 8px;
+    border: 1px solid var(--archive-dim);
+    background: #050505;
+  }
+  .mm-panel :global(.mm-cassette-transport) {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .45rem;
+    align-content: center;
+    min-height: 0;
+    padding: .55rem .15rem 0;
+  }
+  .mm-panel :global(.mm-cassette-transport b) {
+    min-height: 28px;
+    border: 1px solid var(--archive-mid);
+    background: #050505;
+    box-shadow: inset 0 -6px 0 #111;
+  }
+  .mm-panel :global(.archive-mm-versions) { display: grid; gap: 0; }
+  .mm-panel :global(.mm-version-link) {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: .55rem 0;
+    border: 0;
+    border-bottom: 1px dashed var(--archive-mid);
+    border-radius: 0;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--jf-gray-strong) !important;
+    box-shadow: none;
+    font: 400 .72rem/1.5 monospace;
+    letter-spacing: .06em;
+    text-align: left;
+    text-transform: none;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+  .mm-panel :global(.mm-version-link:hover),
+  .mm-panel :global(.mm-version-link:focus-visible) {
+    background: transparent !important;
+    color: #fff !important;
+    border-bottom-color: #fff;
+    box-shadow: none;
+  }
+  .mm-panel :global(.mm-version-link[aria-current='true']) {
+    color: #fff !important;
+    border-bottom-style: solid;
+    border-bottom-color: #fff;
+  }
+  .mm-drawer {
+    min-height: 0;
+    overflow: auto;
+    padding: .85rem 1rem;
+    border-top: 1px dashed var(--archive-mid);
+  }
+  .mm-drawer :global(p) { margin: 0 0 .65rem; color: var(--archive-white); font-size: .7rem; font-weight: 700; letter-spacing: .1em; }
+  .mm-drawer :global(ul) { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+  .mm-drawer :global(li) { display: grid; gap: .35rem; padding-top: .45rem; border-top: 1px solid var(--archive-line); }
+  .mm-drawer :global(a) { width: fit-content; max-width: 100%; overflow-wrap: anywhere; border-bottom: 2px solid var(--archive-white); }
+  .mm-drawer :global(span) { color: var(--archive-mid); font-size: .65rem; }
   .archive-noscript a { display: inline-flex; min-height: 44px; align-items: center; color: var(--archive-white); border-bottom: 1px dashed var(--archive-mid); font-size: .72rem; font-weight: 700; letter-spacing: .08em; }
   .archive-noscript a:hover { color: var(--archive-white); border-bottom-color: var(--archive-white); }
   [hidden] { display: none !important; }
+  @media (min-width: 600px) {
+    .archive-machine,
+    .multimedia-machine { width: min(100% - 2rem, 780px); }
+  }
   @media (min-width: 620px) {
     .archive-console-top { grid-template-columns: minmax(0, 1.35fr) minmax(230px, .65fr); }
     .archive-header { grid-template-columns: minmax(0, 1fr) auto; }
     .archive-machine-art { border-top: 0; border-left: 2px solid var(--archive-mid); }
     .archive-filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .archive-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (max-width: 360px) {
-    .archive-machine { width: calc(100% - 12px); }
+  @media (max-width: 350px) {
+    .archive-machine,
+    .multimedia-machine { width: calc(100% - 0.75rem); border-width: var(--jf-border-standard); box-shadow: 3px 3px 0 #171717; }
     .archive-header,
     .archive-controls,
     .archive-output,
     .archive-results :global(.archive-card) { padding: .75rem; }
+    .archive-results { grid-template-columns: 1fr; }
+    .archive-output { height: 28rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .archive-pulse,
-    .archive-head i::after { animation: none; }
+    .archive-head i::after,
+    .mm-panel :global(.mm-crt-noise),
+    .mm-panel :global(.mm-crt-scan)::after,
+    .mm-panel :global(.mm-cursor),
+    .mm-panel :global(.mm-cassette-reels span) { animation: none; }
   }
   @keyframes archive-pulse { 50% { opacity: .25; } }
   @keyframes archive-head-read {
     from { opacity: .3; transform: translateY(15%); }
     to { opacity: .9; transform: translateY(-180%); }
   }
+  @keyframes mm-noise { 50% { opacity: .28; } }
+  @keyframes mm-scan { from { transform: translateY(-20%); } to { transform: translateY(820%); } }
+  @keyframes mm-cursor { 50% { opacity: 0; } }
+  @keyframes mm-reel { to { transform: rotate(360deg); } }
 </style>
