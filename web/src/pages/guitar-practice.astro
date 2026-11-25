@@ -3,22 +3,35 @@ import Layout from '../layouts/Layout.astro';
 import '../styles/gdc.css';
 const voices = ['Wood block','Tape clack','Soft beep','Rim click','Analog pulse','Cowbell'];
 const panels = ['Timing','Technique','Theory','EXP'];
+const degrees = ['I','II','III','IV','V','VI','VII'];
 ---
-<Layout title="Guitar Discipline Console · Junkfeathers" description="Practice guitar with Chronos timing, playable scales, harmony and a personal practice log.">
+<Layout title="Guitar Discipline Console · Junkfeathers" description="Practice with synchronized guitar tab, chord accompaniment and Chronos timing.">
 <article class="gdc">
-<header class="gdc-head"><div class="gdc-plate">JUNKFEATHERS TECH <span>GDC–01</span></div>
-<h1>Guitar Discipline Console</h1>
-<div class="transport"><button id="play" type="button">▶ Start</button><output id="status" role="status">Ready</output><button id="balance">Balanced view</button></div></header>
+<header class="gdc-head"><div><small>JUNKFEATHERS TECH / GDC–01</small><h1>Guitar Discipline Console</h1></div>
+<div class="transport"><button id="play">▶ Start</button><output id="status">Ready</output><button id="balance">Balanced view</button></div></header>
 <div id="rack" data-focus="Balanced">
-{panels.map((panel) => <section data-panel={panel} aria-label={panel}>
-<header><h2>{panel}</h2><button class="focus" aria-label={'Enlarge ' + panel} aria-pressed="false">Enlarge</button></header>
-{panel==='Timing' && <><div class="readout"><strong id="tempo">80</strong> <small>BPM</small></div><div id="pulses" aria-label="Pulse accents"></div>
-<div class="settings"><label>Tempo<input id="bpm" type="number" min="30" max="300" value="80"/></label><button id="tap">Tap tempo</button><label>Meter<select id="meter">{['4/4','3/4','6/8','5/4','7/8'].map(m=><option>{m}</option>)}</select></label><label>Count-in<select id="count"><option value="0">Off</option><option value="4">4 pulses</option></select></label>
-<label>Base sound<select id="base">{voices.map(v=><option>{v}</option>)}</select></label><label>Accent sound<select id="accent">{voices.map(v=><option selected={v==='Cowbell'}>{v}</option>)}</select></label><label>Groove (%)<input type="range" id="groove" min="0" max="66" value="0"/></label><label>Volume<input type="range" id="vol" min="0" max="100" value="55"/></label></div>
-<small>BPM counts pulses in every meter. Select a pulse to change its accent.</small></>}
-{panel==='Technique' && <><div class="readout" id="exercise"></div><div class="settings"><label>Root<select id="key">{['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'].map((k,i)=><option value={i} selected={i===4}>{k}</option>)}</select></label><label>Scale<select id="scale">{['Major','Natural minor','Harmonic minor','Phrygian dominant'].map(s=><option>{s}</option>)}</select></label><label>Sequence<select id="direction"><option>Up and down</option><option>Ascending</option><option>Descending</option></select></label><label>Notes per pulse<select id="division">{[1,2,3,4].map(n=><option>{n}</option>)}</select></label></div><div id="tab" aria-label="Guitar tablature in standard tuning"></div><label><input type="checkbox" id="guide" checked/> Play scale guide</label><details><summary>Automatic tempo ramp</summary><label><input type="checkbox" id="ramp"/> Raise tempo after completed loops</label><div class="settings"><label>Target BPM<input id="target" type="number" min="30" max="300" value="100"/></label><label>Step BPM<input id="increment" type="number" min="1" max="30" value="5"/></label><label>Loops per step<input id="loops" type="number" min="1" max="32" value="4"/></label></div></details></>}
-{panel==='Theory' && <><div class="readout" id="tonic"></div><table><caption>Scale degrees and diatonic triads</caption><thead><tr><th>Degree</th><th>Note</th><th>Chord</th></tr></thead><tbody id="harmony"></tbody></table></>}
-{panel==='EXP' && <><div class="readout"><strong id="points">0</strong> <small>EXP</small></div><p id="milestone"></p><p id="practice"></p><p id="record"></p><button id="clean">Mark this tempo clean</button><p><small>One point per active minute. Clean tempos are self-reported. History stays in this browser.</small></p><div id="history"></div></>}
+{panels.map(panel=><section data-panel={panel} aria-label={panel}>
+<header><h2>{panel}</h2><div>{panel!=='EXP' && <button popovertarget={'controls-'+panel} aria-label={panel+' settings'}>Settings</button>} <button class="focus" aria-label={'Enlarge '+panel}>Enlarge</button></div></header>
+{panel==='Timing' && <>
+<div class="display"><strong id="tempo">80</strong> <small>BPM</small><span class="ruler" aria-hidden="true"></span></div>
+<div id="pulses" aria-label="Pulse accents"></div>
+<div class="row"><label>Tempo<input id="bpm" type="number" min="30" max="300" value="80"/></label><label>Meter<select id="meter">{['4/4','3/4','6/8','5/4','7/8'].map(m=><option>{m}</option>)}</select></label><button id="tap">Tap tempo</button></div>
+<div popover id="controls-Timing" class="tray"><header><h3>Chronos settings</h3><button popovertarget="controls-Timing">Close</button></header><div class="controls">
+<label>Count-in<select id="count"><option value="0">Off</option><option value="4">4 pulses</option></select></label>
+<label>Base sound<select id="base">{voices.map(v=><option>{v}</option>)}</select></label>
+<label>Accent sound<select id="accent">{voices.map(v=><option selected={v==='Cowbell'}>{v}</option>)}</select></label>
+<label>Groove (%)<input type="range" id="groove" min="0" max="66" value="0"/></label><label>Volume<input type="range" id="vol" min="0" max="100" value="55"/></label></div><small>BPM counts pulses in every meter. Select a pulse on the panel to change its accent.</small></div></>}
+{panel==='Technique' && <><h3 id="exercise"></h3><small id="rhythm"></small><div id="tab" aria-label="Current bar of standard guitar tablature"></div>
+<label><input type="checkbox" id="guide" checked/> Scale audio</label>
+<div popover id="controls-Technique" class="tray"><header><h3>Scale practice</h3><button popovertarget="controls-Technique">Close</button></header><div class="controls">
+<label>Key<select id="key">{['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'].map((k,i)=><option value={i} selected={i===4}>{k}</option>)}</select></label>
+<label>Scale<select id="scale">{['Major','Natural minor','Harmonic minor','Phrygian dominant'].map(s=><option>{s}</option>)}</select></label>
+<label>Sequence<select id="direction"><option>Up and down</option><option>Ascending</option><option>Descending</option></select></label>
+<label>Notes per pulse<select id="division">{[1,2,3,4].map(n=><option>{n}</option>)}</select></label>
+<label>Target BPM<input id="target" type="number" min="30" max="300" value="100"/></label><label>Step BPM<input id="increment" type="number" min="1" max="30" value="5"/></label><label>Loops per step<input id="loops" type="number" min="1" max="32" value="4"/></label></div><label><input type="checkbox" id="ramp"/> Raise tempo after completed scale loops</label></div></>}
+{panel==='Theory' && <><h3 id="keyname"></h3><small id="tonic"></small><div id="changes" aria-label="Chord progression"></div><label><input type="checkbox" id="chords"/> Chord backing · one bar per chord</label>
+<div popover id="controls-Theory" class="tray"><header><h3>Chord progression</h3><button popovertarget="controls-Theory">Close</button></header><label>Preset<select id="preset"><option value="0,3,4,0">I · IV · V · I</option><option value="0,4,5,3">I · V · VI · IV</option><option value="1,4,0,-1">II · V · I</option><option value="0,3,4,-1">I · IV · V</option><option value="custom">Custom</option></select></label><div class="controls">{[0,3,4,0].map((v,i)=><label>Slot {i+1}<select id={'chord'+i}>{i>0 && <option value="-1">Skip</option>}{degrees.map((d,j)=><option value={j} selected={j===v}>{d}</option>)}</select></label>)}</div><table><caption>Scale harmony</caption><tbody id="harmony"></tbody></table></div></>}
+{panel==='EXP' && <><div class="display"><strong id="points">0</strong> <small>EXP</small><span id="practice"></span></div><small>Activity · last seven days</small><div id="history" aria-label="Practice duration by day for the last seven days"></div><progress id="progress" aria-label="Progress toward next EXP milestone"></progress><small id="milestone"></small></>}
 </section>)}</div></article>
 <script>import '../scripts/gdc';</script>
 </Layout>
