@@ -35,7 +35,9 @@ let iteration = 0;
 let chordNames: string[] = [];
 let triads: number[][] = [];
 let barNumber = 0;
-let viewStart = -1;
+let displayedBar = 0;
+let displayedNote = -1;
+let gearStep = 0;
 function progression() {
   return [0, 1, 2, 3].map((i) => number("chord" + i)).filter((i) => i >= 0);
 }
@@ -85,6 +87,7 @@ function arrange() {
         degrees.includes((Number(k.dataset.pitch) - key + 12) % 12),
       ),
     );
+  select("theory-mode").value = mode;
   const letters = "CDEFGAB";
   const natural = [0, 2, 4, 5, 7, 9, 11];
   const notes = degrees.map((interval, i) => {
@@ -96,6 +99,13 @@ function arrange() {
   const body = element("harmony");
   body.replaceChildren();
   write("keyname", name + " " + mode);
+  const relatives: Record<string, string> = {
+    Major: "Relative: " + notes[5] + " minor",
+    "Natural minor": "Relative: " + notes[2] + " major",
+    "Harmonic minor": "Related mode: " + notes[4] + " Phrygian dominant",
+    "Phrygian dominant": "Parent scale: " + notes[3] + " harmonic minor",
+  };
+  write("relative", relatives[mode]);
   chordNames = [];
   triads = [];
   degrees.forEach((root, i) => {
@@ -126,13 +136,27 @@ function arrange() {
   });
   const open = [40, 45, 50, 55, 59, 64];
   const start = (key - 4 + 12) % 12;
-  const up = [...degrees, 12].map((interval) => {
+  let up = [...degrees, 12].map((interval) => {
     const midi = 40 + start + interval;
     let string = 0;
     while (string < 5 && midi - open[string + 1] >= Math.max(0, start - 1))
       string++;
     return { midi, string, fret: midi - open[string] };
   });
+  if (select("position").value !== "root") {
+    const low = number("position");
+    const pitches = new Map<number, (typeof up)[number]>();
+    for (const [string, tuning] of open.entries()) {
+      for (let fret = low; fret <= low + 4; fret++) {
+        const midi = tuning + fret;
+        if (!degrees.includes((midi - key + 12) % 12)) continue;
+        const old = pitches.get(midi);
+        if (!old || Math.abs(fret - low - 2) < Math.abs(old.fret - low - 2))
+          pitches.set(midi, { midi, string, fret });
+      }
+    }
+    up = [...pitches.values()].sort((a, b) => a.midi - b.midi);
+  }
   const direction = select("direction").value;
   sequence =
     direction === "Ascending"
@@ -144,22 +168,38 @@ function arrange() {
   cursor = 0;
   iteration = 0;
   barNumber = 0;
-  viewStart = -1;
+  element("tab").replaceChildren();
   drawTab(-1);
   showChords();
   rhythm();
 }
-function drawTab(active: number, start = 0) {
+function drawTab(active: number, bar = 0) {
+  displayedBar = bar;
+  displayedNote = active;
   const grid = element("tab");
   const division = number("division");
-  if (viewStart !== start) {
-    grid.replaceChildren();
-    const columns = pattern.length * division;
-    for (let bar = 0; bar < 3; bar++) {
-      const measure = document.createElement("div");
+  const columns = pattern.length * division;
+  const slots = grid.closest("section")!.classList.contains("large") ? 6 : 3;
+  if (grid.children.length !== slots) grid.replaceChildren();
+  const currentSlot = bar % slots;
+  for (let slot = 0; slot < slots; slot++) {
+    let measure = grid.children[slot] as HTMLElement | undefined;
+    if (!measure) {
+      measure = document.createElement("div");
       measure.className = "measure";
+      grid.append(measure);
+    }
+    // Once the cursor reaches the last slot, prepare the first slot for the turn.
+    const absoluteBar =
+      bar -
+      currentSlot +
+      slot +
+      (currentSlot === slots - 1 && slot === 0 ? slots : 0);
+    if (measure.dataset.bar !== String(absoluteBar)) {
+      measure.dataset.bar = String(absoluteBar);
+      measure.replaceChildren();
       const heading = document.createElement("small");
-      heading.textContent = ["Current", "Next", "+2 bars"][bar];
+      heading.textContent = "Bar " + (absoluteBar + 1);
       measure.append(heading);
       ["e", "B", "G", "D", "A", "E"].forEach((label, row) => {
         const line = document.createElement("div");
@@ -168,8 +208,8 @@ function drawTab(active: number, start = 0) {
           "1ch repeat(" + columns + ", minmax(1.3ch,1fr))";
         line.append(label);
         for (let i = 0; i < columns; i++) {
-          const col = bar * columns + i;
-          const note = sequence[(start + col) % sequence.length];
+          const col = slot * columns + i;
+          const note = sequence[(absoluteBar * columns + i) % sequence.length];
           const cell = document.createElement("span");
           cell.textContent = note.string === 5 - row ? String(note.fret) : "";
           cell.dataset.col = String(col);
@@ -178,15 +218,15 @@ function drawTab(active: number, start = 0) {
         }
         measure.append(line);
       });
-      grid.append(measure);
     }
-    viewStart = start;
   }
   grid
     .querySelectorAll(".current")
     .forEach((node) => node.classList.remove("current"));
   grid
-    .querySelectorAll('[data-col="' + active + '"]')
+    .querySelectorAll(
+      '[data-col="' + (active < 0 ? -1 : currentSlot * columns + active) + '"]',
+    )
     .forEach((node) => node.classList.add("current"));
 }
 function resetAccents() {
@@ -196,7 +236,8 @@ function resetAccents() {
   pattern.forEach((_, i) => {
     const button = document.createElement("button");
     function label() {
-      button.textContent = String(i + 1) + ["×", "·", "›", "+"][pattern[i]];
+      button.dataset.accent = states[pattern[i]];
+      button.title = "Pulse " + (i + 1) + " · " + states[pattern[i]];
       button.ariaLabel =
         "Pulse " + (i + 1) + ", " + states[pattern[i]] + ". Change accent";
     }
@@ -238,6 +279,7 @@ function focus(name: string) {
     );
   });
   try {
+    if (sequence.length) drawTab(displayedNote, displayedBar);
     localStorage.setItem("gdc.layout", name);
   } catch {}
 }
@@ -302,6 +344,22 @@ function chart() {
       seconds: totals.get(key) || 0,
     };
   });
+  const today = week[6].seconds;
+  const daily = element<HTMLProgressElement>("daily-progress");
+  daily.max = number("daily-goal") * 60;
+  daily.value = today;
+  write(
+    "daily-time",
+    "Today · " + Math.floor(today / 60) + "m " + Math.floor(today % 60) + "s",
+  );
+  write(
+    "week-summary",
+    "Last 7 days · " +
+      Math.floor(week.reduce((sum, d) => sum + d.seconds, 0) / 60) +
+      " min · " +
+      week.filter((d) => d.seconds > 0).length +
+      " active days",
+  );
   const max = Math.max(1, ...week.map((day) => day.seconds));
   element("history").replaceChildren(
     ...week.map((day) => {
@@ -448,7 +506,7 @@ function schedule() {
     at(time, () => {
       element("tempo").parentElement!.style.setProperty(
         "--swing",
-        index % 2 ? "24deg" : "-24deg",
+        ++gearStep * 30 + "deg",
       );
       [...element("pulses").children].forEach((node, i) =>
         node.classList.toggle("lit", i === index),
@@ -467,9 +525,7 @@ function schedule() {
           tone(time, 440 * 2 ** ((midi - 69) / 12), span * 0.92, "sine", 0.105);
       }
       if (index === 0) at(time, () => showChords(slot));
-      const start =
-        (cursor - ((index * divisions) % sequence.length) + sequence.length) %
-        sequence.length;
+      const playingBar = barNumber;
       if (index === pattern.length - 1) barNumber++;
       for (let i = 0; i < divisions; i++) {
         const pos = cursor,
@@ -485,7 +541,7 @@ function schedule() {
           );
         const loop = iteration + 1;
         at(onset, () => {
-          drawTab(index * divisions + i, start);
+          drawTab(index * divisions + i, playingBar);
           write("status", "Playing · loop " + loop);
         });
         if (++cursor === sequence.length) {
@@ -593,7 +649,19 @@ select("theory-key").onchange = () => {
   select("key").value = select("theory-key").value;
   select("key").dispatchEvent(new Event("change", { bubbles: true }));
 };
-for (const id of ["key", "scale", "direction", "division", "meter"]) {
+select("theory-mode").onchange = () => {
+  select("scale").value = select("theory-mode").value;
+  select("scale").dispatchEvent(new Event("change", { bubbles: true }));
+};
+select("daily-goal").onchange = () => chart();
+for (const id of [
+  "key",
+  "scale",
+  "position",
+  "direction",
+  "division",
+  "meter",
+]) {
   select(id).onchange = () => {
     timers.forEach(clearTimeout);
     timers.clear();

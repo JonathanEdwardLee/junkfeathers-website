@@ -806,3 +806,148 @@ body:has(.gdc) .site-header {
     transform: none;
   }
 }
+.gdc #rack section {
+  border: 3px solid #eee;
+}
+.gdc #pulses {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 3px;
+}
+.gdc #pulses button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 29px;
+  height: 29px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+}
+.gdc #pulses button::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border: 2px solid #808080;
+  border-radius: 50%;
+  background: #080808;
+}
+.gdc #pulses button[data-accent="Accent"]::before {
+  border-color: #eee;
+}
+.gdc #pulses button[data-accent="Secondary"]::before {
+  border-style: double;
+  border-width: 3px;
+}
+.gdc #pulses button[data-accent="Mute"]::before {
+  border-style: dashed;
+}
+.gdc #pulses button.lit::before {
+  background: white;
+  border-color: white;
+  box-shadow: 0 0 6px #aaa;
+}
+.gdc .gear-window {
+  flex: none;
+  width: 42px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 2px solid #777;
+  background: #050505;
+  box-shadow: inset 0 0 0 2px #252525;
+}
+.gdc .gear-window i {
+  position: relative;
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      #050505 0 15%,
+      #aaa 16% 24%,
+      #383838 25% 54%,
+      transparent 55%
+    ),
+    repeating-conic-gradient(#bbb 0 18deg, transparent 18deg 30deg);
+  transform: rotate(var(--swing, 0deg));
+  transition: transform 0.16s linear;
+}
+.gdc .gear-window i::after {
+  content: "";
+  position: absolute;
+  left: 44%;
+  top: 0;
+  width: 12%;
+  height: 29%;
+  background: #fff;
+}
+.gdc #tab {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(max-content, 1fr));
+  grid-auto-rows: 84px;
+  flex: 0 0 auto;
+  align-content: start;
+  gap: 5px;
+  height: auto;
+}
+.gdc #tab .measure {
+  min-width: 0;
+}
+.gdc #relative {
+  display: block;
+  color: #aaa;
+  font-size: 12px;
+}
+.gdc .harmony-head {
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.gdc .harmony-head > div {
+  margin-right: auto;
+}
+.gdc .harmony-head label {
+  flex-direction: column;
+  align-items: start;
+  gap: 0;
+}
+.gdc #rack[data-focus="Balanced"] .ramp-switch {
+  position: static;
+  float: none;
+  width: auto;
+}
+.gdc .daily-practice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gdc .daily-practice > div {
+  flex: 1;
+}
+.gdc .daily-practice progress {
+  display: block;
+  margin-top: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gdc .gear-window i {
+    transition: none;
+  }
+}
+@media (max-width: 620px) {
+  .gdc #tab {
+    grid-auto-rows: 74px;
+  }
+  .gdc #pulses {
+    gap: 0;
+  }
+  .gdc #pulses button {
+    width: 22px;
+    height: 24px;
+  }
+  .gdc .gear-window {
+    width: 30px;
+  }
+}
