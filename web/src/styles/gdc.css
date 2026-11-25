@@ -951,3 +951,161 @@ body:has(.gdc) .site-header {
     width: 30px;
   }
 }
+.gdc .transport {
+  display: grid;
+  grid-template-columns: 8ch 17ch max-content;
+  justify-content: start;
+  align-items: center;
+  gap: 5px;
+}
+.gdc #play {
+  width: 8ch;
+  height: 32px;
+  padding: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.gdc #status {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gdc section > header > div {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.gdc .audio-switch {
+  display: inline-grid;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.gdc .audio-switch input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.gdc .audio-switch span {
+  width: 29px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #777;
+  color: #aaa;
+  background: #151515;
+}
+.gdc .audio-switch svg {
+  width: 18px;
+  height: 18px;
+}
+.gdc .audio-switch input:checked + span {
+  color: #fff;
+  border-color: #bbb;
+}
+.gdc .audio-switch input:focus-visible + span {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+.gdc .audio-switch input:checked + span .sound-off,
+.gdc .audio-switch input:not(:checked) + span .sound-on {
+  display: none;
+}
+.gdc #rack .settings-drawer > header button[popovertarget] {
+  display: inline-block;
+}
+.gdc .harmony-head {
+  padding-block: 2px;
+}
+.gdc .harmony-head > div h3,
+.gdc .harmony-head > div #relative {
+  display: inline;
+}
+.gdc .harmony-head > div #relative {
+  margin-left: 0.5em;
+}
+.gdc .harmony-head #tonic {
+  display: block;
+}
+@media (max-width: 620px) {
+  .gdc .transport {
+    grid-template-columns: 8ch minmax(0, 1fr) max-content;
+  }
+  .gdc .compact #keyboard {
+    display: none;
+  }
+}
+.gdc .compact #rhythm,
+.gdc .compact #relative,
+.gdc .compact #tonic {
+  display: none;
+}
+.gdc .compact #tab {
+  grid-auto-rows: 64px;
+  padding-block: 0;
+}
+.gdc .compact .tab-line {
+  min-height: 8px;
+  font-size: 9px;
+}
+.gdc .compact .measure small {
+  font-size: 9px;
+}
+.gdc .harmony-head label {
+  min-width: 0;
+  max-width: 100%;
+}
+.gdc .harmony-head label select {
+  min-width: 0;
+  max-width: 100%;
+}
+.gdc .compact .harmony-head {
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.gdc .compact .harmony-head label {
+  display: block;
+  flex: 1 1 40%;
+}
+.gdc .compact .harmony-head > div {
+  width: 100%;
+}
+.gdc .compact .harmony-head select {
+  width: 100%;
+}
+.gdc #changes span {
+  min-width: 0;
+  padding-inline: 2px;
+}
+.gdc section > header > div {
+  max-width: 100%;
+}
+@media (max-width: 620px) {
+  .gdc section > header > div {
+    gap: 1px;
+  }
+  .gdc .harmony-head {
+    min-width: 0;
+  }
+  .gdc .harmony-head label {
+    flex: 1 1 40%;
+  }
+}
+.gdc [data-panel="Theory"].compact {
+  gap: 1px;
+  padding-block: 4px;
+}
+@media (max-width: 620px) {
+  .gdc .large #harmony {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .gdc .large #harmony td {
+    font-size: 11px;
+    padding: 1px;
+  }
+}

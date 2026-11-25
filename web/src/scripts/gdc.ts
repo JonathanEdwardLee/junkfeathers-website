@@ -172,6 +172,7 @@ function arrange() {
   drawTab(-1);
   showChords();
   rhythm();
+  fitPracticePanels();
 }
 function drawTab(active: number, bar = 0) {
   displayedBar = bar;
@@ -278,11 +279,29 @@ function focus(name: string) {
       (active ? "Restore " : "Enlarge ") + panel.dataset.panel,
     );
   });
+  fitPracticePanels();
   try {
     if (sequence.length) drawTab(displayedNote, displayedBar);
     localStorage.setItem("gdc.layout", name);
   } catch {}
 }
+function fitPracticePanels() {
+  for (const panel of rack.querySelectorAll<HTMLElement>(
+    '[data-panel="Technique"], [data-panel="Theory"]',
+  )) {
+    const tray = panel.querySelector<HTMLElement>(".tray")!;
+    if (tray.matches(":popover-open")) continue;
+    panel.classList.remove("settings-drawer");
+    if (panel.classList.contains("compact")) continue;
+    tray.removeAttribute("popover");
+    if (panel.scrollHeight > panel.clientHeight + 1) {
+      panel.classList.add("settings-drawer");
+      tray.setAttribute("popover", "auto");
+    }
+  }
+}
+const panelResize = new ResizeObserver(fitPracticePanels);
+rack.querySelectorAll("section").forEach((panel) => panelResize.observe(panel));
 rack.querySelectorAll<HTMLElement>("section").forEach((panel) => {
   panel.querySelector<HTMLButtonElement>("button.focus")!.onclick = () =>
     focus(
@@ -425,6 +444,19 @@ function updateTime(force = false) {
 }
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
+const channelGains = new Map<string, GainNode>();
+for (const id of ["click-audio", "guide", "chords"]) {
+  input(id).addEventListener("change", () => {
+    if (context)
+      channelGains
+        .get(id)
+        ?.gain.setTargetAtTime(
+          input(id).checked ? 1 : 0,
+          context.currentTime,
+          0.004,
+        );
+  });
+}
 let running = false;
 let starting = false;
 let generation = 0;
@@ -444,6 +476,7 @@ function at(time: number, fn: () => void) {
   timers.add(token);
 }
 function tone(
+  channel: string,
   time: number,
   hz: number,
   length: number,
@@ -460,7 +493,7 @@ function tone(
   envelope.gain.setValueAtTime(0.0001, time);
   envelope.gain.exponentialRampToValueAtTime(gain, time + 0.002);
   envelope.gain.exponentialRampToValueAtTime(0.0001, time + length);
-  oscillator.connect(envelope).connect(master!);
+  oscillator.connect(envelope).connect(channelGains.get(channel)!);
   oscillator.start(time);
   oscillator.stop(time + length + 0.002);
   oscillator.onended = () => {
@@ -477,12 +510,12 @@ const voices: [number, number, OscillatorType, number][] = [
   [810, 810, "square", 0.075],
 ];
 function click(time: number, level: number) {
-  if (!level) return;
+  if (!level || !input("click-audio").checked) return;
   const index = select(level > 1 ? "accent" : "base").selectedIndex;
   const [hz, end, type, len] = voices[index];
   const gain = level === 2 ? 0.27 : level === 3 ? 0.21 : 0.16;
-  tone(time, hz, len, type, gain, end);
-  if (index === 5) tone(time, 540, 0.06, "square", gain * 0.48);
+  tone("click-audio", time, hz, len, type, gain, end);
+  if (index === 5) tone("click-audio", time, 540, 0.06, "square", gain * 0.48);
 }
 function setTempo(value: number) {
   input("bpm").value = String(Math.min(300, Math.max(30, value)));
@@ -522,7 +555,14 @@ function schedule() {
       const slot = barNumber % chords.length;
       if (input("chords").checked) {
         for (const midi of triads[chords[slot]])
-          tone(time, 440 * 2 ** ((midi - 69) / 12), span * 0.92, "sine", 0.105);
+          tone(
+            "chords",
+            time,
+            440 * 2 ** ((midi - 69) / 12),
+            span * 0.92,
+            "sine",
+            0.105,
+          );
       }
       if (index === 0) at(time, () => showChords(slot));
       const playingBar = barNumber;
@@ -533,6 +573,7 @@ function schedule() {
           onset = time + (span * i) / divisions;
         if (input("guide").checked)
           tone(
+            "guide",
             onset,
             440 * 2 ** ((note.midi - 69) / 12),
             Math.min(0.42, (span / divisions) * 0.78),
@@ -575,6 +616,8 @@ function stop(message = "Stopped") {
   window.clearInterval(timer);
   timers.forEach(clearTimeout);
   timers.clear();
+  for (const bus of channelGains.values()) bus.disconnect();
+  channelGains.clear();
   master?.disconnect();
   session = null;
   storageKey = "";
@@ -602,6 +645,12 @@ async function toggle() {
     master = context.createGain();
     master.gain.value = number("vol") / 100;
     master.connect(context.destination);
+    for (const id of ["click-audio", "guide", "chords"]) {
+      const bus = context.createGain();
+      bus.gain.value = input(id).checked ? 1 : 0;
+      bus.connect(master);
+      channelGains.set(id, bus);
+    }
     running = true;
     cursor = 0;
     iteration = 0;
