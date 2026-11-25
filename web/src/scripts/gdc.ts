@@ -41,6 +41,16 @@ function progression() {
 }
 function showChords(active = -1) {
   const strip = element("changes");
+  const degree = progression()[Math.max(0, active)];
+  const pitches = triads[degree]?.map((n) => n % 12) ?? [];
+  element("keyboard")
+    .querySelectorAll<HTMLElement>("i")
+    .forEach((key) => {
+      key.classList.toggle(
+        "in-chord",
+        pitches.includes(Number(key.dataset.pitch)),
+      );
+    });
   strip.replaceChildren(
     ...progression().map((degree, i) => {
       const chip = document.createElement("span");
@@ -63,9 +73,18 @@ function rhythm() {
 }
 function arrange() {
   const key = number("key");
+  select("theory-key").value = String(key);
   const name = select("key").selectedOptions[0].text;
   const mode = select("scale").value;
   const degrees = scales[mode];
+  element("keyboard")
+    .querySelectorAll<HTMLElement>("i")
+    .forEach((k) =>
+      k.classList.toggle(
+        "in-scale",
+        degrees.includes((Number(k.dataset.pitch) - key + 12) % 12),
+      ),
+    );
   const letters = "CDEFGAB";
   const natural = [0, 2, 4, 5, 7, 9, 11];
   const notes = degrees.map((interval, i) => {
@@ -135,21 +154,32 @@ function drawTab(active: number, start = 0) {
   const division = number("division");
   if (viewStart !== start) {
     grid.replaceChildren();
-    ["e", "B", "G", "D", "A", "E"].forEach((label, row) => {
-      const line = document.createElement("pre");
-      line.append(label + "│");
-      for (let col = 0; col < pattern.length * division; col++) {
-        const note = sequence[(start + col) % sequence.length];
-        const cell = document.createElement("span");
-        cell.textContent = (
-          note.string === 5 - row ? String(note.fret) : ""
-        ).padStart(2, "-");
-        cell.dataset.col = String(col);
-        line.append(cell);
-        if ((col + 1) % division === 0) line.append("│");
-      }
-      grid.append(line);
-    });
+    const columns = pattern.length * division;
+    for (let bar = 0; bar < 3; bar++) {
+      const measure = document.createElement("div");
+      measure.className = "measure";
+      const heading = document.createElement("small");
+      heading.textContent = ["Current", "Next", "+2 bars"][bar];
+      measure.append(heading);
+      ["e", "B", "G", "D", "A", "E"].forEach((label, row) => {
+        const line = document.createElement("div");
+        line.className = "tab-line";
+        line.style.gridTemplateColumns =
+          "1ch repeat(" + columns + ", minmax(1.3ch,1fr))";
+        line.append(label);
+        for (let i = 0; i < columns; i++) {
+          const col = bar * columns + i;
+          const note = sequence[(start + col) % sequence.length];
+          const cell = document.createElement("span");
+          cell.textContent = note.string === 5 - row ? String(note.fret) : "";
+          cell.dataset.col = String(col);
+          if (i % division === 0) cell.className = "pulse-edge";
+          line.append(cell);
+        }
+        measure.append(line);
+      });
+      grid.append(measure);
+    }
     viewStart = start;
   }
   grid
@@ -183,8 +213,22 @@ function focus(name: string) {
   rack.dataset.focus = name;
   rack.querySelectorAll<HTMLElement>("section").forEach((panel) => {
     const active = panel.dataset.panel === name;
+    const compact = !active && name !== "Balanced";
+    const timingRow = panel.querySelector<HTMLElement>(".row");
+    const panelTray = panel.querySelector<HTMLElement>(".tray");
+    if (timingRow && panelTray) {
+      if (compact) panelTray.querySelector("header")!.after(timingRow);
+      else panelTray.before(timingRow);
+    }
     panel.classList.toggle("large", active);
     panel.classList.toggle("compact", !active && name !== "Balanced");
+    const tray = panel.querySelector<HTMLElement>(".tray");
+    if (tray) {
+      if (tray.matches(":popover-open")) tray.hidePopover();
+      if (panel.classList.contains("compact"))
+        tray.setAttribute("popover", "auto");
+      else tray.removeAttribute("popover");
+    }
     const button = panel.querySelector("button.focus")!;
     button.setAttribute("aria-pressed", String(active));
     button.textContent = active ? "Restore" : "Enlarge";
@@ -402,6 +446,10 @@ function schedule() {
     const time = nextTime;
     click(time, lead ? 1 : pattern[index]);
     at(time, () => {
+      element("tempo").parentElement!.style.setProperty(
+        "--swing",
+        index % 2 ? "24deg" : "-24deg",
+      );
       [...element("pulses").children].forEach((node, i) =>
         node.classList.toggle("lit", i === index),
       );
@@ -478,6 +526,7 @@ function stop(message = "Stopped") {
   updateTime();
   write("play", "▶ Start");
   write("status", message);
+  element("tempo").parentElement!.style.setProperty("--swing", "0deg");
   drawTab(-1);
   showChords();
   element("pulses").querySelector(".lit")?.classList.remove("lit");
@@ -539,6 +588,10 @@ input("bpm").onchange = () => setTempo(bounded("bpm"));
 input("vol").oninput = () => {
   if (master && context)
     master.gain.setTargetAtTime(number("vol") / 100, context.currentTime, 0.01);
+};
+select("theory-key").onchange = () => {
+  select("key").value = select("theory-key").value;
+  select("key").dispatchEvent(new Event("change", { bubbles: true }));
 };
 for (const id of ["key", "scale", "direction", "division", "meter"]) {
   select(id).onchange = () => {
