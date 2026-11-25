@@ -251,6 +251,9 @@ function resetAccents() {
   });
 }
 const rack = element("rack");
+const phonePortrait = matchMedia(
+  "(max-width: 700px) and (orientation: portrait)",
+);
 function focus(name: string) {
   rack.dataset.focus = name;
   rack.querySelectorAll<HTMLElement>("section").forEach((panel) => {
@@ -259,7 +262,8 @@ function focus(name: string) {
     const timingRow = panel.querySelector<HTMLElement>(".row");
     const panelTray = panel.querySelector<HTMLElement>(".tray");
     if (timingRow && panelTray) {
-      if (compact) panelTray.querySelector("header")!.after(timingRow);
+      if (compact)
+        panelTray.querySelector("header")!.after(timingRow);
       else panelTray.before(timingRow);
     }
     panel.classList.toggle("large", active);
@@ -267,13 +271,13 @@ function focus(name: string) {
     const tray = panel.querySelector<HTMLElement>(".tray");
     if (tray) {
       if (tray.matches(":popover-open")) tray.hidePopover();
-      if (panel.classList.contains("compact"))
+      if (compact || phonePortrait.matches)
         tray.setAttribute("popover", "auto");
       else tray.removeAttribute("popover");
     }
-    const button = panel.querySelector("button.focus")!;
+    const button = panel.querySelector<HTMLButtonElement>("button.focus")!;
     button.setAttribute("aria-pressed", String(active));
-    button.textContent = active ? "Restore" : "Enlarge";
+    button.title = (active ? "Restore " : "Enlarge ") + panel.dataset.panel;
     button.setAttribute(
       "aria-label",
       (active ? "Restore " : "Enlarge ") + panel.dataset.panel,
@@ -293,6 +297,11 @@ function fitPracticePanels() {
     if (tray.matches(":popover-open")) continue;
     panel.classList.remove("settings-drawer");
     if (panel.classList.contains("compact")) continue;
+    if (phonePortrait.matches) {
+      tray.setAttribute("popover", "auto");
+      panel.classList.add("settings-drawer");
+      continue;
+    }
     tray.removeAttribute("popover");
     if (panel.scrollHeight > panel.clientHeight + 1) {
       panel.classList.add("settings-drawer");
@@ -314,6 +323,11 @@ try {
   if (saved && ["Timing", "Technique", "Theory", "EXP"].includes(saved))
     focus(saved);
 } catch {}
+
+phonePortrait.addEventListener("change", () =>
+  focus(rack.dataset.focus || "Balanced"),
+);
+if (phonePortrait.matches) focus(rack.dataset.focus || "Balanced");
 
 type Session = { date: string; seconds: number };
 let session: Session | null = null;
