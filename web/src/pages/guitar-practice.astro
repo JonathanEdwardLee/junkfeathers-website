@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/gdc.css';
+const voices = ['Wood block','Tape clack','Soft beep','Rim click','Analog pulse','Cowbell'];
+const panels = ['Timing','Technique','Theory','EXP'];
+---
+<Layout title="Guitar Discipline Console · Junkfeathers" description="Practice guitar with Chronos timing, playable scales, harmony and a personal practice log.">
+<article class="gdc">
+<header class="gdc-head"><div class="gdc-plate">JUNKFEATHERS TECH <span>GDC–01</span></div>
+<h1>Guitar Discipline Console</h1>
+<div class="transport"><button id="play" type="button">▶ Start</button><output id="status" role="status">Ready</output><button id="balance">Balanced view</button></div></header>
+<div id="rack" data-focus="Balanced">
+{panels.map((panel) => <section data-panel={panel} aria-label={panel}>
+<header><h2>{panel}</h2><button class="focus" aria-label={'Enlarge ' + panel} aria-pressed="false">Enlarge</button></header>
+{panel==='Timing' && <><div class="readout"><strong id="tempo">80</strong> <small>BPM</small></div><div id="pulses" aria-label="Pulse accents"></div>
+<div class="settings"><label>Tempo<input id="bpm" type="number" min="30" max="300" value="80"/></label><button id="tap">Tap tempo</button><label>Meter<select id="meter">{['4/4','3/4','6/8','5/4','7/8'].map(m=><option>{m}</option>)}</select></label><label>Count-in<select id="count"><option value="0">Off</option><option value="4">4 pulses</option></select></label>
+<label>Base sound<select id="base">{voices.map(v=><option>{v}</option>)}</select></label><label>Accent sound<select id="accent">{voices.map(v=><option selected={v==='Cowbell'}>{v}</option>)}</select></label><label>Groove (%)<input type="range" id="groove" min="0" max="66" value="0"/></label><label>Volume<input type="range" id="vol" min="0" max="100" value="55"/></label></div>
+<small>BPM counts pulses in every meter. Select a pulse to change its accent.</small></>}
+{panel==='Technique' && <><div class="readout" id="exercise"></div><div class="settings"><label>Root<select id="key">{['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'].map((k,i)=><option value={i} selected={i===4}>{k}</option>)}</select></label><label>Scale<select id="scale">{['Major','Natural minor','Harmonic minor','Phrygian dominant'].map(s=><option>{s}</option>)}</select></label><label>Sequence<select id="direction"><option>Up and down</option><option>Ascending</option><option>Descending</option></select></label><label>Notes per pulse<select id="division">{[1,2,3,4].map(n=><option>{n}</option>)}</select></label></div><div id="tab" aria-label="Guitar tablature in standard tuning"></div><label><input type="checkbox" id="guide" checked/> Play scale guide</label><details><summary>Automatic tempo ramp</summary><label><input type="checkbox" id="ramp"/> Raise tempo after completed loops</label><div class="settings"><label>Target BPM<input id="target" type="number" min="30" max="300" value="100"/></label><label>Step BPM<input id="increment" type="number" min="1" max="30" value="5"/></label><label>Loops per step<input id="loops" type="number" min="1" max="32" value="4"/></label></div></details></>}
+{panel==='Theory' && <><div class="readout" id="tonic"></div><table><caption>Scale degrees and diatonic triads</caption><thead><tr><th>Degree</th><th>Note</th><th>Chord</th></tr></thead><tbody id="harmony"></tbody></table></>}
+{panel==='EXP' && <><div class="readout"><strong id="points">0</strong> <small>EXP</small></div><p id="milestone"></p><p id="practice"></p><p id="record"></p><button id="clean">Mark this tempo clean</button><p><small>One point per active minute. Clean tempos are self-reported. History stays in this browser.</small></p><div id="history"></div></>}
+</section>)}</div></article>
+<script>import '../scripts/gdc';</script>
+</Layout>

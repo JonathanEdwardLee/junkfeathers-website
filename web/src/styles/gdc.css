@@ -1,0 +1,234 @@
+.gdc {
+  --copper: #e6b682;
+  --edge: #635549;
+  --ink: #f3eada;
+  color: var(--ink);
+  max-width: 1140px;
+  margin: 2rem auto;
+  padding: clamp(0.7rem, 2vw, 1.7rem);
+  font-family: ui-monospace, Consolas, monospace;
+  border: 1px solid #7d7063;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #33322e, #181918 42%, #282621);
+  box-shadow:
+    inset 0 2px 1px #989187,
+    inset 0 -4px 2px #060605;
+}
+.gdc-head {
+  padding: 0.5rem clamp(0.3rem, 2vw, 1.4rem) 1rem;
+}
+.gdc-plate,
+.gdc section header,
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+.gdc-plate {
+  justify-content: space-between;
+  color: var(--copper);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+}
+.gdc h1 {
+  font:
+    600 clamp(1.8rem, 4vw, 3.1rem)/1.15 Georgia,
+    serif;
+  letter-spacing: -0.035em;
+  margin: 0.5rem 0 1rem;
+}
+.gdc button,
+.gdc input,
+.gdc select {
+  font: inherit;
+  color: var(--ink);
+  background: #252623;
+  border: 1px solid #8b8071;
+  border-radius: 4px;
+  min-height: 36px;
+  padding: 0.3rem 0.55rem;
+}
+.gdc button {
+  cursor: pointer;
+}
+.gdc button:hover,
+.gdc button[aria-pressed="true"] {
+  background: #554735;
+}
+.gdc :focus-visible {
+  outline: 3px solid #ffe0a2;
+  outline-offset: 2px;
+}
+.gdc #play {
+  background: #e6b682;
+  color: #20190f;
+  min-width: 7rem;
+  font-weight: bold;
+}
+.gdc #balance {
+  margin-left: auto;
+}
+.gdc #rack {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.gdc #rack:not([data-focus="Balanced"]) {
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+}
+.gdc section {
+  position: relative;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  background: linear-gradient(160deg, #22231f, #111310);
+  box-shadow:
+    inset 0 1px #605d54,
+    0 2px 4px #090909;
+}
+.gdc section header {
+  justify-content: space-between;
+  border-bottom: 1px solid #555047;
+  padding-bottom: 0.45rem;
+}
+.gdc h2 {
+  font:
+    600 1.1rem Georgia,
+    serif;
+  margin: 0;
+  color: #f1ddbd;
+}
+.gdc .readout {
+  margin: 0.8rem 0;
+  padding: 0.75rem;
+  color: #ebc286;
+  background: linear-gradient(90deg, #191c16, #11140f);
+  border: 1px solid #49483a;
+  border-radius: 3px;
+  font-size: 1.22rem;
+  letter-spacing: 0.035em;
+}
+.gdc .readout strong {
+  font-size: 2.1rem;
+  line-height: 1;
+}
+.gdc .settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(126px, 100%), 1fr));
+  gap: 0.5rem;
+  align-items: end;
+  margin: 0.7rem 0;
+}
+.gdc label {
+  display: block;
+  font-size: 0.86rem;
+}
+.gdc label > select,
+.gdc label > input:not([type="checkbox"]) {
+  width: 100%;
+  display: block;
+}
+.gdc input[type="checkbox"] {
+  vertical-align: middle;
+  min-height: 0;
+}
+.gdc small,
+.gdc caption {
+  color: #c7bfaf;
+}
+.gdc table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+.gdc th,
+.gdc td {
+  border-bottom: 1px solid #3c4037;
+  padding: 0.2rem;
+}
+.gdc caption {
+  text-align: left;
+  padding-bottom: 0.4rem;
+}
+.gdc #pulses {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.gdc #pulses button {
+  min-width: 2rem;
+}
+.gdc .lit,
+.gdc .current {
+  background: #e9c388 !important;
+  color: #171911;
+}
+.gdc #tab {
+  overflow-x: auto;
+  margin: 0.6rem 0;
+  padding: 0.45rem;
+  background: #141613;
+}
+.gdc #tab pre {
+  font: 14px/1.4 monospace;
+  margin: 0;
+  white-space: pre;
+}
+.gdc summary {
+  cursor: pointer;
+  margin: 0.8rem 0;
+  color: var(--copper);
+}
+.gdc section.large {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+}
+.gdc section.compact {
+  grid-column: 2;
+}
+.gdc section.compact .settings,
+.gdc section.compact details,
+.gdc section.compact #history,
+.gdc section.compact #harmony tr:nth-child(n + 4) {
+  display: none;
+}
+.gdc section.large .readout {
+  font-size: 1.6rem;
+}
+.gdc #history {
+  font-size: 0.85rem;
+}
+.gdc .transport {
+  position: relative;
+}
+@media (max-width: 720px) {
+  .gdc #rack,
+  .gdc #rack:not([data-focus="Balanced"]) {
+    display: flex;
+    flex-direction: column;
+  }
+  .gdc section.large {
+    order: -1;
+  }
+  .gdc-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #252622;
+    border-radius: 6px;
+  }
+  .gdc h1 {
+    font-size: 1.4rem;
+  }
+  .gdc {
+    margin: 0.5rem auto;
+  }
+  .gdc .transport {
+    gap: 0.3rem;
+  }
+  .gdc #status {
+    font-size: 0.78rem;
+  }
+}
