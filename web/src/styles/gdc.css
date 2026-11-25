@@ -738,7 +738,7 @@ body:has(.gdc) .site-header {
 .gdc .ramp-switch {
   display: block;
 }
-.gdc #rack[data-focus="Balanced"] [data-panel="Theory"] .tray {
+.gdc #rack[data-focus="Balanced"] [data-panel="Theory"] .tray:not([popover]) {
   display: grid;
   grid-template-columns: minmax(90px, 1fr) minmax(0, 3fr);
   column-gap: 6px;
@@ -759,7 +759,10 @@ body:has(.gdc) .site-header {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   clear: both;
 }
-.gdc #rack[data-focus="Balanced"] [data-panel="Technique"] .tray {
+.gdc
+  #rack[data-focus="Balanced"]
+  [data-panel="Technique"]
+  .tray:not([popover]) {
   position: relative;
 }
 .gdc #rack[data-focus="Balanced"] .ramp-switch {
@@ -788,7 +791,7 @@ body:has(.gdc) .site-header {
   .gdc .movement .escapement {
     display: none;
   }
-  .gdc #rack[data-focus="Balanced"] [data-panel="Theory"] .tray {
+  .gdc #rack[data-focus="Balanced"] [data-panel="Theory"] .tray:not([popover]) {
     display: block;
   }
   .gdc #rack[data-focus="Balanced"] [data-panel="Technique"] .controls,
@@ -1107,5 +1110,105 @@ body:has(.gdc) .site-header {
   .gdc .large #harmony td {
     font-size: 11px;
     padding: 1px;
+  }
+}
+
+.gdc .panel-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
+  padding: 3px;
+}
+.gdc .panel-icon svg {
+  width: 19px;
+  height: 19px;
+}
+.gdc .focus[aria-pressed="false"] .restore-mark,
+.gdc .focus[aria-pressed="true"] .expand-mark {
+  display: none;
+}
+@media (max-width: 700px) {
+  .gdc-head h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  .gdc #rack {
+    height: calc(100dvh - 130px);
+    min-height: 330px;
+  }
+  .gdc #rack:not([data-focus="Balanced"]) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 3fr) repeat(3, minmax(0, 1fr));
+  }
+  .gdc #rack section.large {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .gdc #rack section.compact {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+  }
+  .gdc #rack section.compact > header {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  .gdc
+    #rack
+    section.compact
+    > :not(header):not(.tray):not(.display):not(#exercise):not(.harmony-head) {
+    display: none;
+  }
+  .gdc #rack section.compact .harmony-head label,
+  .gdc #rack section.compact .gear-window {
+    display: none;
+  }
+  .gdc #rack section.compact .display,
+  .gdc #rack section.compact .harmony-head {
+    min-height: 0;
+    padding: 0 5px;
+    flex: 0 0 auto;
+  }
+  .gdc #rack section.compact .display strong,
+  .gdc #rack section.compact h3 {
+    font-size: 14px;
+  }
+  .gdc #rack section > header button[popovertarget] {
+    display: inline-grid;
+  }
+  .gdc #rack section > header .panel-icon,
+  .gdc .audio-switch span {
+    width: 32px;
+    height: 32px;
+  }
+  .gdc .large .harmony-head {
+    padding: 4px;
+  }
+  .gdc .tray[popover] {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+    width: min(400px, 90vw);
+    max-height: 80dvh;
+    overflow: auto;
+  }
+  .gdc .tray[popover] .row {
+    display: flex;
+  }
+  .gdc .large #tab {
+    width: 100%;
   }
 }
