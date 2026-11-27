@@ -1,4 +1,4 @@
-export {};
+import { regions, makeExercise, type Pattern } from "./gdc-exercises";
 function element<T extends HTMLElement = HTMLElement>(id: string) {
   return document.getElementById(id) as T;
 }
@@ -134,36 +134,30 @@ function arrange() {
     }
     body.append(row);
   });
-  const open = [40, 45, 50, 55, 59, 64];
-  const start = (key - 4 + 12) % 12;
-  let up = [...degrees, 12].map((interval) => {
-    const midi = 40 + start + interval;
-    let string = 0;
-    while (string < 5 && midi - open[string + 1] >= Math.max(0, start - 1))
-      string++;
-    return { midi, string, fret: midi - open[string] };
-  });
-  if (select("position").value !== "root") {
-    const low = number("position");
-    const pitches = new Map<number, (typeof up)[number]>();
-    for (const [string, tuning] of open.entries()) {
-      for (let fret = low; fret <= low + 4; fret++) {
-        const midi = tuning + fret;
-        if (!degrees.includes((midi - key + 12) % 12)) continue;
-        const old = pitches.get(midi);
-        if (!old || Math.abs(fret - low - 2) < Math.abs(old.fret - low - 2))
-          pitches.set(midi, { midi, string, fret });
-      }
-    }
-    up = [...pitches.values()].sort((a, b) => a.midi - b.midi);
-  }
-  const direction = select("direction").value;
-  sequence =
-    direction === "Ascending"
-      ? up
-      : direction === "Descending"
-        ? [...up].reverse()
-        : [...up, ...up.slice(1, -1).reverse()];
+  const region =
+    regions.find((r) => r.id === select("position").value) ?? regions[0];
+  const high = Math.min(region.high, number("last-fret"));
+  sequence = makeExercise(
+    key,
+    degrees,
+    region.low,
+    high,
+    select("direction").value,
+    select("phrase").value as Pattern,
+  );
+  write("choose-neck", region.label + " · " + region.low + "–" + high);
+  write("neck-range", region.label + " · frets " + region.low + "–" + high);
+  const highlight = element("neck-highlight");
+  highlight.setAttribute("y", String(44 + region.low * 8.9));
+  highlight.setAttribute(
+    "height",
+    String(Math.max(8, (high - region.low) * 8.9)),
+  );
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-region]")
+    .forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.region === region.id)),
+    );
   write("exercise", name + " " + mode);
   cursor = 0;
   iteration = 0;
@@ -262,8 +256,7 @@ function focus(name: string) {
     const timingRow = panel.querySelector<HTMLElement>(".row");
     const panelTray = panel.querySelector<HTMLElement>(".tray");
     if (timingRow && panelTray) {
-      if (compact)
-        panelTray.querySelector("header")!.after(timingRow);
+      if (compact) panelTray.querySelector("header")!.after(timingRow);
       else panelTray.before(timingRow);
     }
     panel.classList.toggle("large", active);
@@ -721,6 +714,8 @@ for (const id of [
   "key",
   "scale",
   "position",
+  "phrase",
+  "last-fret",
   "direction",
   "division",
   "meter",
@@ -768,10 +763,25 @@ window.addEventListener("storage", () => {
   loadHistory();
   updateTime();
 });
+const neckDialog = element<HTMLDialogElement>("neck-dialog");
+element("choose-neck").onclick = () => {
+  neckDialog.showModal();
+  neckDialog.querySelector<HTMLButtonElement>("[aria-pressed=true]")?.focus();
+};
+neckDialog
+  .querySelectorAll<HTMLButtonElement>("[data-region]")
+  .forEach((button) => {
+    button.onclick = () => {
+      select("position").value = button.dataset.region!;
+      select("position").dispatchEvent(new Event("change", { bubbles: true }));
+    };
+  });
 const preferences = Array.from(
-  rack.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-    "input[id], select[id]",
-  ),
+  document
+    .querySelector(".gdc")!
+    .querySelectorAll<HTMLInputElement | HTMLSelectElement>(
+      "input[id], select[id]",
+    ),
 );
 function savePreferences() {
   try {
@@ -790,6 +800,11 @@ function savePreferences() {
 }
 try {
   const values = JSON.parse(localStorage.getItem("gdc.settings.v1") || "{}");
+  // Import the old five-fret preference into the nearest overlapping region.
+  if (typeof values.position === "string" && /^\d+$/.test(values.position)) {
+    const center = Number(values.position) + 2;
+    values.position = center <= 7 ? "upper" : center <= 15 ? "middle" : "lower";
+  }
   for (const field of preferences) {
     const value = values[field.id];
     if (field instanceof HTMLSelectElement) {
@@ -813,7 +828,7 @@ try {
 } catch {
   storageOK = false;
 }
-rack.addEventListener("change", savePreferences);
+document.querySelector(".gdc")!.addEventListener("change", savePreferences);
 window.addEventListener("pagehide", savePreferences);
 setTempo(bounded("bpm"));
 resetAccents();
