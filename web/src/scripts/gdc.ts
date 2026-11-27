@@ -127,7 +127,7 @@ function arrange() {
       option.text = symbol + " · " + chordNames[i];
     }
     const row = document.createElement("tr");
-    for (const value of [String(i + 1), notes[i], notes[i] + quality]) {
+    for (const value of [symbol, chordNames[i]]) {
       const cell = document.createElement("td");
       cell.textContent = value;
       row.append(cell);
@@ -166,7 +166,6 @@ function arrange() {
   drawTab(-1);
   showChords();
   rhythm();
-  fitPracticePanels();
 }
 function drawTab(active: number, bar = 0) {
   displayedBar = bar;
@@ -264,7 +263,10 @@ function focus(name: string) {
     const tray = panel.querySelector<HTMLElement>(".tray");
     if (tray) {
       if (tray.matches(":popover-open")) tray.hidePopover();
-      if (compact || phonePortrait.matches)
+      if (
+        compact ||
+        (phonePortrait.matches && panel.dataset.panel === "Timing")
+      )
         tray.setAttribute("popover", "auto");
       else tray.removeAttribute("popover");
     }
@@ -276,34 +278,11 @@ function focus(name: string) {
       (active ? "Restore " : "Enlarge ") + panel.dataset.panel,
     );
   });
-  fitPracticePanels();
   try {
     if (sequence.length) drawTab(displayedNote, displayedBar);
     localStorage.setItem("gdc.layout", name);
   } catch {}
 }
-function fitPracticePanels() {
-  for (const panel of rack.querySelectorAll<HTMLElement>(
-    '[data-panel="Technique"], [data-panel="Theory"]',
-  )) {
-    const tray = panel.querySelector<HTMLElement>(".tray")!;
-    if (tray.matches(":popover-open")) continue;
-    panel.classList.remove("settings-drawer");
-    if (panel.classList.contains("compact")) continue;
-    if (phonePortrait.matches) {
-      tray.setAttribute("popover", "auto");
-      panel.classList.add("settings-drawer");
-      continue;
-    }
-    tray.removeAttribute("popover");
-    if (panel.scrollHeight > panel.clientHeight + 1) {
-      panel.classList.add("settings-drawer");
-      tray.setAttribute("popover", "auto");
-    }
-  }
-}
-const panelResize = new ResizeObserver(fitPracticePanels);
-rack.querySelectorAll("section").forEach((panel) => panelResize.observe(panel));
 rack.querySelectorAll<HTMLElement>("section").forEach((panel) => {
   panel.querySelector<HTMLButtonElement>("button.focus")!.onclick = () =>
     focus(
@@ -322,7 +301,103 @@ phonePortrait.addEventListener("change", () =>
 );
 if (phonePortrait.matches) focus(rack.dataset.focus || "Balanced");
 
-type Session = { date: string; seconds: number };
+type Exercise = {
+  scale: string;
+  region: string;
+  lastFret: number;
+  pattern: string;
+  direction: string;
+  bpm: number;
+  meter: string;
+  notesPerPulse: number;
+  notesPerBar: number;
+};
+type Segment = { start: number; exercise: Exercise };
+type Session = {
+  date: string;
+  seconds: number;
+  segments?: Segment[];
+  began?: string;
+};
+function exerciseSettings(): Exercise {
+  return {
+    scale: element("keyname").textContent || "",
+    region: select("position").selectedOptions[0].text,
+    lastFret: number("last-fret"),
+    pattern: select("phrase").value,
+    direction: select("direction").value,
+    bpm: bounded("bpm"),
+    meter: select("meter").value,
+    notesPerPulse: number("division"),
+    notesPerBar: number("division") * pattern.length,
+  };
+}
+function duration(seconds: number) {
+  const whole = Math.round(seconds);
+  return Math.floor(whole / 60) + "m " + (whole % 60) + "s";
+}
+element("open-journal").onclick = () => {
+  updateTime();
+  const totals = new Map<string, number>();
+  const list = element("session-list");
+  list.replaceChildren();
+  const sessions = session ? [...history, session] : [...history];
+  sessions.sort(
+    (a, b) =>
+      b.date.localeCompare(a.date) ||
+      (b.began || "").localeCompare(a.began || ""),
+  );
+  for (const entry of sessions) {
+    const group = document.createElement("details");
+    const heading = document.createElement("summary");
+    heading.textContent =
+      (entry.began ? new Date(entry.began).toLocaleString() : entry.date) +
+      " · " +
+      duration(entry.seconds);
+    group.append(heading);
+    const segments = entry.segments || [];
+    if (!segments.length || segments[0].start > 0.05) {
+      const info = document.createElement("p");
+      info.textContent = entry.segments
+        ? "Count-in · " + duration(segments[0]?.start ?? entry.seconds)
+        : "Earlier session · exercise unknown";
+      group.append(info);
+    }
+    segments.forEach(({ start, exercise: e }, i) => {
+      const seconds = Math.max(
+        0,
+        (segments[i + 1]?.start ?? entry.seconds) - start,
+      );
+      totals.set(e.scale, (totals.get(e.scale) || 0) + seconds);
+      const line = document.createElement("p");
+      line.textContent = [
+        duration(seconds),
+        e.scale,
+        e.region,
+        "neck limit " + e.lastFret,
+        e.pattern,
+        e.direction,
+        e.bpm + " BPM",
+        e.meter,
+        e.notesPerPulse + " notes/pulse",
+        e.notesPerBar + " notes/bar",
+      ].join(" · ");
+      group.append(line);
+    });
+    list.append(group);
+  }
+  if (!sessions.length)
+    list.textContent = "Start a practice session to record your first entry.";
+  const ranking = element("scale-totals");
+  ranking.replaceChildren();
+  for (const [scale, seconds] of [...totals].sort((a, b) => b[1] - a[1])) {
+    const line = document.createElement("div");
+    line.textContent = scale + " · " + duration(seconds);
+    ranking.append(line);
+  }
+  if (!totals.size) ranking.textContent = "No timed scales recorded yet.";
+  element<HTMLDialogElement>("journal").showModal();
+};
 let session: Session | null = null;
 let storageKey = "";
 let started = 0;
@@ -557,6 +632,15 @@ function schedule() {
       at(time, () => write("status", "Count-in · " + remaining));
       if (!lead) pulse = -1;
     } else {
+      const exercise = exerciseSettings();
+      at(time, () => {
+        const segments = session?.segments;
+        if (
+          segments &&
+          JSON.stringify(segments.at(-1)?.exercise) !== JSON.stringify(exercise)
+        )
+          segments.push({ start: Math.max(0, time - started), exercise });
+      });
       const divisions = number("division");
       const chords = progression();
       const slot = barNumber % chords.length;
@@ -676,6 +760,8 @@ async function toggle() {
         String(now.getDate()).padStart(2, "0"),
       ].join("-"),
       seconds: 0,
+      began: now.toISOString(),
+      segments: [],
     };
     write("play", "■ Stop");
     schedule();
