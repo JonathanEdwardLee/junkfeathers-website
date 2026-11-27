@@ -1019,9 +1019,7 @@ body:has(.gdc) .site-header {
 .gdc .audio-switch input:not(:checked) + span .sound-on {
   display: none;
 }
-.gdc #rack .settings-drawer > header button[popovertarget] {
-  display: inline-block;
-}
+
 .gdc .harmony-head {
   padding-block: 2px;
 }
@@ -1364,4 +1362,75 @@ body:has(.gdc) .site-header {
   .gdc .exercise-head {
     flex-wrap: wrap;
   }
+}
+
+.gdc .transport {
+  grid-template-columns: 8ch minmax(0, 24ch) 32px;
+}
+.gdc #status {
+  white-space: normal;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  max-height: 3.4em;
+  text-overflow: clip;
+}
+.gdc
+  #rack
+  section:is([data-panel="Technique"], [data-panel="Theory"]):not(.compact)
+  > header
+  button[popovertarget],
+.gdc .compact > table {
+  display: none;
+}
+.gdc [data-panel="Theory"]:not(.compact) #keyboard {
+  flex: 1 0 46px;
+  max-height: 125px;
+}
+.gdc [data-panel="Theory"].large #keyboard {
+  flex-basis: 68px;
+  max-height: 190px;
+}
+.gdc [data-panel="Theory"] > table {
+  width: 100%;
+  table-layout: fixed;
+  margin: 0;
+}
+.gdc [data-panel="Theory"] caption {
+  text-align: left;
+  font-size: 11px;
+  color: #bbb;
+}
+.gdc [data-panel="Theory"] #harmony {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.gdc #harmony td:first-child {
+  color: #aaa;
+}
+.gdc #rack[data-focus="Balanced"] .ramp-switch {
+  position: static;
+  width: auto;
+  margin: 0;
+}
+.gdc #journal {
+  width: min(520px, 94vw);
+  max-height: 84dvh;
+  overflow: auto;
+  color: #eee;
+  background: #101010;
+  border: 3px double #ddd;
+}
+.gdc #journal header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gdc #journal details {
+  border-top: 1px solid #666;
+  padding-block: 6px;
+}
+.gdc #journal summary {
+  cursor: pointer;
+}
+.gdc #journal::backdrop {
+  background: #000b;
 }
