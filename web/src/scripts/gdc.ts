@@ -264,6 +264,7 @@ function focus(name: string) {
     if (tray) {
       if (tray.matches(":popover-open")) tray.hidePopover();
       if (
+        panel.dataset.panel === "EXP" ||
         compact ||
         (phonePortrait.matches && panel.dataset.panel === "Timing")
       )
@@ -404,6 +405,15 @@ let started = 0;
 let storedAt = 0;
 let priorSeconds = 0;
 let history: Session[] = [];
+const savedScaleTimes = new Map<string, number>();
+function addScaleTimes(totals: Map<string, number>, entry: Session) {
+  const segments = entry.segments || [];
+  segments.forEach((segment, i) => {
+    const seconds = (segments[i + 1]?.start ?? entry.seconds) - segment.start;
+    const scale = segment.exercise.scale;
+    if (seconds > 0) totals.set(scale, (totals.get(scale) || 0) + seconds);
+  });
+}
 let storageOK = true;
 function loadHistory() {
   history = [];
@@ -422,6 +432,8 @@ function loadHistory() {
   } catch {
     storageOK = false;
   }
+  savedScaleTimes.clear();
+  for (const entry of history) addScaleTimes(savedScaleTimes, entry);
   priorSeconds = history.reduce((sum, s) => sum + s.seconds, 0);
   displaySecond = -1;
 }
@@ -441,7 +453,7 @@ function chart() {
     ].join("-");
     return {
       key,
-      label: date.toLocaleDateString(undefined, { weekday: "narrow" }),
+      label: date.toLocaleDateString(undefined, { weekday: "short" }),
       seconds: totals.get(key) || 0,
     };
   });
@@ -451,8 +463,42 @@ function chart() {
   daily.value = today;
   write(
     "daily-time",
-    "Today · " + Math.floor(today / 60) + "m " + Math.floor(today % 60) + "s",
+    Math.floor(today / 60) +
+      ":" +
+      String(Math.floor(today % 60)).padStart(2, "0"),
   );
+  write(
+    "goal-label",
+    today >= daily.max
+      ? "Target reached"
+      : "of " + number("daily-goal") + " min",
+  );
+  const chartArea = element("history");
+  const showScales = select("exp-chart").value === "scales";
+  chartArea.classList.toggle("scale-bars", showScales);
+  chartArea.classList.toggle(
+    "empty-week",
+    !showScales && week.every((day) => day.seconds === 0),
+  );
+  if (showScales) {
+    const times = new Map(savedScaleTimes);
+    if (session) addScaleTimes(times, session);
+    const top = [...times].sort((a, b) => b[1] - a[1]).slice(0, 3);
+    write("week-summary", "Most practiced scales · all time");
+    chartArea.replaceChildren();
+    for (const [name, seconds] of top) {
+      const row = document.createElement("div");
+      const label = document.createElement("span");
+      label.textContent = name + " · " + duration(seconds);
+      const bar = document.createElement("i");
+      bar.style.width = (100 * seconds) / top[0][1] + "%";
+      row.append(label, bar);
+      chartArea.append(row);
+    }
+    if (!top.length)
+      chartArea.textContent = "Play a scale to see its time here.";
+    return;
+  }
   write(
     "week-summary",
     "Last 7 days · " +
@@ -478,7 +524,14 @@ function chart() {
       const bar = document.createElement("i");
       bar.className = "bar";
       bar.style.height = String((75 * day.seconds) / max) + "%";
-      column.append(bar, day.label);
+      const value = document.createElement("small");
+      value.textContent =
+        day.seconds >= 60
+          ? Math.floor(day.seconds / 60) + "m"
+          : day.seconds >= 1
+            ? "<1m"
+            : "0";
+      column.append(value, bar, day.label);
       return column;
     }),
   );
@@ -501,16 +554,6 @@ function updateTime(force = false) {
   chart();
   const points = Math.floor(seconds / 60);
   write("points", String(points));
-  const milestone =
-    [5, 15, 30, 60, 120, 300, 600].find((n) => n > points) ??
-    (Math.floor(points / 600) + 1) * 600;
-  write(
-    "milestone",
-    points + " / " + milestone + " EXP · next practice milestone",
-  );
-  const progress = element<HTMLProgressElement>("progress");
-  progress.max = milestone * 60;
-  progress.value = seconds;
   const days = new Set(history.map((s) => s.date));
   if (session) days.add(session.date);
   write(
@@ -795,6 +838,7 @@ select("theory-mode").onchange = () => {
   select("scale").value = select("theory-mode").value;
   select("scale").dispatchEvent(new Event("change", { bubbles: true }));
 };
+select("exp-chart").onchange = () => chart();
 select("daily-goal").onchange = () => chart();
 for (const id of [
   "key",
