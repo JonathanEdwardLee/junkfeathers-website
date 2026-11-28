@@ -21,6 +21,7 @@
   "dependencies": {
     "@astrojs/sitemap": "3.7.3",
     "astro": "6.4.8",
+    "firebase": "12.9.0",
     "phaser": "4.2.1"
   },
   "devDependencies": {

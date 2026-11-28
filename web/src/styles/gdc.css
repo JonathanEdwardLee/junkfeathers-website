@@ -1524,9 +1524,97 @@ body:has(.gdc) .site-header {
   position: relative;
 }
 .gdc #history.empty-week::before {
-  content: "Your first session this week starts the chart.";
+  content: "Your first session in this period starts the chart.";
   position: absolute;
   inset: 5px 6px auto;
   color: #aaa;
   font-size: 11px;
+}
+
+.gdc #rack .clock-face {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  justify-items: center;
+  padding: 3px;
+  gap: 0;
+  container-type: inline-size;
+}
+.gdc .clock-readout {
+  grid-column: 2;
+  text-align: center;
+  line-height: 1;
+}
+.gdc #rack .clock-face #pulses {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 1px;
+}
+.gdc #rack .clock-face #pulses button {
+  width: clamp(13px, 8cqw, 27px);
+  height: 22px;
+}
+@container (max-width:280px) {
+  .gdc .clock-face .gear-window {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+}
+.gdc #rack .harmony-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(45px, 0.35fr) minmax(0, 0.85fr);
+  align-items: end;
+}
+.gdc #rack .harmony-head label,
+.gdc #rack .harmony-head select {
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 700px) {
+  .gdc #rack .harmony-head {
+    grid-template-columns: minmax(40px, 1fr) minmax(0, 2fr);
+  }
+  .gdc #rack .harmony-head > div {
+    grid-column: 1/-1;
+    grid-row: 2;
+  }
+  .gdc #rack .harmony-head label {
+    grid-row: 1;
+  }
+}
+.gdc #history .goal-track {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: end;
+}
+.gdc .goal-track::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--ghost);
+  background: #272727;
+  border: 1px solid #555;
+  box-sizing: border-box;
+}
+.gdc .goal-track .bar {
+  position: relative;
+  width: 100%;
+}
+.gdc #history[data-period="month"],
+.gdc #history[data-period="year"] {
+  gap: 1px;
+}
+.gdc .day > span:last-child {
+  min-height: 1em;
+}
+.gdc #history.empty-week::before {
+  z-index: 2;
+  background: #111;
+  width: fit-content;
+  pointer-events: none;
 }

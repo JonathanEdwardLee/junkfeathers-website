@@ -1,23 +1,33 @@
 <a class="machine-link" href="/guitar-practice/">
   <span class="neck" aria-hidden="true"><i></i></span>
-  <span><small>GDM–01</small><strong>Guitar Discipline Machine</strong></span>
-  <span aria-hidden="true">→</span>
+  <span class="entry"><small>GDM–01</small><strong>Guitar Discipline Machine</strong><b>Enter →</b></span>
+
 </a>
 <style>
 .machine-link {display:grid;grid-template-columns:clamp(68px,18vw,156px) 1fr auto;align-items:center;gap:1rem;width:min(100% - 1rem,780px);margin:1rem auto;padding:.9rem;border:1px solid var(--jf-gray-mid);color:var(--jf-fg);background:radial-gradient(circle at 7px 7px,#ddd 2px,transparent 3px),radial-gradient(circle at calc(100% - 7px) 7px,#ddd 2px,transparent 3px),#060606;box-shadow:4px 4px 0 #171717;font-family:monospace;text-decoration:none}
 .machine-link strong,.machine-link small{display:block}.machine-link strong{text-transform:uppercase}.machine-link small{color:#aaa}
 .neck{height:44px;position:relative;overflow:hidden;border:2px inset #777;background:repeating-linear-gradient(0deg,transparent 0 5px,#888 5px 6px),repeating-linear-gradient(90deg,#111 0 calc(20% - 2px),#777 calc(20% - 2px) 20%)}
-.neck i{position:absolute;top:12px;left:6%;width:8px;height:8px;border-radius:50%;background:white;box-shadow:0 0 6px #eee;animation:fingering 2.4s steps(1) 2;animation-play-state:paused}
+.neck i{position:absolute;top:49%;left:6%;width:8px;height:8px;border-radius:50%;background:white;box-shadow:0 0 6px #eee;animation:fingering 2.4s steps(1) 2;animation-play-state:paused}
 .machine-link.in-view i {animation-play-state:running}
-@keyframes fingering {25%{left:26%;top:18px}50%{left:46%;top:24px}75%{left:66%;top:18px}}
+@keyframes fingering {25%{left:26%;top:33%}50%{left:46%;top:66%}75%{left:66%;top:33%}}
 @media (min-width:600px){.machine-link{width:min(100% - 2rem,780px)}}
 @media (max-width:350px){.machine-link{width:calc(100% - .75rem)}}
 @media (prefers-reduced-motion:reduce){.neck i{animation:none}}
+.machine-link{grid-template-columns:minmax(0,1fr) minmax(100px,28%);align-items:stretch;gap:0}
+.neck{height:auto;align-self:stretch;background:repeating-linear-gradient(0deg,transparent 0 calc(16.66% - 1px),#888 calc(16.66% - 1px) 16.66%),repeating-linear-gradient(90deg,#101010 0 calc(9% - 2px),#555 calc(9% - 2px) 9%)}
+.neck i{top:49%;transform:scale(1.5)}
+.entry{display:grid;align-content:center;justify-items:center;text-align:center;padding:.5rem;border:3px double #aaa;background:linear-gradient(#282828,#090909)}
+.entry b{margin-top:.65rem;border:1px solid #777;padding:.25em .7em}
 </style>
 
 <script>
   const link = document.querySelector('.machine-link');
-  if (link) {
+  const receiver = document.querySelector(".communication-shell");
+  if (link instanceof HTMLElement && receiver) {
+    new ResizeObserver(() => {
+      if (!receiver.classList.contains("is-open") || !link.style.minHeight)
+        link.style.minHeight = receiver.getBoundingClientRect().height + "px";
+    }).observe(receiver);
     const observer = new IntersectionObserver(([entry]) => {
       link.classList.toggle('in-view', entry.isIntersecting);
     });
