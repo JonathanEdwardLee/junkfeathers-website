@@ -401,6 +401,8 @@ element("open-journal").onclick = () => {
 };
 let session: Session | null = null;
 let storageKey = "";
+let sessionPrefix = "gdc.session.";
+let cloudRows = new Map<string, string>();
 let started = 0;
 let storedAt = 0;
 let priorSeconds = 0;
@@ -418,17 +420,26 @@ let storageOK = true;
 function loadHistory() {
   history = [];
   try {
+    const combined = new Map<string, Session>();
+    function include(id: string, raw: string) {
+      try {
+        const item = JSON.parse(raw);
+        if (
+          typeof item?.date === "string" &&
+          Number.isFinite(item.seconds) &&
+          item.seconds > (combined.get(id)?.seconds ?? 0)
+        )
+          combined.set(id, item);
+      } catch {}
+    }
+    for (const [id, value] of cloudRows) include(id, value);
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)!;
-      if (!key.startsWith("gdc.session.") || key === storageKey) continue;
-      const item = JSON.parse(localStorage.getItem(key)!);
-      if (
-        typeof item?.date === "string" &&
-        Number.isFinite(item.seconds) &&
-        item.seconds > 0
-      )
-        history.push(item);
+      if (key.startsWith(sessionPrefix))
+        include(key.slice(sessionPrefix.length), localStorage.getItem(key)!);
     }
+    if (storageKey) combined.delete(storageKey.slice(sessionPrefix.length));
+    history = [...combined.values()];
   } catch {
     storageOK = false;
   }
@@ -443,21 +454,53 @@ function chart() {
   for (const entry of session ? [...history, session] : history) {
     totals.set(entry.date, (totals.get(entry.date) || 0) + entry.seconds);
   }
-  const week = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - 6 + i);
-    const key = [
-      date.getFullYear(),
-      String(date.getMonth() + 1).padStart(2, "0"),
-      String(date.getDate()).padStart(2, "0"),
+  const range = select("exp-chart").value;
+  const now = new Date();
+  const dateKey = (d: Date) =>
+    [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, "0"),
+      String(d.getDate()).padStart(2, "0"),
     ].join("-");
+  const today = totals.get(dateKey(now)) || 0;
+  const months = new Map<string, number>();
+  if (range === "year")
+    for (const [date, seconds] of totals) {
+      const key = date.slice(0, 7);
+      months.set(key, (months.get(key) || 0) + seconds);
+    }
+  const count = range === "year" ? 12 : range === "month" ? 30 : 7;
+  const week = Array.from({ length: count }, (_, i) => {
+    const date = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - count + 1 + i,
+    );
+    if (range === "year")
+      date.setFullYear(now.getFullYear(), now.getMonth() - 11 + i, 1);
+    const key = dateKey(date);
+    const monthly = range === "year";
+    const days = monthly
+      ? i === 11
+        ? now.getDate()
+        : new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+      : 1;
+    const label = monthly
+      ? date.toLocaleDateString(undefined, { month: "narrow" })
+      : range === "month"
+        ? i % 7 === 0 || i === 29
+          ? String(date.getDate())
+          : ""
+        : date.toLocaleDateString(undefined, { weekday: "short" });
     return {
-      key,
-      label: date.toLocaleDateString(undefined, { weekday: "short" }),
-      seconds: totals.get(key) || 0,
+      key: monthly ? key.slice(0, 7) : key,
+      label,
+      goal: days * number("daily-goal") * 60,
+      seconds: monthly
+        ? months.get(key.slice(0, 7)) || 0
+        : totals.get(key) || 0,
     };
   });
-  const today = week[6].seconds;
   const daily = element<HTMLProgressElement>("daily-progress");
   daily.max = number("daily-goal") * 60;
   daily.value = today;
@@ -475,6 +518,7 @@ function chart() {
   );
   const chartArea = element("history");
   const showScales = select("exp-chart").value === "scales";
+  chartArea.dataset.period = range;
   chartArea.classList.toggle("scale-bars", showScales);
   chartArea.classList.toggle(
     "empty-week",
@@ -501,13 +545,21 @@ function chart() {
   }
   write(
     "week-summary",
-    "Last 7 days · " +
+    (range === "year"
+      ? "Last 12 months"
+      : range === "month"
+        ? "Last 30 days"
+        : "Last 7 days") +
+      " · " +
       Math.floor(week.reduce((sum, d) => sum + d.seconds, 0) / 60) +
       " min · " +
       week.filter((d) => d.seconds > 0).length +
-      " active days",
+      (range === "year" ? " active months" : " active days"),
   );
-  const max = Math.max(1, ...week.map((day) => day.seconds));
+  const max = Math.max(
+    1,
+    ...week.map((day) => Math.max(day.seconds, day.goal)),
+  );
   element("history").replaceChildren(
     ...week.map((day) => {
       const column = document.createElement("div");
@@ -523,7 +575,6 @@ function chart() {
       column.setAttribute("role", "img");
       const bar = document.createElement("i");
       bar.className = "bar";
-      bar.style.height = String((75 * day.seconds) / max) + "%";
       const value = document.createElement("small");
       value.textContent =
         day.seconds >= 60
@@ -531,7 +582,16 @@ function chart() {
           : day.seconds >= 1
             ? "<1m"
             : "0";
-      column.append(value, bar, day.label);
+      const track = document.createElement("span");
+      track.className = "goal-track";
+      track.style.setProperty("--ghost", (100 * day.goal) / max + "%");
+      bar.style.height = (100 * day.seconds) / max + "%";
+      track.append(bar);
+      const label = document.createElement("span");
+      label.textContent = day.label || " ";
+      column.title += " · goal " + day.goal / 60 + " min";
+      column.setAttribute("aria-label", column.title);
+      column.append(...(range === "week" ? [value] : []), track, label);
       return column;
     }),
   );
@@ -662,10 +722,9 @@ function schedule() {
     const time = nextTime;
     click(time, lead ? 1 : pattern[index]);
     at(time, () => {
-      element("tempo").parentElement!.style.setProperty(
-        "--swing",
-        ++gearStep * 30 + "deg",
-      );
+      element("tempo")
+        .closest<HTMLElement>(".clock-face")!
+        .style.setProperty("--swing", ++gearStep * 30 + "deg");
       [...element("pulses").children].forEach((node, i) =>
         node.classList.toggle("lit", i === index),
       );
@@ -755,11 +814,14 @@ function stop(message = "Stopped") {
   master?.disconnect();
   session = null;
   storageKey = "";
+  window.dispatchEvent(new Event("gdm-session-finished"));
   loadHistory();
   updateTime();
   write("play", "▶ Start");
   write("status", message);
-  element("tempo").parentElement!.style.setProperty("--swing", "0deg");
+  element("tempo")
+    .closest<HTMLElement>(".clock-face")!
+    .style.setProperty("--swing", "0deg");
   drawTab(-1);
   showChords();
   element("pulses").querySelector(".lit")?.classList.remove("lit");
@@ -795,7 +857,7 @@ async function toggle() {
     storedAt = 0;
     nextTime = started;
     const now = new Date();
-    storageKey = "gdc.session." + crypto.randomUUID();
+    storageKey = sessionPrefix + crypto.randomUUID();
     session = {
       date: [
         now.getFullYear(),
@@ -965,3 +1027,30 @@ resetAccents();
 arrange();
 loadHistory();
 updateTime();
+
+const accountPanel = document.querySelector<HTMLElement>(
+  "[data-account-config]",
+);
+if (accountPanel) {
+  import("./gdm-account")
+    .then(({ connectAccount }) =>
+      connectAccount(
+        JSON.parse(accountPanel.dataset.accountConfig!),
+        (uid) => {
+          stop();
+          sessionPrefix = uid ? "gdm." + uid + ".session." : "gdc.session.";
+        },
+        (rows) => {
+          cloudRows = rows;
+          loadHistory();
+          updateTime();
+        },
+      ),
+    )
+    .catch(() =>
+      write(
+        "sync-state",
+        "Account connection unavailable · guest practice is ready",
+      ),
+    );
+}
