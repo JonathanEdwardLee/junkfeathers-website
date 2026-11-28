@@ -5,14 +5,32 @@ interface VideoInfo {
   url?: string;
 }
 
+interface VideoLyric {
+  authors: string;
+  version: string;
+  text: string;
+  sampleTreatment: string | null;
+}
+
+interface VideoDestination {
+  platform: string;
+  url: string;
+  kind: 'exact' | 'release-page' | 'smart-link';
+  label: string;
+}
+
 interface VideoChannel {
   number: number;
   songId: string;
   songLinkId: string;
+  playerChannelId: string;
   youtubeId: string;
   youtubeUrl: string;
+  moreHref: string;
   title: string;
   info: VideoInfo[];
+  lyrics: VideoLyric | null;
+  destinations: VideoDestination[];
 }
 
 interface Props {
@@ -93,26 +111,82 @@ const statusId = `${anchorId}-status`;
     <div class="release-panel">
       <div class="release-title-block">
         <p class="release-index" data-channel-index-label>
-          CH 01 / {initialChannel.songLinkId}
+          CH 01 / {initialChannel.songId} / {initialChannel.playerChannelId}
         </p>
         <h2 data-channel-title>{initialChannel.title}</h2>
       </div>
 
-      <div class="archive-readout">
-        <div class="archive-readout-head" aria-hidden="true">
-          <span>ARCHIVE DATA</span>
-          <span>VERIFIED SIGNAL</span>
+      <div class="info-machine" data-info-machine>
+        <div class="info-chassis" aria-hidden="true" data-info-art>
+          <div class="tuner-drum" data-tuner-drum>
+            {channels.map((channel) => (
+              <span>{String(channel.number).padStart(2, '0')}</span>
+            ))}
+          </div>
+          <div class="gear-train">
+            <i></i><i></i><i></i>
+          </div>
+          <div class="meter">
+            <b data-meter-needle></b>
+          </div>
+          <div class="lamp-row">
+            <i></i><i></i><i></i><i></i>
+          </div>
+          <div class="shutter"></div>
+          <p class="info-readout" data-art-readout>CH 01 / INFO</p>
         </div>
-        <dl class="channel-info" data-channel-info>
-          {initialChannel.info.map((item) => (
-            <div>
-              <dt>{item.label}</dt>
-              <dd>
-                {item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer">{item.value} <span aria-hidden="true">&#8599;</span></a> : item.value}
-              </dd>
+
+        <div class="info-console">
+          <div class="channel-tab-row">
+            <div class="channel-tabs" role="tablist" aria-label="Channel information surfaces" data-channel-tabs>
+              {(['INFO', 'LYRICS', 'STREAMING'] as const).map((surface, index) => {
+                const unavailable = surface === 'LYRICS'
+                  ? !initialChannel.lyrics
+                  : surface === 'STREAMING'
+                    ? initialChannel.destinations.length === 0
+                    : false;
+                return (
+                <button
+                  type="button"
+                  class="machine-tab"
+                  role="tab"
+                  id={`${anchorId}-tab-${surface.toLowerCase()}`}
+                  aria-controls={`${anchorId}-surface`}
+                  aria-selected={index === 0 ? 'true' : 'false'}
+                  tabindex={index === 0 ? 0 : -1}
+                  data-channel-tab={surface}
+                  disabled={unavailable}
+                  aria-disabled={unavailable}
+                >
+                  {surface}
+                </button>
+                );
+              })}
             </div>
-          ))}
-        </dl>
+            <a class="channel-more" href={initialChannel.moreHref} data-channel-more>
+              MORE
+            </a>
+          </div>
+
+          <div
+            class="channel-surface"
+            id={`${anchorId}-surface`}
+            role="tabpanel"
+            aria-labelledby={`${anchorId}-tab-info`}
+            data-channel-surface
+          >
+            <dl class="channel-info" data-channel-info>
+              {initialChannel.info.map((item) => (
+                <div>
+                  <dt>{item.label}</dt>
+                  <dd>
+                    {item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer">{item.value} <span aria-hidden="true">&#8599;</span></a> : item.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
       </div>
 
       <div class="release-links" aria-label="Video source">
@@ -131,15 +205,35 @@ const statusId = `${anchorId}-status`;
     url?: string;
   }
 
+  interface ChannelLyric {
+    authors: string;
+    version: string;
+    text: string;
+    sampleTreatment: string | null;
+  }
+
+  interface ChannelDestination {
+    platform: string;
+    url: string;
+    kind: 'exact' | 'release-page' | 'smart-link';
+    label: string;
+  }
+
   interface ChannelData {
     number: number;
     songId: string;
     songLinkId: string;
+    playerChannelId: string;
     youtubeId: string;
     youtubeUrl: string;
+    moreHref: string;
     title: string;
     info: ChannelInfo[];
+    lyrics: ChannelLyric | null;
+    destinations: ChannelDestination[];
   }
+
+  type ChannelSurface = 'INFO' | 'LYRICS' | 'STREAMING';
 
   const transmissions = document.querySelectorAll<HTMLElement>('[data-video-transmission]');
 
@@ -151,10 +245,16 @@ const statusId = `${anchorId}-status`;
     const readout = transmission.querySelector<HTMLElement>('[data-channel-readout]');
     const indexLabel = transmission.querySelector<HTMLElement>('[data-channel-index-label]');
     const title = transmission.querySelector<HTMLElement>('[data-channel-title]');
-    const info = transmission.querySelector<HTMLElement>('[data-channel-info]');
+    const surfacePanel = transmission.querySelector<HTMLElement>('[data-channel-surface]');
     const youtubeLink = transmission.querySelector<HTMLAnchorElement>('[data-youtube-link]');
+    const moreLink = transmission.querySelector<HTMLAnchorElement>('[data-channel-more]');
+    const art = transmission.querySelector<HTMLElement>('[data-info-art]');
+    const artReadout = transmission.querySelector<HTMLElement>('[data-art-readout]');
     const channelButtons = Array.from(
       transmission.querySelectorAll<HTMLButtonElement>('[data-channel-button]'),
+    );
+    const tabButtons = Array.from(
+      transmission.querySelectorAll<HTMLButtonElement>('[data-channel-tab]'),
     );
 
     let channels: ChannelData[] = [];
@@ -172,13 +272,18 @@ const statusId = `${anchorId}-status`;
       || !readout
       || !indexLabel
       || !title
-      || !info
+      || !surfacePanel
       || !youtubeLink
+      || !moreLink
+      || !art
+      || !artReadout
       || channels.length !== 6
       || channelButtons.length !== channels.length
+      || tabButtons.length !== 3
     ) return;
 
     let currentIndex = 0;
+    let currentSurface: ChannelSurface = 'INFO';
     let poweredOn = false;
     let wakeTimer: number | undefined;
     const dormantMarkup = screen.innerHTML;
@@ -190,14 +295,22 @@ const statusId = `${anchorId}-status`;
       wakeTimer = undefined;
     };
 
+    const surfaceAvailable = (channel: ChannelData, surface: ChannelSurface) => {
+      if (surface === 'INFO') return true;
+      if (surface === 'LYRICS') return Boolean(channel.lyrics?.text);
+      return channel.destinations.length > 0;
+    };
+
     const renderStatic = (channel: ChannelData) => {
       screen.innerHTML = dormantMarkup;
       const standby = screen.querySelector<HTMLElement>('.crt-standby');
       if (standby) standby.textContent = `NO SIGNAL / CH ${channelNumber(channel)}`;
     };
 
-    const renderInfo = (channel: ChannelData) => {
-      const rows = channel.info.map((item) => {
+    const renderFacts = (channel: ChannelData) => {
+      const list = document.createElement('dl');
+      list.className = 'channel-info';
+      for (const item of channel.info) {
         const row = document.createElement('div');
         const term = document.createElement('dt');
         const detail = document.createElement('dd');
@@ -211,9 +324,79 @@ const statusId = `${anchorId}-status`;
           detail.append(link);
         } else detail.textContent = item.value;
         row.append(term, detail);
-        return row;
+        list.append(row);
+      }
+      return list;
+    };
+
+    const renderLyrics = (channel: ChannelData) => {
+      const lyric = channel.lyrics;
+      const body = document.createElement('div');
+      body.className = 'channel-lyrics';
+      if (!lyric?.text) {
+        const empty = document.createElement('p');
+        empty.textContent = 'LYRICS NOT AVAILABLE';
+        body.append(empty);
+        return body;
+      }
+      const credit = document.createElement('p');
+      credit.className = 'channel-lyric-credit';
+      credit.textContent = `LYRICS / ${lyric.authors} · ${lyric.version}`;
+      const copy = document.createElement('pre');
+      copy.textContent = lyric.text;
+      body.append(credit, copy);
+      if (lyric.sampleTreatment) {
+        const sample = document.createElement('p');
+        sample.className = 'channel-sample-note';
+        sample.textContent = lyric.sampleTreatment;
+        body.append(sample);
+      }
+      return body;
+    };
+
+    const renderStreaming = (channel: ChannelData) => {
+      const list = document.createElement('ul');
+      list.className = 'channel-streaming';
+      if (!channel.destinations.length) {
+        const empty = document.createElement('p');
+        empty.textContent = 'NO VERIFIED STREAMING DESTINATION';
+        return empty;
+      }
+      for (const destination of channel.destinations) {
+        const row = document.createElement('li');
+        const anchor = document.createElement('a');
+        anchor.href = destination.url;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.textContent = `${destination.platform.toUpperCase()} / ${destination.label} ↗`;
+        const level = document.createElement('span');
+        level.textContent = destination.label;
+        row.append(anchor, level);
+        list.append(row);
+      }
+      return list;
+    };
+
+    const renderSurface = (channel: ChannelData) => {
+      const content = currentSurface === 'LYRICS'
+        ? renderLyrics(channel)
+        : currentSurface === 'STREAMING'
+          ? renderStreaming(channel)
+          : renderFacts(channel);
+      surfacePanel.replaceChildren(content);
+      surfacePanel.setAttribute('aria-labelledby', `${transmission.id}-tab-${currentSurface.toLowerCase()}`);
+    };
+
+    const renderTabs = (channel: ChannelData) => {
+      tabButtons.forEach((button) => {
+        const surface = button.dataset.channelTab as ChannelSurface;
+        const enabled = surfaceAvailable(channel, surface);
+        const selected = surface === currentSurface;
+        button.disabled = !enabled;
+        button.setAttribute('aria-disabled', String(!enabled));
+        button.setAttribute('aria-selected', String(selected));
+        button.tabIndex = selected ? 0 : -1;
       });
-      info.replaceChildren(...rows);
     };
 
     const clearPlayer = () => {
@@ -247,15 +430,21 @@ const statusId = `${anchorId}-status`;
       }, reducedMotion ? 0 : 520);
     };
 
-    const renderChannel = () => {
+    const renderChannel = (reloadPlayer = true) => {
       const channel = channels[currentIndex];
+      if (!surfaceAvailable(channel, currentSurface)) currentSurface = 'INFO';
       channelButtons.forEach((button, index) => {
         button.setAttribute('aria-pressed', String(index === currentIndex));
       });
-      indexLabel.textContent = `CH ${channelNumber(channel)} / ${channel.songLinkId}`;
+      indexLabel.textContent = `CH ${channelNumber(channel)} / ${channel.songId} / ${channel.playerChannelId}`;
       title.textContent = channel.title;
-      renderInfo(channel);
+      moreLink.href = channel.moreHref;
       youtubeLink.href = channel.youtubeUrl;
+      art.style.setProperty('--ch', String(currentIndex));
+      artReadout.textContent = `CH ${channelNumber(channel)} / ${currentSurface}`;
+      renderTabs(channel);
+      renderSurface(channel);
+      if (!reloadPlayer) return;
       if (poweredOn) loadPlayer(channel);
       else {
         clearPlayer();
@@ -267,25 +456,51 @@ const statusId = `${anchorId}-status`;
 
     const selectChannel = (index: number) => {
       currentIndex = index;
-      renderChannel();
+      currentSurface = 'INFO';
+      renderChannel(true);
+    };
+
+    const selectSurface = (surface: ChannelSurface) => {
+      const channel = channels[currentIndex];
+      if (!surfaceAvailable(channel, surface)) return;
+      currentSurface = surface;
+      renderChannel(false);
     };
 
     const powerOff = () => {
       poweredOn = false;
       powerButton.setAttribute('aria-pressed', 'false');
       powerLabel.textContent = 'POWER';
-      renderChannel();
+      renderChannel(true);
     };
 
     const powerOn = () => {
       poweredOn = true;
       powerButton.setAttribute('aria-pressed', 'true');
       powerLabel.textContent = 'POWER OFF';
-      renderChannel();
+      renderChannel(true);
     };
 
     channelButtons.forEach((button, index) => {
       button.addEventListener('click', () => selectChannel(index));
+    });
+
+    tabButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const surface = button.dataset.channelTab as ChannelSurface | undefined;
+        if (!surface || button.disabled) return;
+        selectSurface(surface);
+      });
+    });
+
+    transmission.querySelector<HTMLElement>('[data-channel-tabs]')?.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      const enabled = tabButtons.filter((button) => !button.disabled);
+      const index = enabled.findIndex((button) => button.getAttribute('aria-selected') === 'true');
+      const next = enabled[(index + (event.key === 'ArrowRight' ? 1 : -1) + enabled.length) % enabled.length];
+      next?.click();
+      next?.focus();
+      event.preventDefault();
     });
 
     powerButton.addEventListener('click', () => {
@@ -483,6 +698,9 @@ const statusId = `${anchorId}-status`;
   .channel-bank button:focus-visible,
   .power-button:focus-visible,
   .channel-info a:focus-visible,
+  .channel-streaming a:focus-visible,
+  .machine-tab:focus-visible,
+  .channel-more:focus-visible,
   .release-links a:focus-visible {
     outline: 3px solid var(--jf-fg);
     outline-offset: 3px;
@@ -560,41 +778,237 @@ const statusId = `${anchorId}-status`;
     overflow-wrap: anywhere;
   }
 
-  .archive-readout {
-    position: relative;
-    padding: 0.55rem;
-    border: 1px solid var(--jf-gray-soft);
-    background:
-      repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255, 255, 255, 0.022) 4px),
-      #070707;
-    box-shadow: inset 0 0 0 3px #020202;
+  .info-machine {
+    display: grid;
+    gap: 0.75rem;
+    min-width: 0;
   }
 
-  .archive-readout::before,
-  .archive-readout::after {
+  .info-chassis {
+    --ch: 0;
+    position: relative;
+    min-height: 132px;
+    overflow: hidden;
+    border: 2px solid var(--jf-gray-mid);
+    background:
+      repeating-linear-gradient(135deg, #0a0a0a 0 6px, #050505 6px 12px),
+      #070707;
+    box-shadow: inset 0 0 0 4px #020202, 4px 4px 0 #111;
+  }
+
+  .info-chassis::before,
+  .info-chassis::after {
     position: absolute;
+    z-index: 3;
+    top: 7px;
     width: 5px;
     height: 5px;
-    border: 1px solid var(--jf-gray-mid);
+    border: 1px solid #fff;
     border-radius: 50%;
-    background: #000;
+    background: #fff;
     content: '';
   }
 
-  .archive-readout::before { top: 6px; left: 6px; }
-  .archive-readout::after { top: 6px; right: 6px; }
+  .info-chassis::before { left: 7px; }
+  .info-chassis::after { right: 7px; }
 
-  .archive-readout-head {
+  .tuner-drum {
+    position: absolute;
+    left: 0.85rem;
+    top: 1.15rem;
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #8a8a8a;
+    border-radius: 50%;
+    background:
+      repeating-conic-gradient(#111 0 12deg, #1c1c1c 0 24deg);
+    box-shadow: inset 0 0 0 8px #050505, 0 0 0 2px #000;
+    transform: rotate(calc(var(--ch) * 28deg));
+  }
+
+  .tuner-drum span {
+    position: absolute;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    color: #5a5a5a;
+  }
+
+  .tuner-drum span:nth-child(1) { transform: translateY(-24px); color: #fff; }
+  .tuner-drum span:nth-child(2) { transform: rotate(60deg) translateY(-24px) rotate(-60deg); }
+  .tuner-drum span:nth-child(3) { transform: rotate(120deg) translateY(-24px) rotate(-120deg); }
+  .tuner-drum span:nth-child(4) { transform: rotate(180deg) translateY(-24px) rotate(-180deg); }
+  .tuner-drum span:nth-child(5) { transform: rotate(240deg) translateY(-24px) rotate(-240deg); }
+  .tuner-drum span:nth-child(6) { transform: rotate(300deg) translateY(-24px) rotate(-300deg); }
+
+  .gear-train {
+    position: absolute;
+    right: 5.2rem;
+    top: 1.35rem;
     display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.2rem 0.8rem 0.55rem;
-    color: var(--jf-gray-mid);
+    gap: 0.35rem;
+  }
+
+  .gear-train i {
+    width: 22px;
+    height: 22px;
+    border: 2px dashed #6a6a6a;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, #111 0 3px, #2a2a2a 3px 6px);
+    animation: channel-gear 4.8s linear infinite;
+  }
+
+  .gear-train i:nth-child(2) { width: 30px; height: 30px; animation-duration: 6.4s; animation-direction: reverse; }
+  .gear-train i:nth-child(3) { width: 16px; height: 16px; animation-duration: 3.2s; }
+
+  .meter {
+    position: absolute;
+    right: 0.9rem;
+    top: 1.2rem;
+    width: 58px;
+    height: 34px;
+    overflow: hidden;
+    border: 1px solid #6a6a6a;
+    background: #030303;
+  }
+
+  .meter b {
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    width: 2px;
+    height: 28px;
+    background: #fff;
+    transform-origin: bottom center;
+    transform: rotate(calc(-28deg + var(--ch) * 11deg));
+  }
+
+  .lamp-row {
+    position: absolute;
+    left: 6.4rem;
+    bottom: 1.7rem;
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .lamp-row i {
+    width: 8px;
+    height: 8px;
+    border: 1px solid #5a5a5a;
+    border-radius: 50%;
+    background: #1a1a1a;
+  }
+
+  .video-transmission--online .lamp-row i {
+    background: #fff;
+    box-shadow: 0 0 7px #fff;
+    animation: channel-lamp 1.8s steps(2, end) infinite;
+  }
+
+  .video-transmission--online .lamp-row i:nth-child(2) { animation-delay: -0.4s; }
+  .video-transmission--online .lamp-row i:nth-child(3) { animation-delay: -0.9s; }
+  .video-transmission--online .lamp-row i:nth-child(4) { animation-delay: -1.3s; }
+
+  .shutter {
+    position: absolute;
+    inset: auto 0 0;
+    height: 10px;
+    background: repeating-linear-gradient(to right, #111 0 8px, #2a2a2a 8px 10px);
+  }
+
+  .info-readout {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 1.15rem;
+    margin: 0;
+    color: #8a8a8a;
     font-size: 0.58rem;
     letter-spacing: 0.12em;
   }
 
-  .archive-readout-head span:last-child { color: var(--jf-fg); }
+  .info-console {
+    display: grid;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .channel-tab-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.45rem;
+    align-items: stretch;
+  }
+
+  .channel-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .machine-tab,
+  .channel-more {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0.45rem 0.35rem;
+    border: 2px solid #5a5a5a;
+    border-radius: 0;
+    background: #111;
+    color: #8a8a8a;
+    font: 700 0.68rem/1 monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .machine-tab[aria-selected='true']:not(:disabled) {
+    border-color: #fff;
+    background: #fff;
+    color: #000;
+  }
+
+  .machine-tab:not(:disabled):not([aria-selected='true']):hover,
+  .machine-tab:not(:disabled):not([aria-selected='true']):focus,
+  .channel-more:hover,
+  .channel-more:focus {
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .machine-tab:disabled,
+  .machine-tab:disabled:hover,
+  .machine-tab:disabled:focus {
+    border-color: #3c3c3c;
+    border-style: dashed;
+    background: #050505;
+    color: #3a3a3a;
+    cursor: not-allowed;
+  }
+
+  .channel-more {
+    min-width: 4.6rem;
+    border-color: #fff;
+    background: #000;
+    color: #fff;
+  }
+
+  .channel-surface {
+    min-width: 0;
+    min-height: 10.5rem;
+    padding: 0.55rem;
+    border: 1px solid #2a2a2a;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 3px, rgba(255, 255, 255, 0.022) 4px),
+      #070707;
+  }
 
   .channel-info {
     display: grid;
@@ -641,6 +1055,56 @@ const statusId = `${anchorId}-status`;
   .channel-info a:hover,
   .channel-info a:focus { color: var(--jf-fg); border-bottom-color: var(--jf-fg); }
 
+  .channel-lyrics,
+  .channel-streaming {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    color: var(--jf-gray-strong);
+    font-size: 0.72rem;
+  }
+
+  .channel-lyric-credit,
+  .channel-sample-note {
+    margin: 0;
+    color: var(--jf-gray-mid);
+    letter-spacing: 0.08em;
+  }
+
+  .channel-lyrics pre {
+    margin: 0;
+    white-space: pre-wrap;
+    color: var(--jf-fg);
+    font: inherit;
+  }
+
+  .channel-streaming {
+    list-style: none;
+    padding: 0;
+  }
+
+  .channel-streaming li {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.45rem 0;
+    border-top: 1px solid #252525;
+  }
+
+  .channel-streaming li:first-child { border-top: 0; }
+
+  .channel-streaming a {
+    color: var(--jf-fg);
+    border-bottom: 1px dashed var(--jf-gray-mid);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .channel-streaming span {
+    color: var(--jf-gray-mid);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+
   .release-links {
     display: flex;
     flex-wrap: wrap;
@@ -682,6 +1146,7 @@ const statusId = `${anchorId}-status`;
       grid-column: 1 / -1;
       grid-template-columns: minmax(0, 0.85fr) minmax(260px, 1.15fr);
     }
+    .info-machine { grid-column: 1 / -1; grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr); }
     .release-links { grid-column: 1 / -1; }
   }
 
@@ -690,13 +1155,21 @@ const statusId = `${anchorId}-status`;
     .channel-bank button,
     .power-button { letter-spacing: 0.03em; }
     .channel-info div { grid-template-columns: 78px minmax(0, 1fr); gap: 0.45rem; }
+    .machine-tab,
+    .channel-more { font-size: 0.58rem; letter-spacing: 0.04em; padding: 0.4rem 0.2rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .crt-noise,
     .crt-scan::after,
-    .crt-screen--booting::before { animation: none; }
+    .crt-screen--booting::before,
+    .gear-train i,
+    .video-transmission--online .lamp-row i { animation: none; }
+    .tuner-drum { transition: none; }
   }
+
+  @keyframes channel-gear { to { transform: rotate(360deg); } }
+  @keyframes channel-lamp { from { opacity: 0.35; } to { opacity: 1; } }
 
   @keyframes signal-noise {
     0% { opacity: 0.58; background-position: 0 0, 2px 1px, 1px 3px; transform: translate(0, 0); }

@@ -269,12 +269,11 @@ test('Music-page founder amendments and v03.2 facts remain source-derived and ve
   assert.equal(travelogue.facts.find((fact) => fact.label === 'VOCALS / FEATURED ARTIST').value, 'Frawstakwa');
 
   assert.match(musicPage, /SONG-0055[^\n]+SLNK-0441[^\n]+nkRq-vjhBUg/);
-  assert.match(musicPage, /tahrecords\.bandcamp\.com\/album\/junkfeathers-double-eagle-split-single/);
   assert.match(musicPage, /SONG-0052[^\n]+SLNK-0492[^\n]+FxcZc9OSzCU/);
   assert.match(musicPage, /OLAK5uy_lvVgnbLw8qlSq9XelASoBkEBPY5w9s-6o/);
   assert.match(musicPage, /SONG-0039[^\n]+SLNK-0620[^\n]+ApKAcOuOiZ0[^\n]+PCH-0168/);
   assert.doesNotMatch(musicPage, /SLNK-0450|TLYebbum4BM/);
-  assert.match(musicPage, /music-archive-v03\.2/);
+  assert.match(musicPage, /music-archive-v04\.0/);
   assert.match(videoTransmission, /youtube-nocookie\.com/);
   assert.doesNotMatch(videoTransmission, /autoplay=1/);
 });

@@ -98,7 +98,21 @@
     </div>
   </div>
   <div class="mm-tabs" role="tablist" aria-label="Multimedia Machine surfaces" data-mm-tabs>
-    <button type="button" class="archive-btn" role="tab" data-surface="INFO" aria-selected="true" tabindex="0">INFO</button>
+    {(['INFO', 'LISTEN', 'WATCH', 'LYRICS', 'VERSIONS'] as const).map((surface, index) => (
+      <button
+        type="button"
+        class="machine-tab"
+        role="tab"
+        id={`archive-mm-tab-${surface.toLowerCase()}`}
+        data-surface={surface}
+        aria-selected={index === 0 ? 'true' : 'false'}
+        tabindex={index === 0 ? 0 : -1}
+        disabled={index !== 0}
+        aria-disabled={index === 0 ? 'false' : 'true'}
+      >
+        {surface}
+      </button>
+    ))}
   </div>
   <div class="mm-stage">
     <div class="mm-panel" data-mm-panel>
@@ -265,13 +279,14 @@
       if (!channel || channel.songId !== item.id) return defaultVersion(item);
       return item.versions.find((version) => version.listenChannelIds.includes(channelId) || version.watchChannelIds.includes(channelId)) ?? defaultVersion(item);
     };
-    const surfacesFor = (version: ArchiveVersion | null): Surface[] => {
-      const surfaces: Surface[] = ['INFO'];
-      if (version?.listenChannelIds.length) surfaces.push('LISTEN');
-      if (version?.watchChannelIds.length) surfaces.push('WATCH');
-      if (version?.lyricState === 'public') surfaces.push('LYRICS');
-      if ((openSong?.versions.length ?? 0) > 1) surfaces.push('VERSIONS');
-      return surfaces;
+    const SURFACE_ORDER: Surface[] = ['INFO', 'LISTEN', 'WATCH', 'LYRICS', 'VERSIONS'];
+    const surfaceEnabled = (surface: Surface, version: ArchiveVersion | null) => {
+      if (surface === 'INFO') return true;
+      if (!openSong || !version) return false;
+      if (surface === 'LISTEN') return version.listenChannelIds.length > 0;
+      if (surface === 'WATCH') return version.watchChannelIds.length > 0;
+      if (surface === 'LYRICS') return version.lyricState === 'public';
+      return openSong.versions.length > 1;
     };
     const selectedChannel = (type: 'cassette' | 'vhs') => {
       const ids = type === 'cassette' ? openVersion?.listenChannelIds ?? [] : openVersion?.watchChannelIds ?? [];
@@ -483,16 +498,7 @@
       mm.dataset.state = 'idle';
       mmTitle.textContent = 'STANDBY';
       mmReadout.textContent = '';
-      mmTabs.replaceChildren();
-      const tab = document.createElement('button');
-      tab.type = 'button';
-      tab.className = 'archive-btn';
-      tab.setAttribute('role', 'tab');
-      tab.dataset.surface = 'INFO';
-      tab.setAttribute('aria-selected', 'true');
-      tab.tabIndex = 0;
-      tab.textContent = 'INFO';
-      mmTabs.append(tab);
+      renderTabs(null);
       mmPanel.replaceChildren(idleScreen());
       const heading = document.createElement('p');
       heading.textContent = 'STREAMING';
@@ -739,21 +745,19 @@
       else renderVersions();
     };
 
-    const renderTabs = () => {
-      const surfaces = surfacesFor(openVersion);
-      if (!surfaces.includes(openSurface)) openSurface = 'INFO';
-      mmTabs.replaceChildren();
-      for (const surface of surfaces) {
-        const tab = document.createElement('button');
-        tab.type = 'button';
-        tab.className = 'archive-btn';
-        tab.setAttribute('role', 'tab');
-        tab.id = `archive-mm-tab-${surface.toLowerCase()}`;
-        tab.dataset.surface = surface;
-        tab.setAttribute('aria-selected', String(surface === openSurface));
-        tab.tabIndex = surface === openSurface ? 0 : -1;
-        tab.textContent = surface;
-        mmTabs.append(tab);
+    const renderTabs = (version: ArchiveVersion | null) => {
+      if (version && !surfaceEnabled(openSurface, version)) openSurface = 'INFO';
+      if (!version) openSurface = 'INFO';
+      const tabs = [...mmTabs.querySelectorAll<HTMLButtonElement>('[data-surface]')];
+      for (const surface of SURFACE_ORDER) {
+        const tab = tabs.find((button) => button.dataset.surface === surface);
+        if (!tab) continue;
+        const enabled = surfaceEnabled(surface, version);
+        const selected = surface === openSurface;
+        tab.disabled = !enabled;
+        tab.setAttribute('aria-disabled', String(!enabled));
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
       }
     };
 
@@ -766,7 +770,7 @@
       mmTitle.textContent = openSong.title;
       const channel = selectedChannel(openSurface === 'WATCH' ? 'vhs' : 'cassette') ?? selectedChannel('vhs') ?? selectedChannel('cassette');
       mmReadout.textContent = [openSong.id, openVersion.releaseId, channel?.id, openVersion.projectName].filter(Boolean).join(' / ');
-      renderTabs();
+      renderTabs(openVersion);
       renderSurface();
       renderDrawer();
       if (focus) {
@@ -794,8 +798,7 @@
         ? channelId : null;
       const channel = validChannelId ? channelById.get(validChannelId) ?? null : null;
       openSurface = surface ?? (channel?.type === 'vhs' ? 'WATCH' : channel?.type === 'cassette' ? 'LISTEN' : 'INFO');
-      const surfaces = surfacesFor(version);
-      if (!surfaces.includes(openSurface)) openSurface = 'INFO';
+      if (!surfaceEnabled(openSurface, version)) openSurface = 'INFO';
       if (recordHistory) writeParams(item.id, validChannelId, replace);
       pageToSong(item);
       render();
@@ -888,13 +891,13 @@
     mmTabs.addEventListener('click', (event) => {
       const tab = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-surface]');
       const surface = tab?.dataset.surface as Surface | undefined;
-      if (!surface || !openSong || !openVersion) return;
+      if (!surface || !openSong || !openVersion || tab?.disabled || !surfaceEnabled(surface, openVersion)) return;
       openSurface = surface;
       renderMachine();
     });
     mmTabs.addEventListener('keydown', (event) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-      const tabs = [...mmTabs.querySelectorAll<HTMLButtonElement>('[data-surface]')];
+      const tabs = [...mmTabs.querySelectorAll<HTMLButtonElement>('[data-surface]')].filter((tab) => !tab.disabled);
       const index = tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true');
       const next = tabs[(index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
       next?.click();
@@ -933,7 +936,7 @@
     --archive-line: #2a2a2a;
     color-scheme: dark;
   }
-  .archive-stack :global(button:not(.mm-version-link)),
+  .archive-stack :global(button:not(.mm-version-link):not(.machine-tab)),
   .archive-stack :global(.archive-btn),
   .archive-stack :global(.mm-drawer a),
   .archive-stack :global(.mm-bandcamp-attribution),
@@ -954,10 +957,10 @@
     text-decoration: none;
     cursor: pointer;
   }
-  .archive-stack :global(button:not(.mm-version-link):hover),
-  .archive-stack :global(button:not(.mm-version-link):focus),
-  .archive-stack :global(button:not(.mm-version-link):focus-visible),
-  .archive-stack :global(button:not(.mm-version-link)[aria-selected='true']),
+  .archive-stack :global(button:not(.mm-version-link):not(.machine-tab):hover),
+  .archive-stack :global(button:not(.mm-version-link):not(.machine-tab):focus),
+  .archive-stack :global(button:not(.mm-version-link):not(.machine-tab):focus-visible),
+  .archive-stack :global(button:not(.mm-version-link):not(.machine-tab)[aria-selected='true']),
   .archive-stack :global(.archive-btn:hover),
   .archive-stack :global(.archive-btn:focus),
   .archive-stack :global(.archive-btn[aria-selected='true']),
@@ -971,7 +974,7 @@
     color: #fff !important;
     border-color: #fff;
   }
-  .archive-stack :global(button:not(.mm-version-link)[aria-selected='true']),
+  .archive-stack :global(button:not(.mm-version-link):not(.machine-tab)[aria-selected='true']),
   .archive-stack :global(.archive-btn[aria-selected='true']) {
     box-shadow: inset 0 0 0 1px #fff;
   }
@@ -1101,7 +1104,55 @@
   .mm-heading h2 { margin: 0; font-size: clamp(1.15rem, 5vw, 1.7rem); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .mm-tools { display: grid; justify-items: end; gap: .45rem; max-width: 48%; }
   .mm-tools span { color: var(--jf-gray-strong); font-size: .62rem; letter-spacing: .08em; text-align: right; overflow-wrap: anywhere; }
-  .mm-tabs { display: flex; flex-wrap: wrap; gap: .45rem; padding: .65rem; border-bottom: 1px solid var(--archive-line); }
+  .mm-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .35rem;
+    padding: .65rem;
+    overflow: hidden;
+    border-bottom: 1px solid var(--archive-line);
+  }
+  .mm-tabs .machine-tab {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 44px;
+    padding: .45rem .2rem;
+    border: 2px solid #5a5a5a;
+    border-radius: 0;
+    background: #111;
+    color: #8a8a8a;
+    font: 700 .62rem/1 monospace;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .mm-tabs .machine-tab[aria-selected='true']:not(:disabled) {
+    border-color: #fff;
+    background: #fff;
+    color: #000;
+  }
+  .mm-tabs .machine-tab:not(:disabled):not([aria-selected='true']):hover,
+  .mm-tabs .machine-tab:not(:disabled):not([aria-selected='true']):focus {
+    border-color: #fff;
+    color: #fff;
+  }
+  .mm-tabs .machine-tab:disabled,
+  .mm-tabs .machine-tab:disabled:hover,
+  .mm-tabs .machine-tab:disabled:focus {
+    border-color: #3c3c3c;
+    border-style: dashed;
+    background: #050505;
+    color: #3a3a3a;
+    cursor: not-allowed;
+  }
+  .mm-tabs .machine-tab:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
   .mm-stage {
     aspect-ratio: 1 / 1;
     width: 100%;
@@ -1384,6 +1435,7 @@
     .archive-results :global(.archive-card) { padding: .75rem; }
     .archive-results { grid-template-columns: 1fr; }
     .archive-output { height: 28rem; }
+    .mm-tabs .machine-tab { font-size: .52rem; letter-spacing: .03em; padding: .4rem .1rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .archive-pulse,
