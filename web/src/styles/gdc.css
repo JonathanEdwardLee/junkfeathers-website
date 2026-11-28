@@ -1434,3 +1434,99 @@ body:has(.gdc) .site-header {
 .gdc #journal::backdrop {
   background: #000b;
 }
+
+.gdc #rack [data-panel="EXP"] > header button[popovertarget] {
+  display: inline-grid;
+}
+.gdc #rack #controls-EXP {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(340px, 90vw);
+  max-height: 80dvh;
+  height: fit-content;
+  overflow: auto;
+}
+.gdc #controls-EXP label {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.gdc .goal-meter {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 2px 8px;
+  padding: 5px 9px;
+  min-height: 0;
+}
+.gdc .goal-meter small,
+.gdc .goal-meter progress {
+  grid-column: 1/-1;
+}
+.gdc .goal-meter strong {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(20px, 3vw, 37px);
+  line-height: 1;
+}
+.gdc .goal-meter span {
+  font-size: 12px;
+  color: #bbb;
+}
+.gdc .goal-meter progress {
+  height: 8px;
+}
+.gdc .exp-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+.gdc #history {
+  align-items: stretch;
+  min-height: 54px;
+}
+.gdc #history .day {
+  min-width: 0;
+  position: relative;
+  gap: 1px;
+  font-variant-numeric: tabular-nums;
+}
+.gdc #history .day:last-child {
+  color: white;
+  font-weight: bold;
+}
+.gdc #history .bar {
+  min-height: 0;
+  background: repeating-linear-gradient(to top, #ccc 0 3px, #444 3px 4px);
+}
+.gdc #history.scale-bars {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-height: 85px;
+  font-size: 12px;
+}
+.gdc .scale-bars i {
+  display: block;
+  height: 5px;
+  background: #ddd;
+}
+.gdc .compact .goal-meter progress,
+.gdc .compact .goal-meter small {
+  display: none;
+}
+
+.gdc #history.empty-week {
+  position: relative;
+}
+.gdc #history.empty-week::before {
+  content: "Your first session this week starts the chart.";
+  position: absolute;
+  inset: 5px 6px auto;
+  color: #aaa;
+  font-size: 11px;
+}
